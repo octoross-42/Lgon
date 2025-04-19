@@ -19,5 +19,6 @@ declare module 'discord.js'
 	interface Client
 	{
 	  commands: Collection<string, Command>;
+	  cooldowns: Collection<string, Collection<string, number>>; // command name -> Collection<userId, timestamp in ms>
   }
 }
