@@ -6,7 +6,7 @@ const bot:Client = new Client();
 function initBotCollections(bot: Client) {
 	const collections = {
 	  commands: new Collection<string, Command>(),
-	  cooldowns: new Collection<string, number>(),
+	  cooldowns: new Collection<string, Collection<string, number>>(),
 	};
 	
 	Object.assign(bot, collections);
