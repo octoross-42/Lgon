@@ -1,11 +1,9 @@
 const
-{ CONSTANTES } = require ("../../config/constantes.js");
+{ CONSTANTES } = require ("../../../../config/constantes.js");
 const
 { joueurCherche } = require ("./fonctions/cherche.js");
 const
 { isActionLG } = require ("./fonctions/nuit.js");
-const
-{ CONSTANTES.PREFIX } =  require("./config.js");
 
 
 module.exports.run = (bot, message, argsMessage) =>

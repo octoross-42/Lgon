@@ -1,7 +1,7 @@
 const
 { CONSTANTES } = require ("../../../config/constantes.js");
 const
-{ verificationDebutNuit } = require("../../fonctions/verificationDebutNuit.js");
+{ verificationDebutNuit } = require("../../../fonctions/verificationDebutNuit.js");
 
 module.exports.run = (bot, message, argsMessage) =>
 {

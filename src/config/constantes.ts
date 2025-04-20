@@ -1,8 +1,8 @@
-const PREFIX = "lgon"
+const PREFIX  = "lgon"
 
 export const CONSTANTES =
 {
-	PREFIX : PREFIX,
+	PREFIX  : PREFIX, 
 	MIN_NBR_PLAYERS : 1,
 	GAME_CHANNEL_NAME : "lgon-deroulement",
 	ROLES_CHANNEL_NAME : "lgon-ROLES_DATA",
@@ -45,22 +45,16 @@ export const CONSTANTES =
                 description : "Définir les channels jeu du serveur",
                 nbrArgsRequired : 0,
                 cooldown: 1,
-                usage : `\`${PREFIX}get_ready\``,
-                prive : false,
-                serveur : true,
-                channelsJeu : false,
+                usage : `\`${PREFIX}\` \`get_ready\``,
             },
             CLEAR_CHANNEL:
 			{
                 name : "clear_channel",
                 category: "bot",
-                description : "Efface des messages (100)",
+                description : "Efface les 100 derniers messages du channel ciblé",
                 nbrArgsRequired : 1,
                 cooldown: 1,
-                usage : `\`${PREFIX}clear_channel\` puis \`nom_channel\``,
-                prive : false,
-                serveur : true,
-                channelsJeu : false,
+                usage : `\`${PREFIX}\` \`clear_channel\` \`nom_channel\``,
             },
             SET_CHANNEL:
 			{
@@ -69,10 +63,7 @@ export const CONSTANTES =
                 description : "Configure le channel sur lequel le bot fait dérouler la partie",
                 nbrArgsRequired : 0,
                 cooldown: 1,
-                usage : `\`${PREFIX}set_channel\` seul pour chercher automatiquement ou \`type_channel\` (jeu, ROLES_DATA ou erreurs) puis \`id_channel\``,
-                prive : false,
-                serveur : true,
-                channelsJeu : false,
+                usage : `\`${PREFIX}\` \`set_channel\` seul pour chercher automatiquement ou \`type_channel\` (jeu, ROLES_DATA ou erreurs) puis \`id_channel\``,
             },
             INFOS:
 			{
@@ -82,10 +73,7 @@ export const CONSTANTES =
                 nbrArgsRequired : 0,
                 cooldown: 5,
                 aliases: ["infos_bot_guild"], 
-                usage : `\`${PREFIX}infos_bot_guild\``,
-                prive : false,
-                serveur : true,
-                channelsJeu : false,
+                usage : `\`${PREFIX}\` infos_bot_guild\``,
             },
             COEURS:
 			{
@@ -95,10 +83,7 @@ export const CONSTANTES =
                 nbrArgsRequired : 0,
                 cooldown: 0,
                 aliases: ["gnah", "🤍", "🤎", "♥️", "🧡", "❣️", "🖤", "💝", "💜", "💚", "💙", "💘", "💗", "💖", "💓", "💟", "💛", "❤️", "💕", "💞"], 
-                usage : `\`${PREFIX}\` et un petit coeur`,
-                prive : false,
-                serveur : false,
-                channelsJeu : false,
+                usage : `\`${PREFIX} \` et un petit coeur`,
             },
         },
 
@@ -112,10 +97,7 @@ export const CONSTANTES =
                 nbrArgsRequired : 0,
                 cooldown: 1,
                 aliases: ["recap", "recapitulatif"], 
-                usage : `\`${PREFIX}recap\``,
-                prive : false,
-                serveur : false,
-                channelsJeu : false,
+                usage : `\`${PREFIX} recap\``,
             },
 
             HELP:
@@ -125,11 +107,8 @@ export const CONSTANTES =
                 description : "Aide pour utilisation des commandes",
                 nbrArgsRequired : 0,
                 cooldown: 1,
-                aliases: ["help", "aled"], 
-                usage : `\`${PREFIX}help\` seul pour la liste des commandes sinon \`<command_name>\` pour l'aide sur la commande`,
-                prive : false,
-                serveur : false,
-                channelsJeu : false,
+                aliases: ["aled"], 
+                usage : `\`${PREFIX} help\` seul pour la liste des commandes sinon \`<command_name>\` pour l'aide sur la commande`,
             },
 
             PLAYERS_DATA:
@@ -140,10 +119,7 @@ export const CONSTANTES =
                 nbrArgsRequired : 0,
                 cooldown: 1,
                 aliases: ["joueurs"], 
-                usage : `\`${PREFIX}joueurs\``,
-                prive : false,
-                serveur : true,
-                channelsJeu : false,
+                usage : `\`${PREFIX} joueurs\``,
             },
             ROLES_DATA:
 			{
@@ -153,10 +129,7 @@ export const CONSTANTES =
                 nbrArgsRequired : 0,
                 cooldown: 1,
                 aliases: ["ROLES_DATA"], 
-                usage : `\`${PREFIX}ROLES_DATA\``,
-                prive : false,
-                serveur : true,
-                channelsJeu : false,
+                usage : `\`${PREFIX} ROLES_DATA\``,
             },
         },
 
@@ -170,10 +143,7 @@ export const CONSTANTES =
                 nbrArgsRequired : 0,
                 cooldown: 1,
                 aliases: ["action"], 
-                usage : `\`${PREFIX}action\` seul pour la liste des rôles sinon \`<role_name>\` pour l'aide sur le rôle`,
-                prive : false,
-                serveur : false,
-                channelsJeu : false,
+                usage : `\`${PREFIX} action\` seul pour la liste des rôles sinon \`<role_name>\` pour l'aide sur le rôle`,
             },
             
             PLAY:
@@ -184,10 +154,7 @@ export const CONSTANTES =
                 nbrArgsRequired : 0,
                 cooldown: 1,
                 aliases: ["joue"], 
-                usage : `\`${PREFIX}joue\`` ,
-                prive : false,
-                serveur : true,
-                channelsJeu : true,
+                usage : `\`${PREFIX} joue\`` ,
             },
             DEJOUE:
 			{
@@ -197,11 +164,8 @@ export const CONSTANTES =
                 nbrArgsRequired : 0,
                 cooldown: 1,
                 aliases: ["dejoue"], 
-                usage : `\`${PREFIX}dejoue\``,
+                usage : `\`${PREFIX} dejoue\``,
                 
-                prive : false,
-                serveur : true,
-                channelsJeu : false,
             },
         },
 
@@ -215,10 +179,7 @@ export const CONSTANTES =
                 nbrArgsRequired : 1,
                 cooldown: 0,
                 aliases: ["add_roles", "add"], 
-                usage : `\`${PREFIX}add_roles\` \`quantité du rôle ajouté\` \`role_name\``,
-                prive : false,
-                serveur : true,
-                channelsJeu : true,
+                usage : `\`${PREFIX} add_roles\` \`quantité du rôle ajouté\` \`role_name\``,
             },
             SET_ROLES:
 			{
@@ -228,10 +189,7 @@ export const CONSTANTES =
                 nbrArgsRequired : 2,
                 cooldown: 0,
                 aliases: ["set_roles", "set"], 
-                usage : `\`${PREFIX}set_roles\` \`quantité du rôle fixé\` \`role_name\``,
-                prive : false,
-                serveur : true,
-                channelsJeu : true,
+                usage : `\`${PREFIX} set_roles\` \`quantité du rôle fixé\` \`role_name\``,
             },
             REMOVE_ROLES:
 			{
@@ -241,10 +199,7 @@ export const CONSTANTES =
                 nbrArgsRequired : 1,
                 cooldown: 0,
                 aliases: ["remove_roles", "remove", "enleve"], 
-                usage : `\`${PREFIX}remove_roles\` \`quantité du rôle ajouté\` \`role_name\``,
-                prive : false,
-                serveur : true,
-                channelsJeu : true,
+                usage : `\`${PREFIX} remove_roles\` \`quantité du rôle ajouté\` \`role_name\``,
             },
         },
 
@@ -258,12 +213,9 @@ export const CONSTANTES =
                 nbrArgsRequired : 0,
                 cooldown: 1,
                 aliases: ["partie"], 
-                usage : `\`${PREFIX}create_partie\``,
+                usage : `\`${PREFIX} create_partie\``,
                 
-                prive : false,
-                serveur : true,
                 
-                channelsJeu : false,
             },
             STOP:
 			{
@@ -273,11 +225,8 @@ export const CONSTANTES =
                 nbrArgsRequired : 0,
                 cooldown: 10,
                 aliases: ["stop"], 
-                usage : `\`${PREFIX}stop\``,
+                usage : `\`${PREFIX} stop\``,
                 
-                prive : false,
-                serveur : true,
-                channelsJeu : false,
             },
             REINIT:
 			{
@@ -287,11 +236,8 @@ export const CONSTANTES =
                 nbrArgsRequired : 0,
                 cooldown: 10,
                 aliases: ["reset"], 
-                usage : `\`${PREFIX}reinitialiser\``,
+                usage : `\`${PREFIX} reinitialiser\``,
                 
-                prive : false,
-                serveur : true,
-                channelsJeu : false,
             },
             START:
 			{
@@ -301,11 +247,8 @@ export const CONSTANTES =
                 nbrArgsRequired : 0,
                 cooldown: 1,
                 aliases: ["commence"], 
-                usage : `\`${PREFIX}commence\``,
+                usage : `\`${PREFIX} commence\``,
                 
-                prive : false,
-                serveur : true,
-                channelsJeu : false,
             },
         }
     },
@@ -320,7 +263,7 @@ export const CONSTANTES =
                 category: "independants",
                 description : "L'assassin désigne sa cible la nuit qui est autre que lui",
                 cdv : "Il doit tuer sa cible pour gagner",
-                usage : `\`${PREFIX}action nom ou tag d'un joueur\` (dans liste des joueurs de début de partie)` ,
+                usage : `\`${PREFIX} action nom ou tag d'un joueur\` (dans liste des joueurs de début de partie)` ,
                 aliases: ["assassin"],
                 typeRole : ["action", "", ""],
             },
@@ -360,7 +303,7 @@ export const CONSTANTES =
                 category: "independants",
                 description : `Le lapin va manger les carottes de quelqu'un qui s'en aperçoit et veut le tuer, ce qui devient son but`,
                 cdv : "Il doit survivre",
-                usage : `\`${PREFIX}action\` nom ou tag d'un joueur ` ,
+                usage : `\`${PREFIX} action\` nom ou tag d'un joueur ` ,
                 aliases: ["lapin des montagnes", "lapin"],
                 typeRole : ["action", "", ""],
             },
@@ -375,7 +318,7 @@ export const CONSTANTES =
                 category: "loups",
                 description: "Le Loup-garou se réveille dans la nuit pour prendre connaissance de sa meute ou s'il est seul regarde une carte au centre (et devient un type action)",
                 cdv: "Aucun Loup ne doit mourir",
-                usage: `S'il est seul : \`${PREFIX}action\` \`droite\` ou \`milieu\` ou \`gauche\``,
+                usage: `S'il est seul : \`${PREFIX} action\` \`droite\` ou \`milieu\` ou \`gauche\``,
                 aliases: ["loup-garou", "lg"],
                 typeRole : ["", 'information', ""],
             },
@@ -385,7 +328,7 @@ export const CONSTANTES =
                 category: "loups",
                 description: "Un Loup-garou qui contamine une personne dans la nuit",
                 cdv: "Aucun Loup ne doit mourir",
-                usage: `S'il est seul : \`${PREFIX}action\` \`droite\` ou \`milieu\` ou \`gauche\` et pour contaminer : \`${PREFIX}action\` nom ou tag d'un joueur`,
+                usage: `S'il est seul : \`${PREFIX} action\` \`droite\` ou \`milieu\` ou \`gauche\` et pour contaminer : \`${PREFIX} action\` nom ou tag d'un joueur`,
                 aliases: ["loup-alpha", "lga"],
                 typeRole : ["action", 'information', ""],
             },
@@ -395,7 +338,7 @@ export const CONSTANTES =
                 category: "loups",
                 description: "Un Loup-garou qui regarde le rôle d'une personne dans la nuit",
                 cdv: "Aucun Loup ne doit mourir",
-                usage: `S'il est seul : \`${PREFIX}action\` \`droite\` ou \`milieu\` ou \`gauche\` et pour voir une carte : \`${PREFIX}action\` nom ou tag d'un joueur`,
+                usage: `S'il est seul : \`${PREFIX} action\` \`droite\` ou \`milieu\` ou \`gauche\` et pour voir une carte : \`${PREFIX} action\` nom ou tag d'un joueur`,
                 aliases: ["loup-chaman", "lgc"],
                 typeRole : ["action", 'information', ""],
             },
@@ -429,7 +372,7 @@ export const CONSTANTES =
                 category: "villageois",
                 desscription: "L'Apprentie-voyante regarde le rôle de quelqu'un ou une carte au centre",
                 cdv: "L'Apprentie-voyante est une villageoise, elle doit tuer un Loup pour gagner",
-                usage: `\`${PREFIX}action nom ou tag d'un joueur\` (dans liste des joueurs de début de partie)`,
+                usage: `\`${PREFIX} action nom ou tag d'un joueur\` (dans liste des joueurs de début de partie)`,
                 aliases: ["apprentie-voyante", "app-voyante"],
                 typeRole : ["action", 'information', ""],
             },
@@ -449,7 +392,7 @@ export const CONSTANTES =
                 category: "villageois",
                 desscription: "Cupipute visite quelqu'un dans la nuit qui ne peut plus jouer et qui n'en est informé que s'il a un rôle à informations",
                 cdv: "Cupipute est une villageoise, elle doit tuer un Loup pour gagner",
-                usage: `\`${PREFIX}action nom ou tag d'un joueur\` (dans liste des joueurs de début de partie)`,
+                usage: `\`${PREFIX} action nom ou tag d'un joueur\` (dans liste des joueurs de début de partie)`,
                 aliases: ["cupipute", "pute"],
                 typeRole : ["action", "", ""],
             },
@@ -459,7 +402,7 @@ export const CONSTANTES =
                 category: "villageois",
                 desscription: "Le Doppleganger copie le rôle de quelqu'un qu'il joue juste après",
                 cdv: "Le Doppleganger est un villageois, il doit tuer un Loup pour gagner",
-                usage: `\`${PREFIX}\` action nom ou tag d'un joueur (dans liste des joueurs de début de partie)`,
+                usage: `\`${PREFIX} \` action nom ou tag d'un joueur (dans liste des joueurs de début de partie)`,
                 aliases: ["doppleganger", "dopple"],
                 typeRole : ["action", 'information', ""],
 
@@ -470,7 +413,7 @@ export const CONSTANTES =
                 category: "villageois",
                 desscription: "Le Franc-maçon prend connaissance de l'identité de l'autre Franc-maçon en jeu",
                 cdv: "Le Franc-maçon est un villageois, il doit tuer un Loup pour gagner",
-                usage: `\`${PREFIX}action nom ou tag d'un joueur\` (dans liste des joueurs de début de partie)`,
+                usage: `\`${PREFIX} action nom ou tag d'un joueur\` (dans liste des joueurs de début de partie)`,
                 aliases: ["franc-maçon", "fm"],
                 typeRole : ["", 'information', ""],
             },
@@ -501,7 +444,7 @@ export const CONSTANTES =
                 category: "villageois",
                 description: "La Chose tapote l'épaule d'une personne à sa droite ou à sa gauche qui est notifiée du tapotement",
                 cdv: "La Chose est une villageoise, il doit tuer un Loup pour gagner",
-                usage: `\`${PREFIX}action\` \`gauche\` ou \`droite\``,
+                usage: `\`${PREFIX} action\` \`gauche\` ou \`droite\``,
                 aliases: ["la chose", "chose"],
                 typeRole : ["action", "", ""],
 
@@ -512,7 +455,7 @@ export const CONSTANTES =
                 category: "villageois",
                 description: "La Noiseuse échange les rôles de 2 personnes sans qu'ils n'en prennent connaissance",
                 cdv: "La Noiseuse est une villageoise, il doit tuer un Loup pour gagner",
-                usage: `\`${PREFIX}action\` noms ou tags de deux personnes`,
+                usage: `\`${PREFIX} action\` noms ou tags de deux personnes`,
                 aliases: ["noiseuse"],
                 
                 typeRole : ["action", "", ""],
@@ -533,7 +476,7 @@ export const CONSTANTES =
                 category: "villageois",
                 description: "La Sorcière regarde une carte au centre et décide de ne rien faire ou de l'attribuer à un joueur (elle y-compris)",
                 cdv: "La Sorcière est une villageoise, il doit tuer un Loup pour gagner",
-                usage: `\`${PREFIX}action \`gauche\`, \`milieu\` \`droite\` puis \`${PREFIX}action\` et le nom ou tag d'un joueur`,
+                usage: `\`${PREFIX} action \`gauche\`, \`milieu\` \`droite\` puis \`${PREFIX} action\` et le nom ou tag d'un joueur`,
                 aliases: ["sorciere"],
                 typeRole : ["action", 'information', ""],
             },
@@ -543,7 +486,7 @@ export const CONSTANTES =
                 category: "villageois",
                 description: "La Soulard échange son rôle avec un rôle au centre mais n'en prend pas connaissance",
                 cdv: "La Soulard est une villageoise, il doit tuer un Loup pour gagner",
-                usage: `\`${PREFIX}action \`gauche\` \`milieu\` ou \`droite\``,
+                usage: `\`${PREFIX} action \`gauche\` \`milieu\` ou \`droite\``,
                 aliases: ["soulard"],
                 typeRole : ["", "", ""],
             },
@@ -563,7 +506,7 @@ export const CONSTANTES =
                 category: "villageois",
                 description: "Le Voleur échange sa carte avec un joueur et prend connaissance de son nouveau rôle",
                 cdv: "Le Voleur est une villageoise, il doit tuer un Loup pour gagner",
-                usage: `\`${PREFIX}action\` nom ou tag d'une personne`,
+                usage: `\`${PREFIX} action\` nom ou tag d'une personne`,
                 aliases: ["voleur"],
                 typeRole : ["action", 'information', ""],
             },
@@ -573,7 +516,7 @@ export const CONSTANTES =
                 category: "villageois",
                 description: "La Voyante regarde le rôle d'une personne ou de 2 cartes au centre",
                 cdv: "La Voyante est une villageoise, elle doit tuer un Loup pour gagner",
-                usage: `\`${PREFIX}action\` nom ou tag d'une personne ou 2 centres différents (\`gauche\` \`milieu\` ou \`droite\`)`,
+                usage: `\`${PREFIX} action\` nom ou tag d'une personne ou 2 centres différents (\`gauche\` \`milieu\` ou \`droite\`)`,
                 aliases: ["voyante"],
                 typeRole : ["action", 'information', ""],
             },

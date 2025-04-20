@@ -1,7 +1,7 @@
 const
 { Joueur } = require("./fonctions/nuit.js");
 const
-{ CONSTANTES } = require ("../../config/constantes.js");
+{ CONSTANTES } = require ("../../../../config/constantes.js");
 const
 { verificationDebutNuit } =  require("./fonctions/verificationDebutNuit.js");
 const

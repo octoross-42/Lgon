@@ -6,7 +6,7 @@ const loadCommands = (bot, dir = '../commands') =>
 {
     readdirSync(dir).forEach(dirs =>
 {
-        const commands = readdirSync (`${dir}/${dirs}/`).filter(files => files.endsWith('.js'));
+        const commands = readdirSync (`${dir}/${dirs}/`).filter(files => files.endsWith('.ts'));
         
         for (const file of commands)
 		{

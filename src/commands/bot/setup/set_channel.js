@@ -1,7 +1,7 @@
 const
 { Collection } = require("discord.js");
 const
-{ CONSTANTES } = require ("../../config/constantes.js");
+{ CONSTANTES } = require ("../../../config/constantes.js");
 
 module.exports.run = (bot, message, argsMessage) =>
 {

@@ -31,7 +31,6 @@ module.exports.run = (bot, message, argsMessage) =>
                     .setDescription('La liste des rôles en jeu')
                     .setThumbnail(linkImage)
                     .addFields(
-                        //{ name: 'Regular field title', value: 'Some value here' },
                        
 { name: '\u200B', value: '\u200B' },
                        

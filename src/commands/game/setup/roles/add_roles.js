@@ -1,5 +1,5 @@
 const
-{ CONSTANTES } = require ("../../config/constantes.js");
+{ CONSTANTES } = require ("../../../../config/constantes.js");
 const
 { MIN_NBR_PLAYERS } = require ("./config.js");
 const
