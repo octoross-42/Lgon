@@ -39,7 +39,7 @@ declare module 'discord.js'
 	interface Client
 	{
 	  commands: Collection<string, Command>;                     // command name -> Command
-	  roles: Collection<string, Role>;			     			 // role name    -> Role
 	  cooldowns: Collection<string, Collection<string, number>>; // command name -> Collection<userId, timestamp in ms>
+	  roles: Collection<string, Role>;			     			 // role name    -> Role
   }
 }

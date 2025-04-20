@@ -1,8 +1,6 @@
 import { Client, Message, Collection, Command } from 'discord.js';
 import { CONSTANTES } from '../config/constantes.js';
 
-// https://www.youtube.com/watch?v=O6S8p5rqQjc&list=PLuWyq_EO5_ALOnpxptlqQA5FR75Nza2PQ&index=13
-
 function getArgv(message: Message): string[] | null
 {
 	const argv: string[] = message.content.split(/ +/);
