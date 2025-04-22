@@ -1,0 +1,37 @@
+import { Client, Message, CommandHelp } from "discord.js";
+import { CONSTANTES } from "../config/constantes.js";
+
+export class Command
+{
+	name: string;
+	description: string;
+	usage: string;
+	defaultUsage: boolean;
+	aliases: string[];
+	cooldown: number;
+	nbrArgsRequired: number;
+	category: string[];
+	run: (bot: Client, message: Message, argv: string[]) => Promise<void> | void;
+
+	constructor(help : CommandHelp, commandFilePath: string, run: (bot: Client, message: Message, argv: string[]) => Promise<void> | void)
+	{
+	  this.name = help.name;
+	  this.description = help.description;
+	  this.defaultUsage = true;
+	  this.usage = `\`${CONSTANTES.PREFIX}\` \`${help.name}\``;
+	  if (help.usage)
+	  {
+		this.usage = help.usage;
+		this.defaultUsage = false;
+	  }
+	  this.aliases = help.aliases || [];
+	  this.cooldown = help.cooldown;
+	  this.nbrArgsRequired = help.nbrArgsRequired;
+
+	  const path = commandFilePath.split("/");
+	  const initPath = path.indexOf("commands");
+	  this.category = path.slice(initPath + 1, -1);
+	  console.log(this.category);
+	  this.run = run;
+	}
+}

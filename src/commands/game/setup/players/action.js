@@ -23,7 +23,7 @@ module.exports.run = (bot, message, argsMessage) =>
             const indiceJ = joueurCherche (message.author.tag, joueurs);
             if (joueurs[indiceJ].jouant === false )
 {
-                if ( isActionLG( joueurs[indiceJ].roleAction, joueurs ) || bot.rolesCommands.get(joueurs[indiceJ].roleAction.toLowerCase()).help.typeRole.length  )
+                if ( isActionLG( joueurs[indiceJ].roleAction, joueurs ) || bot.rolesCommands.get(joueurs[indiceJ].roleAction.toLowerCase()).typeRole.length  )
 {
                     const commandRole = bot.rolesCommands.get ( joueurs[indiceJ].roleAction.toLowerCase() );
                     if (commandRole.actionLegale( bot, joueurs[0].guildId , indiceJ, joueurs, message.content.slice( CONSTANTES.PREFIX.length + 7) ))

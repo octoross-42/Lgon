@@ -1,4 +1,5 @@
-import { Collection, Command, Client, Role } from "discord.js";
+import { Collection, Client, Role } from "discord.js";
+import { Command } from "../types/Command.js";
 import { loadCommands } from "./commands.js";
 import { loadEvents } from "./events.js";
 import { loadRoles } from "./roles.js";
@@ -22,5 +23,5 @@ export async function loader(bot: Client): Promise<void>
 
 	await loadCommands(bot);
 	await loadEvents(bot);
-	await loadRoles(bot);	
+	await loadRoles(bot);
 }

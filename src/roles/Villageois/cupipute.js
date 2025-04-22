@@ -22,7 +22,7 @@ module.exports.action = (bot, guildId, indiceJ, joueurs) =>
     const indiceJA = unJoueurCherche(actionStr, joueurs);
     const commandRole =  bot.rolesCommands.get(joueurs[indiceJA].roleAction.toLowerCase());
 
-    if (commandRole.help.typeRole[1].length){
+    if (commandRole.typeRole[1].length){
         joueurs[indiceJA].aJoue = true;
 
         joueurs[indiceJA].channel.createDM().then(channel =>

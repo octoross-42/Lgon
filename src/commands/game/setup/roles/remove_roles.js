@@ -36,11 +36,11 @@ module.exports.run = (bot, message, argsMessage) =>
                 role = `${role} ${argsMessage[j+1]}`;
             } 
 
-            const commandRole = bot.rolesCommands.get(role.toLowerCase()) || bot.rolesCommands.find(cmd => cmd.help.aliases && cmd.help.aliases.includes(role.toLowerCase()));
+            const commandRole = bot.rolesCommands.get(role.toLowerCase()) || bot.rolesCommands.find(cmd => cmd.aliases && cmd.aliases.includes(role.toLowerCase()));
 
             if (commandRole)
 {
-                role = commandRole.help.name;
+                role = commandRole.name;
                 var beauRole = new Array();
                 const roleEspaces = role.split(" ");
                 for (var i = 0; i < roleEspaces.length; i ++ )

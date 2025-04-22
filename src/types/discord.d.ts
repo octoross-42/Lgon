@@ -1,20 +1,19 @@
 declare module 'discord.js'
 {
+	import { Command } from "./Command.js";
+	import { Role } from "./Role.js";
 	import { Client, Collection, Message } from 'discord.js';
 	
-	export interface Command
+	export interface CommandHelp
 	{
-		help: {
-			name: string;
-			aliases?: string[];
-			category?: string;
-			description: string;
-			nbrArgsRequired: number;
-			cooldown: number; // en secondes
-			usage: string;
-		};
-		run: (bot:Client, message: Message, argv: string[]) => Promise<void> | void;
-	}
+		name: string;
+		aliases?: string[];
+		category?: string;
+		description: string;
+		nbrArgsRequired: number;
+		cooldown: number; // en secondes
+		usage?: string;
+	};
 
 	export interface Event
 	{
@@ -22,19 +21,16 @@ declare module 'discord.js'
 		onEvent: (bot: Client, ...args: any[]) => Promise<void> | void;
 	}
 
-	export interface Role
+	export interface RoleHelp
 	{
-		help: {
-			name: string,
-            category: string,
-            description: string,
-			cdv: string,
-			usage: string,
-			aliases: string[],
-			typeRole: string[3]
-		};
-	}
-
+		name: string,
+		category: string,
+		description: string,
+		cdv: string,
+		usage: string,
+		aliases: string[],
+		typeRole: string[3]
+	};
 
 	interface Client
 	{

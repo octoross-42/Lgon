@@ -1,9 +1,9 @@
-import { Client, Command, Event } from 'discord.js';
+import { Client, Event } from 'discord.js';
 import fg from 'fast-glob';
 
 const loadEvents = async (bot: Client, eventDir = 'build/events'): Promise<void> =>
 {
-	const eventsFiles = await fg(['**/*'], { cwd: eventDir, dot: true, absolute: true });
+	const eventsFiles = await fg(['**/*.js'], { cwd: eventDir, dot: true, absolute: true });
 	  
 	for (const evenFile of eventsFiles)
 	{

@@ -36,7 +36,7 @@ module.exports.action = (bot, guildId, indiceJ, joueurs) =>
 
     const commandRoleJA =  bot.rolesCommands.get(joueurs[indiceJA].roleInit.toLowerCase());
     
-    if ( ( isActionLG(joueurs[indiceJA].roleInit, joueurs)  || commandRoleJA.help.typeRole[0].length ) && !(joueurs[indiceJA].roleInit === "Doppleganger"))
+    if ( ( isActionLG(joueurs[indiceJA].roleInit, joueurs)  || commandRoleJA.typeRole[0].length ) && !(joueurs[indiceJA].roleInit === "Doppleganger"))
 {
 
         var rolesJeu = bot.parties.get(guildId).get("rolesJeu");

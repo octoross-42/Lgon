@@ -1,4 +1,5 @@
-import { Client, Message, Collection, Command } from 'discord.js';
+import { Client, Message, Collection } from 'discord.js';
+import { Command } from '../types/Command.js';
 import { CONSTANTES } from '../config/constantes.js';
 
 function getArgv(message: Message): string[] | null
@@ -17,11 +18,11 @@ function getCommand(bot: Client, argv: string[]): Command | null
     const commandName:string = argv[0].toLowerCase();
 
     const command = bot.commands.get(commandName)
-						|| bot.commands.find(cmd => !!cmd.help.aliases?.includes(commandName));
+						|| bot.commands.find(cmd => !!cmd.aliases.includes(commandName));
     if (!command)
 		return (null);
 
-    if (argv.length - 1 < command.help.nbrArgsRequired)
+    if (argv.length - 1 < command.nbrArgsRequired)
 	{
 		// send help pour la commande
 		return (null);
@@ -31,21 +32,21 @@ function getCommand(bot: Client, argv: string[]): Command | null
 
 function isOnCooldown(bot: Client, command: Command, message: Message): boolean
 {
- if (!bot.cooldowns.has(command.help.name))
-        bot.cooldowns.set(command.help.name, new Collection());
+ if (!bot.cooldowns.has(command.name))
+        bot.cooldowns.set(command.name, new Collection());
 
     const timeNowMs: number = Date.now();
 	
 	let commandUsers: Collection<string, number>;
-	if (!bot.cooldowns.has(command.help.name))
+	if (!bot.cooldowns.has(command.name))
 	{
 		commandUsers = new Collection();
-		bot.cooldowns.set(command.help.name, commandUsers);
+		bot.cooldowns.set(command.name, commandUsers);
 	}
     else
-		commandUsers = bot.cooldowns.get(command.help.name)!;
+		commandUsers = bot.cooldowns.get(command.name)!;
     
-	const cooldownCommandMs: number = command.help.cooldown * 1000;
+	const cooldownCommandMs: number = command.cooldown * 1000;
 
     if (commandUsers.has(message.author.id))
 	{
@@ -54,7 +55,7 @@ function isOnCooldown(bot: Client, command: Command, message: Message): boolean
         if (timeNowMs < endCooldownTimeMs)
 		{
 			const timeLeftSec: number = (endCooldownTimeMs - timeNowMs) / 1000;
-            message.reply(` Cooldown restant pour \`${command.help.name}\` pour l'utilisateur \`${message.author.tag}\` : ${timeLeftSec.toFixed(0)} secondes`);
+            message.reply(` Cooldown restant pour \`${command.name}\` pour l'utilisateur \`${message.author.tag}\` : ${timeLeftSec.toFixed(0)} secondes`);
 	
 			return (true);
         }
@@ -85,15 +86,16 @@ export function onEvent(bot: Client, message: Message): void
 		return ;
     
     
-    // if (command.help.channelsJeu && !bot.channelsJeu.has(message.channel.guild.id) || ( command.help.channelsJeu && bot.channelsJeu.has(message.channel.guild.id) && bot.channelsJeu.get(message.channel.guild.id) &&  bot.channelsJeu.get(message.channel.guild.id).has(CONSTANTES.GAME_CHANNEL_NAME)) )
+    // if (command.channelsJeu && !bot.channelsJeu.has(message.channel.guild.id) || ( command.channelsJeu && bot.channelsJeu.has(message.channel.guild.id) && bot.channelsJeu.get(message.channel.guild.id) &&  bot.channelsJeu.get(message.channel.guild.id).has(CONSTANTES.GAME_CHANNEL_NAME)) )
 	// {
     //     const command2 = bot.commands.get("set_channel") ;
     //     command2.run(bot, message, argv);
-    //     if (command.help.channelsJeu && !bot.channelsJeu.has(message.channel.guild.id))
+    //     if (command.channelsJeu && !bot.channelsJeu.has(message.channel.guild.id))
 	// 	{
     //         return message.channel.send(`Veuillez configurer les channels de Jeu avec \`${CONSTANTES.PREFIX} get_ready\` ou pour changer de channel : \`${CONSTANTES.PREFIX}set_channel\``); 
     //     }
     // }
+	argv.shift(); // remove command name
     command.run(bot, message, argv);
 }
 

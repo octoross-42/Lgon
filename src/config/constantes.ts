@@ -5,7 +5,7 @@ export const CONSTANTES =
 	PREFIX  : PREFIX, 
 	MIN_NBR_PLAYERS : 1,
 	GAME_CHANNEL_NAME : "lgon-deroulement",
-	ROLES_CHANNEL_NAME : "lgon-ROLES_DATA",
+	ROLES_CHANNEL_NAME : "lgon-roles",
 	ERRORS_CHANNEL_NAME : "lgon-erreurs",
 
 	ROLES_DATA : ["Doppleganger",
@@ -38,6 +38,28 @@ export const CONSTANTES =
 	{
         BOT :
 		{
+			DATA:
+			{
+				HELP:
+				{
+					name : "help",
+					category: "infos",
+					description : "Aide pour utilisation des commandes",
+					nbrArgsRequired : 0,
+					cooldown: 1,
+					aliases: ["aled"], 
+					usage : `seul pour la liste des commandes sinon \`<command_name>\` pour l'aide sur la commande`,
+				},
+				DATA:
+				{
+					name : "data",
+					category: "bot",
+					description : "Envoie en privé toutes les infos du bot sur ce serveur",
+					nbrArgsRequired : 0,
+					cooldown: 5,
+					aliases: [],
+				},
+			},
             GET_READY:
 			{
                 name : "get_ready",
@@ -45,7 +67,6 @@ export const CONSTANTES =
                 description : "Définir les channels jeu du serveur",
                 nbrArgsRequired : 0,
                 cooldown: 1,
-                usage : `\`${PREFIX}\` \`get_ready\``,
             },
             CLEAR_CHANNEL:
 			{
@@ -65,16 +86,7 @@ export const CONSTANTES =
                 cooldown: 1,
                 usage : `\`${PREFIX}\` \`set_channel\` seul pour chercher automatiquement ou \`type_channel\` (jeu, ROLES_DATA ou erreurs) puis \`id_channel\``,
             },
-            INFOS:
-			{
-                name : "infos_bot_guild",
-                category: "bot",
-                description : "Envoie en privé toutes les infos du bot sur ce serveur",
-                nbrArgsRequired : 0,
-                cooldown: 5,
-                aliases: ["infos_bot_guild"], 
-                usage : `\`${PREFIX}\` infos_bot_guild\``,
-            },
+            
             COEURS:
 			{
                 name : "🧡",
@@ -100,16 +112,7 @@ export const CONSTANTES =
                 usage : `\`${PREFIX} recap\``,
             },
 
-            HELP:
-			{
-                name : "help",
-                category: "infos",
-                description : "Aide pour utilisation des commandes",
-                nbrArgsRequired : 0,
-                cooldown: 1,
-                aliases: ["aled"], 
-                usage : `\`${PREFIX} help\` seul pour la liste des commandes sinon \`<command_name>\` pour l'aide sur la commande`,
-            },
+            
 
             PLAYERS_DATA:
 			{
@@ -253,7 +256,7 @@ export const CONSTANTES =
         }
     },
 
-    ROLESCATEGORIES :
+    ROLES :
 	{
         INDEPENDANTS:
 		{

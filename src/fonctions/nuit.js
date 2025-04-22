@@ -354,7 +354,7 @@ function deroulementNuit (bot, guildId, i, temps, boolActionCentrePrec)
                     var boolActionCentre = false;
                     const commandRoleName = rolesJeu[i].toLowerCase();
                     const commandRole = bot.rolesCommands.get(commandRoleName);
-                    if ( commandRole.help.typeRole[0].length)
+                    if ( commandRole.typeRole[0].length)
 {
                             boolActionCentre = true;
                     }
@@ -370,14 +370,14 @@ function deroulementNuit (bot, guildId, i, temps, boolActionCentrePrec)
                     if ( !partie.has("preparationFinie") ) return;
                     const commandRole = bot.rolesCommands.get(commandRoleName);
     
-                    if (commandRole.help.typeRole[1].length)
+                    if (commandRole.typeRole[1].length)
 {
                         commandRole.envoieInfos (bot, guildId,  indiceJ, joueurs);
                     }
     
                     const channelErreurs = bot.channelsJeu.get(guildId).get( CONSTANTES.ERRORS_CHANNEL_NAME);
     
-                    if ( (isActionLG( commandRoleName, joueurs ) || commandRole.help.typeRole[0].length) && !joueurs[indiceJ].aJoue)
+                    if ( (isActionLG( commandRoleName, joueurs ) || commandRole.typeRole[0].length) && !joueurs[indiceJ].aJoue)
 {
                         joueurs[indiceJ].channel.createDM().then(channel =>
 {    
