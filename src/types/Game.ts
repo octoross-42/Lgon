@@ -1,0 +1,33 @@
+import { Collection } from "discord.js";
+import { Player } from "./Player.js";
+import { Role } from "./Role.js";
+
+export class Game
+{
+	name: string;
+	id: number;
+	guildId: string;
+	static games_nbr: number = 0;
+	status: "pending" | "night" | "vote" | "ended";
+	players: Collection<string, Player>; 				// userId -> InGame
+	roles: Role[];
+
+	constructor(name: string | null = null, guildId: string)
+	{
+		this.guildId = guildId;
+		Game.games_nbr ++;
+		this.id = Game.games_nbr;
+		if (name)
+			this.name = name;
+		else
+			this.name = "Game " + this.id;
+		this.status = "pending";
+		this.players = new Collection<string, Player>();
+		this.roles = [];
+	}
+
+	addPlayer(user: Player): void
+	{
+		// this.players.set(user.id, user);
+	}
+}

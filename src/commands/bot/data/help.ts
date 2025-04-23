@@ -2,14 +2,15 @@ import { Client, Message, MessageEmbed, Role } from 'discord.js';
 import { Command } from '../../../types/Command.js';
 import { CONSTANTES } from '../../../config/constantes.js';
 
-function bot_help(bot: Client, message: Message)
+function basic_help(bot: Client, message: Message)
 {
 	const embed = new MessageEmbed()
 		.setColor('#158373')
 		.setTitle("**Help**")
 		.addFields( 
-			{ name: "Liste des commandes", value: `\nPour plus d'informations sur une commande, \`${CONSTANTES.PREFIX}\` \`help\` \`<command_name>\`\nPour plus d'informations sur un role, \`${CONSTANTES.PREFIX}\` \`help\` \`<role_name>\``, inline: false },
+			{ name: "**Liste des commandes**", value: `\nPour plus d'informations sur une commande, \`${CONSTANTES.PREFIX} help <command_name>\`\nPour plus d'informations sur un role, \`${CONSTANTES.PREFIX} help <role_name>\``, inline: false },
 			// { name: '\u200B', value: '\u200B' }
+			// { name: "_________________________________________________", value: '\u200B', inline: false }
 	);
 	  
 	let commandCategory: string | null = null;
@@ -44,41 +45,40 @@ function help_roles(bot: Client, message: Message)
 {
 	const embed = new MessageEmbed()
 		.setColor('#158373')
-		.setTitle("Action")
+		.setTitle("Roles")
 		.addFields(
-			{ name: "Liste des rôles", value: `\nPour plus d'informations sur un rôle, tapez \`${CONSTANTES.PREFIX} help <role_name>\` `, inline: false },
-			{ name: '\u200B', value: '\u200B' }
+			{ name: "**Liste des rôles**", value: `\nPour plus d'informations sur un rôle, tapez \`${CONSTANTES.PREFIX} <role_name>\``, inline: false },
+			// { name: '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬', value: '\u200B', inline: false }
+			// { name: '\u200B', value: '\u200B' }
 		);
 
 	let roleCategory: string | null = null;
 	let rolesContent: string = "";
 
-	for (const role of bot.roles)
+	for (const role of bot.roles.values())
 	{
 		console.log(role);
-		// if (roleCategory != path[0])
-		// {
-		// 	if (roleCategory !== null)
-		// 		embed.addFields(
-		// 			{	name: roleCategory,
-		// 				value: rolesContent,
-		// 				inline: true }
-		// 		);
-		// 	roleCategory = path[0];
-		// 	rolesContent = "";
-		// }
-		// rolesContent += `- ${role.name[0].toUpperCase()}${role.name.slice(1)}\n`;
+		if (roleCategory != role.category[0])
+		{
+			if (roleCategory !== null)
+				embed.addFields(
+					{	name: roleCategory,
+						value: rolesContent,
+						inline: true }
+				);
+			roleCategory = role.category[0];
+			rolesContent = "";
+		}
+		rolesContent += `- ${role.name[0].toUpperCase()}${role.name.slice(1)}\n`;
 	}
-	// embed.addFields(
-	// 	{	name: roleCategory,
-	// 		value: rolesContent,
-	// 		inline: true }
-	// );
+	embed.addFields(
+		{	name: roleCategory,
+			value: rolesContent,
+			inline: true }
+	);
 
 	return message.channel.send(embed);
 }
-
-// TODO changer les iterator pour iterer sur les fichiers
 
 function help_role(message: Message, role: Role)
 {
@@ -90,7 +90,7 @@ function help_command(message: Message, command: Command)
 	let embed = new MessageEmbed()
 		.setColor('#158373')
 		.setTitle("**" + command.name + "**")
-		.setDescription(`${command.description}`)
+		.setDescription(command.description)
 	
 	embed.addField("Utilisation", command.usage, command.defaultUsage);
 	if (command.cooldown > 0)
@@ -104,7 +104,7 @@ export function run(bot: Client, message: Message, argv: string[]): Promise<void
 {
     if (!argv.length)
 	{
-		bot_help(bot, message);
+		basic_help(bot, message);
 		return ;
 	}
 

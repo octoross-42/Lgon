@@ -1,5 +1,6 @@
 import { Client, Message, Collection } from 'discord.js';
 import { Command } from '../types/Command.js';
+import { Role } from '../types/Role.js';
 import { CONSTANTES } from '../config/constantes.js';
 
 function getArgv(message: Message): string[] | null
@@ -10,15 +11,16 @@ function getArgv(message: Message): string[] | null
 	if (argv[0].toLowerCase() !== CONSTANTES.PREFIX)
 		return (null);
 	argv.shift(); // remove PREFIX
+	argv[0] = argv[0].toLowerCase();
 	return (argv);
 }
 
 function getCommand(bot: Client, argv: string[]): Command | null
 {
-    const commandName:string = argv[0].toLowerCase();
+    const commandName:string = argv[0];
 
     const command = bot.commands.get(commandName)
-						|| bot.commands.find(cmd => !!cmd.aliases.includes(commandName));
+						|| bot.commands.find(cmd => cmd.aliases?.includes(commandName));
     if (!command)
 		return (null);
 
@@ -37,39 +39,38 @@ function isOnCooldown(bot: Client, command: Command, message: Message): boolean
 
     const timeNowMs: number = Date.now();
 	
-	let commandUsers: Collection<string, number>;
+	let commandCdUsers: Collection<string, number>;
 	if (!bot.cooldowns.has(command.name))
 	{
-		commandUsers = new Collection();
-		bot.cooldowns.set(command.name, commandUsers);
+		commandCdUsers = new Collection();
+		bot.cooldowns.set(command.name, commandCdUsers);
 	}
     else
-		commandUsers = bot.cooldowns.get(command.name)!;
+		commandCdUsers = bot.cooldowns.get(command.name)!;
     
 	const cooldownCommandMs: number = command.cooldown * 1000;
 
-    if (commandUsers.has(message.author.id))
+    if (commandCdUsers.has(message.author.id))
 	{
-        const endCooldownTimeMs: number = commandUsers.get(message.author.id)! + cooldownCommandMs;
+        const endDownCooldownTimeMs: number = commandCdUsers.get(message.author.id)! + cooldownCommandMs;
         
-        if (timeNowMs < endCooldownTimeMs)
+        if (timeNowMs < endDownCooldownTimeMs)
 		{
-			const timeLeftSec: number = (endCooldownTimeMs - timeNowMs) / 1000;
+			const timeLeftSec: number = (endDownCooldownTimeMs - timeNowMs) / 1000;
             message.reply(` Cooldown restant pour \`${command.name}\` pour l'utilisateur \`${message.author.tag}\` : ${timeLeftSec.toFixed(0)} secondes`);
 	
 			return (true);
         }
     }
 
-    commandUsers.set(message.author.id, timeNowMs);
-    setTimeout(() => commandUsers.delete(message.author.id), cooldownCommandMs);
+    commandCdUsers.set(message.author.id, timeNowMs);
+    setTimeout(() => commandCdUsers.delete(message.author.id), cooldownCommandMs);
 
 	return (false);
 }
 
 export function onEvent(bot: Client, message: Message): void
 {
-	console.log(`Message received: ${message.content}`);
 	if ( message.author.bot )
 		return ;
 
@@ -80,7 +81,16 @@ export function onEvent(bot: Client, message: Message): void
 	console.log(argv);
 	const command: Command | null = getCommand(bot, argv);
 	if ( !command )
+	{
+		const role: Role = bot.roles.get(argv[0])
+							|| bot.roles.find(cmd => cmd.aliases?.includes(argv[0]));
+		if ( !role )
+			return ;
+
+		if ( bot.commands.has("help") )
+			bot.commands.get("help").run(bot, message, argv);
 		return ;
+	}
 
 	if (isOnCooldown(bot, command, message))
 		return ;

@@ -1,4 +1,5 @@
-import { Client, Role } from 'discord.js';
+import { Client } from 'discord.js';
+import { Role } from '../types/Role.js';
 import fg from 'fast-glob';
 
 const loadRoles = async (bot: Client, eventDir = 'build/roles'): Promise<void> =>
@@ -7,8 +8,10 @@ const loadRoles = async (bot: Client, eventDir = 'build/roles'): Promise<void> =
 	  
 	for (const roleFile of roleFiles)
 	{
-		// const role: Role = await import(roleFile);
-		// bot.roles.set(role.name, role);
+		const roleContent = await import(roleFile);
+		let role: Role = new Role(roleContent.help, roleFile);
+		console.log(`Loading role file: ${role.name} ${role.category}`);
+		bot.roles.set(role.name, role);
 	}
 };
 

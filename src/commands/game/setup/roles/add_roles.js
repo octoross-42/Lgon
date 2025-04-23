@@ -14,7 +14,7 @@ module.exports.run = (bot, message, argsMessage) =>
         const nbRole = parseInt(argsMessage[0]);
 
         if (nbRole === NaN || argsMessage.length === 1)
-{
+		{
             const add = bot.commands.get("add_roles");
             argsMessage.unshift("1");
             return add.run(bot, message, argsMessage);

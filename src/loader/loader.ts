@@ -1,5 +1,7 @@
 import { Collection, Client, Role } from "discord.js";
 import { Command } from "../types/Command.js";
+import { Game } from "../types/Game.js";
+import { Player } from "../types/Player.js";
 import { loadCommands } from "./commands.js";
 import { loadEvents } from "./events.js";
 import { loadRoles } from "./roles.js";
@@ -12,11 +14,10 @@ export async function loader(bot: Client): Promise<void>
 	  commands: new Collection<string, Command>(),
 	  cooldowns: new Collection<string, Collection<string, number>>(),
 	  roles: new Collection<string, Role>(),
-	  // "parties",
+	  games: new Collection<string, Game>(),
+	  players: new Collection<string, Player>(),
 	  // "channelsJeu",
 	  // "messagesRoles",
-	  // "joueurs",
-	  // "joueur"
 	};
 	
 	Object.assign(bot, collections);

@@ -18,7 +18,7 @@ export class Command
 	  this.name = help.name;
 	  this.description = help.description;
 	  this.defaultUsage = true;
-	  this.usage = `\`${CONSTANTES.PREFIX}\` \`${help.name}\``;
+	  this.usage = `\`${CONSTANTES.PREFIX} ${help.name}\``;
 	  if (help.usage)
 	  {
 		this.usage = help.usage;
