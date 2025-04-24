@@ -22,7 +22,7 @@ module.exports.run = (bot, message, argsMessage) =>
     }
     else
 {
-        message.channel.send("Une partie doit être en cours pour pouvoir la réinitialiser");
+        await message.channel.send("Une partie doit être en cours pour pouvoir la réinitialiser");
     }
 
 };

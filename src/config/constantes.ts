@@ -43,20 +43,20 @@ export const CONSTANTES =
 				HELP:
 				{
 					name : "help",
-		
 					description : "Aide pour utilisation des commandes",
 					nbrArgsRequired : 0,
 					cooldown: 1,
+					where: "any",
 					aliases: ["aled"], 
 					usage : `seul pour la liste des commandes sinon \`<command_name>\` pour l'aide sur la commande`,
 				},
 				DATA:
 				{
 					name : "data",
-		
 					description : "Envoie en privé toutes les infos du bot sur ce serveur",
 					nbrArgsRequired : 0,
 					cooldown: 5,
+					where: "guild",
 					aliases: [],
 				},
 			},
@@ -64,20 +64,20 @@ export const CONSTANTES =
 			{
 				CLEAR_CHANNEL:
 				{
-					name : "clear_channel",
-		
+					name : "clear_channel",		
 					description : "Efface les 100 derniers messages du channel ciblé",
 					nbrArgsRequired : 1,
 					cooldown: 1,
+					where: "guild",
 					usage : `\`${PREFIX}\` \`clear_channel\` \`nom_channel\``,
 				},
 				COEURS:
 				{
-					name : "🧡",
-		
+					name : "🧡",		
 					description : "Du Love en masse",
 					nbrArgsRequired : 0,
 					cooldown: 0,
+					where: "guild",
 					aliases: ["gnah", "🤍", "🤎", "♥️", "🧡", "❣️", "🖤", "💝", "💜", "💚", "💙", "💘", "💗", "💖", "💓", "💟", "💛", "❤️", "💕", "💞"], 
 					usage : `\`${PREFIX} \` et un petit coeur`,
 				}
@@ -86,19 +86,19 @@ export const CONSTANTES =
 			{
 				GET_READY:
 				{
-					name : "get_ready",
-		
+					name : "get_ready",		
 					description : "Définir les channels jeu du serveur",
 					nbrArgsRequired : 0,
 					cooldown: 1,
+					where: "guild",
 				},
 				SET_CHANNEL:
 				{
-					name : "set_channel",
-		
+					name : "set_channel",		
 					description : "Configure le channel sur lequel le bot fait dérouler la partie",
 					nbrArgsRequired : 0,
 					cooldown: 1,
+					where: "guild",
 					usage : `\`${PREFIX}\` \`set_channel\` seul pour chercher automatiquement ou \`type_channel\` (jeu, ROLES_DATA ou erreurs) puis \`id_channel\``,
 				},
 			}
@@ -110,11 +110,11 @@ export const CONSTANTES =
 			{
 				CREATE_PARTIE:
 				{
-					name : "create_partie",
-		
+					name : "create_partie",		
 					description : "Crée une partie dans un serveur",
 					nbrArgsRequired : 0,
 					cooldown: 1,
+					where: "guild",
 					aliases: ["partie"], 
 					usage : `\`${PREFIX} create_partie\``,
 					
@@ -122,11 +122,11 @@ export const CONSTANTES =
 				},
 				STOP:
 				{
-					name : "stop",
-		
+					name : "stop",		
 					description : "Arrête la partie",
 					nbrArgsRequired : 0,
 					cooldown: 10,
+					where: "guild",
 					aliases: ["stop"], 
 					usage : `\`${PREFIX} stop\``,
 					
@@ -137,6 +137,7 @@ export const CONSTANTES =
 					description : "Reset la partie, on supprime tout",
 					nbrArgsRequired : 0,
 					cooldown: 10,
+					where: "guild",
 					
 				},
 				START:
@@ -145,6 +146,7 @@ export const CONSTANTES =
 					description : "Commence la nuit manuellement",
 					nbrArgsRequired : 0,
 					cooldown: 1,
+					where: "guild",
 					
 				},
 			},
@@ -152,32 +154,32 @@ export const CONSTANTES =
 			{
 				RECAP:
 				{
-					name : "recap",
-		
+					name : "recap",		
 					description : "Recap pour la fin de partie",
 					nbrArgsRequired : 0,
 					cooldown: 1,
+					where: "guild",
 					aliases: ["recap", "recapitulatif"], 
 					usage : `\`${PREFIX} recap\``,
 				},
 	
 				PLAYERS_DATA:
 				{
-					name : "joueurs",
-		
+					name : "joueurs",		
 					description : "Afficher les joueurs",
 					nbrArgsRequired : 0,
 					cooldown: 1,
+					where: "guild",
 					aliases: ["joueurs"], 
 					usage : `\`${PREFIX} joueurs\``,
 				},
 				ROLES_DATA:
 				{
-					name : "ROLES_DATA",
-		
+					name : "ROLES_DATA",		
 					description : "Afficher les ROLES_DATA",
 					nbrArgsRequired : 0,
 					cooldown: 1,
+					where: "guild",
 					aliases: ["ROLES_DATA"], 
 					usage : `\`${PREFIX} ROLES_DATA\``,
 				},
@@ -189,10 +191,10 @@ export const CONSTANTES =
 					PLAY:
 					{
 						name : "play",
-			
 						description : "Exécute l'action d'un joueur",
 						nbrArgsRequired : 0,
 						cooldown: 1,
+						where: "dm",
 						aliases: ["action"], 
 						usage : `\`${PREFIX} action\` seul pour la liste des rôles sinon \`<role_name>\` pour l'aide sur le rôle`,
 					},
@@ -202,24 +204,25 @@ export const CONSTANTES =
 						description : "Ajouter un joueur à une game",
 						nbrArgsRequired : 0,
 						cooldown: 1,
+						where: "guild",
 						usage: `- \`${PREFIX} join\` (si une game sur le serveur, la rejoint, sinon rejoint la game définie par défaut)\n- \`${PREFIX} join <game_name>/<game_id>\``,
 					},
 					LEAVE:
 					{
 						name : "leave",
-			
 						description : "Enlever un joueur",
 						nbrArgsRequired : 0,
 						cooldown: 1,
+						where: "guild",
 						aliases: ["unjoin"],
 					},
 					SPECTATE:
 					{
 						name : "spectate",
-			
 						description : "Spectate une game",
 						nbrArgsRequired : 0,
 						cooldown: 1,
+						where: "guild",
 					},
 				},
 				ROLES:
@@ -227,30 +230,30 @@ export const CONSTANTES =
 					ADD_ROLES:
 					{
 						name : "add_roles",
-			
 						description : "ajoute des rôles à la composition",
 						nbrArgsRequired : 1,
 						cooldown: 0,
+						where: "guild",
 						aliases: ["add_roles", "add"], 
 						usage : `\`${PREFIX} add_roles\` \`quantité du rôle ajouté\` \`role_name\``,
 					},
 					SET_ROLES:
 					{
 						name : "set_roles",
-			
 						description : "fixe un nombre de rôles à la composition",
 						nbrArgsRequired : 2,
 						cooldown: 0,
+						where: "guild",
 						aliases: ["set_roles", "set"], 
 						usage : `\`${PREFIX} set_roles\` \`quantité du rôle fixé\` \`role_name\``,
 					},
 					REMOVE_ROLES:
 					{
 						name : "remove_roles",
-			
 						description : "enlève des rôles à la composition",
 						nbrArgsRequired : 1,
 						cooldown: 0,
+						where: "guild",
 						aliases: ["remove_roles", "remove", "enleve"], 
 						usage : `\`${PREFIX} remove_roles\` \`quantité du rôle ajouté\` \`role_name\``,
 					},

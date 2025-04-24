@@ -20,7 +20,7 @@ module.exports.run = (bot, message, argsMessage) =>
 {
                     messageText = `${messageText} \n${joueurs[i].name}`;
                 }
-                message.channel.send(messageText);
+                await message.channel.send(messageText);
 
             }
             else
@@ -62,7 +62,7 @@ module.exports.run = (bot, message, argsMessage) =>
                     )
                     .setTimestamp()
                     .setFooter('One night Lg', linkImage);           
-                message.channel.send(messageEmbed);
+                await message.channel.send(messageEmbed);
             }
                         
         }
@@ -70,7 +70,7 @@ module.exports.run = (bot, message, argsMessage) =>
     }
     else
 {
-        message.channel.send("La commande \`joueurs\` doit être envoyée depuis un serveur et non en privé (car liée à un serveur) !");
+        await message.channel.send("La commande \`joueurs\` doit être envoyée depuis un serveur et non en privé (car liée à un serveur) !");
     }
 }
 

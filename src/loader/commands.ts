@@ -10,7 +10,7 @@ const loadCommands =  async (bot: Client, commandDir: string = 'build/commands')
 	{
 		const commandContent = await import(commandFile);
 		let command: Command = new Command(commandContent.help, commandFile, commandContent.run);
-		console.log(`Loading command file: ${command.name} ${command.category}`);
+		// console.log(`Loading command file: ${command.name} ${command.category}`);
 		bot.commands.set(command.name, command);
 	}
 };

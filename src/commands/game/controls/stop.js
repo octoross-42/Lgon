@@ -19,7 +19,7 @@ module.exports.run = (bot, message, argsMessage) =>
         channelJeu.send( "La partie a été arrêtée, les paramètres (joueurs et rôles) ont été conservés");
     }
     else
-	    message.channel.send("Une partie doit être en cours pour pouvoir la stopper");
+	    await message.channel.send("Une partie doit être en cours pour pouvoir la stopper");
 
 };
 

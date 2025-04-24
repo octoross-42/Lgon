@@ -12,6 +12,7 @@ declare module 'discord.js'
 		description: string;
 		nbrArgsRequired: number;
 		cooldown: number; // en secondes
+		where: "dm" | "guild" | "any";
 		usage?: string;
 	};
 
@@ -39,7 +40,7 @@ declare module 'discord.js'
 	  commands: Collection<string, Command>;                     // command name -> Command
 	  cooldowns: Collection<string, Collection<string, number>>; // command name -> Collection<userId, timestamp in ms> // TODO changer les cooldowns par personnes qui utilisent pas utilisation globale
 	  roles: Collection<string, Role>;			     			 // role name    -> Role
-	  games: Collection<string, Game>        					 // guild id     -> Game
+	  games: Collection<string, Collection<string, Game>>        // guild id     -> game_name -> Game
 	  players: Collection<string, Player>;					 	 // player id    -> Player (mais ce qui arrive dans un serveur reste dans un serveur)
   }
 }

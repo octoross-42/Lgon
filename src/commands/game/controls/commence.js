@@ -52,13 +52,13 @@ module.exports.run = (bot, message, argsMessage) =>
                 .setTimestamp()
                 .setFooter('One night Lg', linkImage);
 
-            message.channel.send(messageEmbed);
+            await message.channel.send(messageEmbed);
         }
         
     }
     else
 {
-        message.channel.send("Une partie doit être en cours pour pouvoir entamer la nuit");
+        await message.channel.send("Une partie doit être en cours pour pouvoir entamer la nuit");
     }
 
 };

@@ -134,7 +134,7 @@ module.exports.run = (bot, message, argsMessage) =>
         }
         else
 {
-            message.channel.send(`Une partie doit être commencée pour y jouer`);
+            await message.channel.send(`Une partie doit être commencée pour y jouer`);
         }
     }
         

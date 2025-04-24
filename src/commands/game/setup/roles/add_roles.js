@@ -63,11 +63,11 @@ module.exports.run = (bot, message, argsMessage) =>
 {
             if (nbRole >= 1)
 {
-                message.channel.send(`${nbRole} ${beauRole} a été ajouté à la composition`);
+                await message.channel.send(`${nbRole} ${beauRole} a été ajouté à la composition`);
             }
             else
 {
-                message.channel.send(`${nbRole} ${beauRole} ont été ajoutés à la composition`);
+                await message.channel.send(`${nbRole} ${beauRole} ont été ajoutés à la composition`);
             }
 
             const joueurs = bot.joueurs.get( message.guild.id );
@@ -79,7 +79,7 @@ module.exports.run = (bot, message, argsMessage) =>
     }
     else
 {
-        message.channel.send( "Il faut qu'une partie soit commencée pour ajouter des rôles ");
+        await message.channel.send( "Il faut qu'une partie soit commencée pour ajouter des rôles ");
     }
 
 }

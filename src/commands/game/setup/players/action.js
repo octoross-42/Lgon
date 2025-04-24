@@ -34,7 +34,7 @@ module.exports.run = (bot, message, argsMessage) =>
                     else
 {
                         message.react("👎");
-                        message.channel.send("Action pas légale : c'est moche ça");
+                        await message.channel.send("Action pas légale : c'est moche ça");
                     }
                 }
             }

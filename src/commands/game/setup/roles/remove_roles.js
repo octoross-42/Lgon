@@ -72,11 +72,11 @@ module.exports.run = (bot, message, argsMessage) =>
 {
             if ( Math.min (nbRole, nbRolePresent) >= 1 )
 {
-                message.channel.send(`${Math.min (nbRole, nbRolePresent)} ${beauRole} a été enlevé à la composition`);
+                await message.channel.send(`${Math.min (nbRole, nbRolePresent)} ${beauRole} a été enlevé à la composition`);
             }
             else
 {
-                message.channel.send(`${Math.min (nbRole, nbRolePresent)} ${beauRole} ont été enlevés à la composition`);
+                await message.channel.send(`${Math.min (nbRole, nbRolePresent)} ${beauRole} ont été enlevés à la composition`);
             }
 
             const joueurs = bot.joueurs.get( message.guild.id );
@@ -88,7 +88,7 @@ module.exports.run = (bot, message, argsMessage) =>
     }
     else
 {
-        message.channel.send( "Il faut qu'une partie soit commencée pour enlever des rôles ");
+        await message.channel.send( "Il faut qu'une partie soit commencée pour enlever des rôles ");
     }
 
 }

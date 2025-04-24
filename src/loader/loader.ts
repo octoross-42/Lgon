@@ -14,7 +14,7 @@ export async function loader(bot: Client): Promise<void>
 	  commands: new Collection<string, Command>(),
 	  cooldowns: new Collection<string, Collection<string, number>>(),
 	  roles: new Collection<string, Role>(),
-	  games: new Collection<string, Game>(),
+	  games: new Collection<string, Collection<string, Game>>(),
 	  players: new Collection<string, Player>(),
 	  // "channelsJeu",
 	  // "messagesRoles",

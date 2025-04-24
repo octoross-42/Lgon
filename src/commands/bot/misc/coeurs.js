@@ -14,7 +14,7 @@ module.exports.run = (bot, message, argsMessage) =>
 {
         var messageAEnvoyer = `${messageAEnvoyer} ${messageAEnvoyerInit}`;
     }
-    message.channel.send(messageAEnvoyer);
+    await message.channel.send(messageAEnvoyer);
 
 }
 

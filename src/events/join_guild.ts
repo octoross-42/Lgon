@@ -1,0 +1,9 @@
+import { Guild, Collection, Client } from "discord.js";
+import { Game } from "../types/Game.js";
+
+export function onEvent(bot: Client, guild: Guild): void
+{
+	bot.games.set(guild.id, new Collection<string, Game>());
+}
+
+export const name = 'guildCreate'

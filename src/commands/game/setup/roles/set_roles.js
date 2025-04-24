@@ -54,7 +54,7 @@ module.exports.run = (bot, message, argsMessage) =>
         }
         if (boolR)
 {
-            message.channel.send(`Les ${beauRole} sont maintenant au nombre de ${nbRole}`);
+            await message.channel.send(`Les ${beauRole} sont maintenant au nombre de ${nbRole}`);
 
             const joueurs = bot.joueurs.get( message.guild.id );
             if (joueurs.length + 3 === rolesJeu.length && joueurs.length >= MIN_NBR_PLAYERS )
@@ -65,7 +65,7 @@ module.exports.run = (bot, message, argsMessage) =>
     }
     else
 {
-        message.channel.send( "Il faut qu'une partie soit commencée pour fixer des rôles ");
+        await message.channel.send( "Il faut qu'une partie soit commencée pour fixer des rôles ");
     }
 
 }

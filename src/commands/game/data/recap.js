@@ -48,7 +48,7 @@ module.exports.run = (bot, message, argsMessage) =>
 
                 }
                 
-                message.channel.send(messageEmbed);
+                await message.channel.send(messageEmbed);
             }
                         
         }
@@ -56,7 +56,7 @@ module.exports.run = (bot, message, argsMessage) =>
     }
     else
 {
-        message.channel.send("La commande \`joueurs\` doit être envoyée depuis un serveur et non en privé (car liée à un serveur) !");
+        await message.channel.send("La commande \`joueurs\` doit être envoyée depuis un serveur et non en privé (car liée à un serveur) !");
     }
 }
 

@@ -11,6 +11,7 @@ export class Command
 	cooldown: number;
 	nbrArgsRequired: number;
 	category: string[];
+	where: "dm" | "guild" | "any";
 	run: (bot: Client, message: Message, argv: string[]) => Promise<void> | void;
 
 	constructor(help : CommandHelp, commandFilePath: string, run: (bot: Client, message: Message, argv: string[]) => Promise<void> | void)
@@ -18,6 +19,7 @@ export class Command
 	  this.name = help.name;
 	  this.description = help.description;
 	  this.defaultUsage = true;
+	  this.where = help.where;
 	  this.usage = `\`${CONSTANTES.PREFIX} ${help.name}\``;
 	  if (help.usage)
 	  {
@@ -31,7 +33,7 @@ export class Command
 	  const path = commandFilePath.split("/");
 	  const initPath = path.indexOf("commands");
 	  this.category = path.slice(initPath + 1, -1);
-	  console.log(this.category);
+	//   console.log(this.category);
 	  this.run = run;
 	}
 }

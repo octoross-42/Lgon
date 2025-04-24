@@ -32,7 +32,23 @@ function getCommand(bot: Client, argv: string[]): Command | null
 	return (command);
 }
 
-function isOnCooldown(bot: Client, command: Command, message: Message): boolean
+function fitsPlace(bot: Client, command: Command, message: Message): boolean
+{
+	if (command.where === "any")
+		return (true);
+	if (command.where === "dm")
+	{
+		if ( message.guild )
+			return (false);
+		console.log(message.channel.type);
+		return (true);
+	}
+	else if ( message.guild )
+		return (true);
+	return (false);
+}
+
+async function isOnCooldown(bot: Client, command: Command, message: Message): Promise<boolean>
 {
  if (!bot.cooldowns.has(command.name))
         bot.cooldowns.set(command.name, new Collection());
@@ -57,7 +73,7 @@ function isOnCooldown(bot: Client, command: Command, message: Message): boolean
         if (timeNowMs < endDownCooldownTimeMs)
 		{
 			const timeLeftSec: number = (endDownCooldownTimeMs - timeNowMs) / 1000;
-            message.reply(` Cooldown restant pour \`${command.name}\` pour l'utilisateur \`${message.author.tag}\` : ${timeLeftSec.toFixed(0)} secondes`);
+            await message.reply(` Cooldown restant pour \`${command.name}\` pour l'utilisateur \`${message.author.tag}\` : ${timeLeftSec.toFixed(0)} secondes`);
 	
 			return (true);
         }
@@ -69,7 +85,7 @@ function isOnCooldown(bot: Client, command: Command, message: Message): boolean
 	return (false);
 }
 
-export function onEvent(bot: Client, message: Message): void
+export async function onEvent(bot: Client, message: Message): Promise<void>
 {
 	if ( message.author.bot )
 		return ;
@@ -78,7 +94,7 @@ export function onEvent(bot: Client, message: Message): void
 	if ( !argv )
 		return ;
 
-	console.log(argv);
+	// console.log(argv);
 	const command: Command | null = getCommand(bot, argv);
 	if ( !command )
 	{
@@ -92,9 +108,11 @@ export function onEvent(bot: Client, message: Message): void
 		return ;
 	}
 
-	if (isOnCooldown(bot, command, message))
+	if ( !fitsPlace(bot, command, message) )
 		return ;
-    
+	// TODO message d'erreurs
+	if ( await isOnCooldown(bot, command, message) )
+		return ;
     
     // if (command.channelsJeu && !bot.channelsJeu.has(message.channel.guild.id) || ( command.channelsJeu && bot.channelsJeu.has(message.channel.guild.id) && bot.channelsJeu.get(message.channel.guild.id) &&  bot.channelsJeu.get(message.channel.guild.id).has(CONSTANTES.GAME_CHANNEL_NAME)) )
 	// {
@@ -102,11 +120,11 @@ export function onEvent(bot: Client, message: Message): void
     //     command2.run(bot, message, argv);
     //     if (command.channelsJeu && !bot.channelsJeu.has(message.channel.guild.id))
 	// 	{
-    //         return message.channel.send(`Veuillez configurer les channels de Jeu avec \`${CONSTANTES.PREFIX} get_ready\` ou pour changer de channel : \`${CONSTANTES.PREFIX}set_channel\``); 
+    //         return await message.channel.send(`Veuillez configurer les channels de Jeu avec \`${CONSTANTES.PREFIX} get_ready\` ou pour changer de channel : \`${CONSTANTES.PREFIX}set_channel\``); 
     //     }
     // }
 	argv.shift(); // remove command name
-    command.run(bot, message, argv);
+    await command.run(bot, message, argv);
 }
 
 export const name = "message";

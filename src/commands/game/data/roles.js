@@ -40,13 +40,13 @@ module.exports.run = (bot, message, argsMessage) =>
                     )
                     .setTimestamp()
                     .setFooter('One night Lg', linkImage);           
-            message.channel.send(messageEmbed);
+            await message.channel.send(messageEmbed);
         }
         
     }
     else
 {
-        message.channel.send("La commande \`rôles\` doit être envoyée depuis un serveur et non en privé (car liée à une partie) !");
+        await message.channel.send("La commande \`rôles\` doit être envoyée depuis un serveur et non en privé (car liée à une partie) !");
     }
 }
 

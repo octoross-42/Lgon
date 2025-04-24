@@ -30,7 +30,7 @@ export class Role
 		const path = roleFilePath.split("/");
 		const initPath = path.indexOf("roles");
 		this.category = path.slice(initPath + 1, -1);
-		console.log(this.category);
+		// console.log(this.category);
 		this.player = null;
 		// this.run = run;
 	}

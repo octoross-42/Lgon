@@ -2,7 +2,7 @@ import { Client, Message, MessageEmbed, Role } from 'discord.js';
 import { Command } from '../../../types/Command.js';
 import { CONSTANTES } from '../../../config/constantes.js';
 
-function basic_help(bot: Client, message: Message)
+async function basic_help(bot: Client, message: Message)
 {
 	const embed = new MessageEmbed()
 		.setColor('#158373')
@@ -18,7 +18,7 @@ function basic_help(bot: Client, message: Message)
 
 	for (const command of bot.commands.values())
 	{
-		console.log(command);
+		// console.log(command);
 		if (commandCategory != command.category[0])
 		{
 			if (commandCategory !== null)
@@ -38,10 +38,10 @@ function basic_help(bot: Client, message: Message)
 			inline: true }
 	);
 
-	return message.channel.send(embed);
+	await message.channel.send(embed);
 }
 
-function help_roles(bot: Client, message: Message)
+async function help_roles(bot: Client, message: Message)
 {
 	const embed = new MessageEmbed()
 		.setColor('#158373')
@@ -57,7 +57,7 @@ function help_roles(bot: Client, message: Message)
 
 	for (const role of bot.roles.values())
 	{
-		console.log(role);
+		// console.log(role);
 		if (roleCategory != role.category[0])
 		{
 			if (roleCategory !== null)
@@ -77,15 +77,15 @@ function help_roles(bot: Client, message: Message)
 			inline: true }
 	);
 
-	return message.channel.send(embed);
+	await message.channel.send(embed);
 }
 
-function help_role(message: Message, role: Role)
+async function help_role(message: Message, role: Role)
 {
 
 }
 
-function help_command(message: Message, command: Command)
+async function help_command(message: Message, command: Command)
 {
 	let embed = new MessageEmbed()
 		.setColor('#158373')
@@ -97,44 +97,44 @@ function help_command(message: Message, command: Command)
 		embed.addField("Cooldown", `${command.cooldown}sec`, true);
 	if (command.aliases.length > 0)
 		embed.addField("Alias", `${command.aliases.join(", ")}`, true);
-	message.channel.send(embed);
+	await message.channel.send(embed);
 }
 
-export function run(bot: Client, message: Message, argv: string[]): Promise<void> | void
+export async function run(bot: Client, message: Message, argv: string[]): Promise<void>
 {
     if (!argv.length)
 	{
-		basic_help(bot, message);
+		await basic_help(bot, message);
 		return ;
 	}
 
 	if ((argv[0] == "action") || (argv[0] == "roles"))
 	{
-		help_roles(bot, message);
+		await help_roles(bot, message);
 		return ;
 	}
 
 	const commandName: string = argv[0].toLowerCase();
-	console.log(commandName);
+	// console.log(commandName);
     const command = bot.commands.get(commandName)
 						|| bot.commands.find(cmd => !!cmd.aliases?.includes(commandName));
-	console.log(command);
+	// console.log(command);
 	if ( command )
 	{
-		help_command(message, command);
+		await help_command(message, command);
 		return ;
 	}
 	
 	const role = bot.roles.get(commandName)
 			|| bot.roles.find(cmd => !!cmd.aliases?.includes(commandName));
-	console.log(role);
+	// console.log(role);
 	if ( role )
 	{
-		help_role(message, role);
+		await help_role(message, role);
 		return ;
 	}
 
-	// message.channel.send(`Votre commande n'est pas valide !  (\`${CONSTANTES.PREFIX} help action\` pour afficher les rôles)`);
+	// await message.channel.send(`Votre commande n'est pas valide !  (\`${CONSTANTES.PREFIX} help action\` pour afficher les rôles)`);
 };
 
 export const help = CONSTANTES.COMMANDS.BOT.DATA.HELP;
