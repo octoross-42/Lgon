@@ -24,6 +24,25 @@ export class Player
 	}
 	joinWaitingRoom(game: Game): void
 	{
-		this.waitingRoom = game;
+
 	}
+	leaveGame(): void
+	{
+		if ( this.inGame !== null )
+		{
+			this.inGame!.game.removePlayer(this);
+			this.inGame = null;
+			return ;
+		}
+		this.waitingRoom!.removeWaitingPlayer(this);
+		this.waitingRoom = null;
+	}
+
+	// getGame(): Game | null
+	// {
+	// 	if (this.inGame !== null)
+	// 		return (this.inGame.game);
+	// 	return (null);
+	// }
+
 }

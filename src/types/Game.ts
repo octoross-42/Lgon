@@ -49,4 +49,13 @@ export class Game
 		this.waitingRoom.set(player.id, player);
 		player.joinWaitingRoom(this);
 	}
+
+	removePlayer(player: Player): void
+	{
+		this.players.delete(player.name);
+	}
+	removeWaitingPlayer(player: Player): void
+	{
+		this.waitingRoom.delete(player.name);
+	}
 }

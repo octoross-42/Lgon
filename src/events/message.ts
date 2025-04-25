@@ -5,7 +5,8 @@ import { CONSTANTES } from '../config/constantes.js';
 
 function getArgv(message: Message): string[] | null
 {
-	const argv: string[] = message.content.split(/ +/);
+	// console.log(`Message: ${message.content}`, message.content.split(/\s+/));
+	const argv: string[] = message.content.split(/\s+/);
 	if (argv.length < 2)
 		return (null);
 	if (argv[0].toLowerCase() !== CONSTANTES.PREFIX)
@@ -26,7 +27,7 @@ function getCommand(bot: Client, argv: string[]): Command | null
 
     if (argv.length - 1 < command.nbrArgsRequired)
 	{
-		// send help pour la commande
+		// TODO send help pour la commande
 		return (null);
 	}
 	return (command);
@@ -34,13 +35,15 @@ function getCommand(bot: Client, argv: string[]): Command | null
 
 function fitsPlace(bot: Client, command: Command, message: Message): boolean
 {
+
+	// TODO creer des fils pour mieux organiser la partie
+	console.log(message.channel.type);
 	if (command.where === "any")
 		return (true);
 	if (command.where === "dm")
 	{
 		if ( message.guild )
 			return (false);
-		console.log(message.channel.type);
 		return (true);
 	}
 	else if ( message.guild )
