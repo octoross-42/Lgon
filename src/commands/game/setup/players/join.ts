@@ -58,7 +58,7 @@ async function getPlayerGame(player: Player, bot: Client, message: Message, argv
 		// TODO privater les attributs et faire des getter
 		if (games.has(gameName))
 		{
-			await message.reply(`A game with the name **${games.get(gameName)!.name}** already exists. Please choose another name.`);
+			await message.reply(`A game with the name **${games.get(gameName)!.name}** already exists. Please choose a diffent name for your game.`);
 			return (null);
 		}
 		game = new Game(message.guild!, gameName);

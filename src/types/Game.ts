@@ -1,6 +1,6 @@
 import { Collection, Guild } from "discord.js";
 import { Player } from "./Player.js";
-import { Role } from "./Role.js";
+import { LgonRole } from "./LgonRole.js";
 
 export class Game
 {
@@ -11,7 +11,7 @@ export class Game
 	static games_nbr: number = 0;
 	status: "pending" | "night" | "vote" | "ended";
 	players: Collection<string, Player>; 				// userId -> InGame
-	roles: Role[];
+	roles: LgonRole[];
 	isDefaultGame: boolean = false;
 	waitingRoom: Collection<string, Player>; // userId -> InGame
 

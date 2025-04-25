@@ -30,7 +30,7 @@ module.exports.run = (bot, message, argsMessage) =>
 
             const linkImage = "https://i.imgur.com/m3SG4PB.png";
 
-            const messageEmbed = new MessageEmbed()
+            const messageEmbed = new EmbedBuilder()
                 .setColor('#158373')
                 .setTitle('Etat actuel du jeu')
 

@@ -1,7 +1,7 @@
 const
 { CONSTANTES.GAME_CHANNEL_NAME} =  require("./config.js");
 const
-{MessageEmbed} = require('discord.js');
+{EmbedBuilder} = require('discord.js');
 const
 { debutNuit } = require ("./fonctions/nuit.js");
 
@@ -40,7 +40,7 @@ function verificationDebutNuit (bot, guildId, messageChannel)
 
     const linkImage = "https://i.imgur.com/m3SG4PB.png";
 
-    const messageEmbed = new MessageEmbed()
+    const messageEmbed = new EmbedBuilder()
         .setColor('#158373')
         .setTitle('Partie')
 

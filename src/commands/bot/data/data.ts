@@ -1,6 +1,6 @@
-import { Command } from "src/types/Command.js";
+import { BotCommand } from "src/types/BotCommand.js";
 import { CONSTANTES } from "../../../config/constantes.js";
-import { Client, Message, MessageEmbed } from "discord.js";
+import { Client, Message, EmbedBuilder } from "discord.js";
 
 export function run(bot: Client, message: Message, argv: string[]): Promise<void> | void
 {
@@ -63,7 +63,7 @@ export function run(bot: Client, message: Message, argv: string[]): Promise<void
 
 
 //         const linkImage = "https://i.imgur.com/m3SG4PB.png";
-//         const messageEmbed = new MessageEmbed()
+//         const messageEmbed = new EmbedBuilder()
 //         .setColor('#158373')
 //         .setTitle('Infos')
 

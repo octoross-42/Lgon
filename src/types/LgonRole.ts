@@ -1,7 +1,7 @@
-import { RoleHelp } from "discord.js";
+import type { RoleHelp } from "discord.js";
 import { Player } from "./Player.js";
 
-export class Role
+export class LgonRole
 {
 	name: string;
 	description: string;
@@ -37,5 +37,12 @@ export class Role
 	setPlayer(player: Player)
 	{
 		this.player = player;
+	}
+
+	getMainCategory(): string
+	{
+		if (this.category.length > 0)
+			return (this.category[0]);
+		return ("");
 	}
 }

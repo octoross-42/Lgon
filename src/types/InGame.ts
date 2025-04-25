@@ -1,12 +1,12 @@
 import { Game } from "./Game.js";
-import { Role } from "./Role.js";
+import { LgonRole } from "./LgonRole.js";
 
 export class InGame
 {
 	game: Game;
-	role: Role | null;
+	role: LgonRole | null;
 
-	constructor(game: Game, role: Role | null = null)
+	constructor(game: Game, role: LgonRole | null = null)
 	{
 		this.game = game;
 		this.role = role;

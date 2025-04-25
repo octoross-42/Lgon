@@ -1,10 +1,11 @@
-import { Client, Message, MessageEmbed, Role } from 'discord.js';
-import { Command } from '../../../types/Command.js';
+import { Client, Message, EmbedBuilder } from 'discord.js';
+import { BotCommand } from '../../../types/BotCommand.js';
+import { LgonRole } from '../../../types/LgonRole.js';
 import { CONSTANTES } from '../../../config/constantes.js';
 
 async function basic_help(bot: Client, message: Message)
 {
-	const embed = new MessageEmbed()
+	const embed = new EmbedBuilder()
 		.setColor('#158373')
 		.setTitle("**Help**")
 		.addFields( 
@@ -19,31 +20,31 @@ async function basic_help(bot: Client, message: Message)
 	for (const command of bot.commands.values())
 	{
 		// console.log(command);
-		if (commandCategory != command.category[0])
+		if (commandCategory != command.getMainCategory())
 		{
-			if (commandCategory !== null)
-				embed.addFields(
-					{	name: commandCategory.toUpperCase(),
-						value: commandCatergoyContent,
-						inline: true }
-				);
-			commandCategory = command.category[0];
+			// if (commandCategory !== null)
+			// 	embed.addFields(
+			// 		{	name: commandCategory.toUpperCase(),
+			// 			value: commandCatergoyContent,
+			// 			inline: true }
+			// 	);
+			commandCategory = command.getMainCategory();
 			commandCatergoyContent = "";
 		}
 		commandCatergoyContent += `- ${command.name}\n`;
 	}
-	embed.addFields(
-		{	name: commandCategory!.toUpperCase(),
-			value: commandCatergoyContent,
-			inline: true }
-	);
+	// embed.addFields(
+	// 	{	name: commandCategory!.toUpperCase(),
+	// 		value: commandCatergoyContent,
+	// 		inline: true }
+	// );
 
-	await message.channel.send(embed);
+	await message.reply({ embeds: [embed] });
 }
 
 async function help_roles(bot: Client, message: Message)
 {
-	const embed = new MessageEmbed()
+	const embed = new EmbedBuilder()
 		.setColor('#158373')
 		.setTitle("Roles")
 		.addFields(
@@ -58,46 +59,46 @@ async function help_roles(bot: Client, message: Message)
 	for (const role of bot.roles.values())
 	{
 		// console.log(role);
-		if (roleCategory != role.category[0])
+		if (roleCategory != role.getMainCategory())
 		{
-			if (roleCategory !== null)
-				embed.addFields(
-					{	name: roleCategory,
-						value: rolesContent,
-						inline: true }
-				);
-			roleCategory = role.category[0];
+			// if (roleCategory !== null)
+			// 	embed.addFields(
+			// 		{	name: roleCategory,
+			// 			value: rolesContent,
+			// 			inline: true }
+			// 	);
+			roleCategory = role.getMainCategory();
 			rolesContent = "";
 		}
 		rolesContent += `- ${role.name[0].toUpperCase()}${role.name.slice(1)}\n`;
 	}
-	embed.addFields(
-		{	name: roleCategory,
-			value: rolesContent,
-			inline: true }
-	);
+	// embed.addFields(
+	// 	{	name: roleCategory,
+	// 		value: rolesContent,
+	// 		inline: true }
+	// );
 
-	await message.channel.send(embed);
+	await message.reply( { embeds: [embed] });
 }
 
-async function help_role(message: Message, role: Role)
+async function help_role(message: Message, role: LgonRole)
 {
 
 }
 
-async function help_command(message: Message, command: Command)
+async function help_command(message: Message, command: BotCommand)
 {
-	let embed = new MessageEmbed()
+	let embed = new EmbedBuilder()
 		.setColor('#158373')
 		.setTitle("**" + command.name + "**")
 		.setDescription(command.description)
 	
-	embed.addField("Utilisation", command.usage, command.defaultUsage);
-	if (command.cooldown > 0)
-		embed.addField("Cooldown", `${command.cooldown}sec`, true);
-	if (command.aliases.length > 0)
-		embed.addField("Alias", `${command.aliases.join(", ")}`, true);
-	await message.channel.send(embed);
+	// embed.addField("Utilisation", command.usage, command.defaultUsage);
+	// if (command.cooldown > 0)
+	// 	embed.addField("Cooldown", `${command.cooldown}sec`, true);
+	// if (command.aliases.length > 0)
+	// 	embed.addField("Alias", `${command.aliases.join(", ")}`, true);
+	await message.reply( { embeds: [embed] });
 }
 
 export async function run(bot: Client, message: Message, argv: string[]): Promise<void>

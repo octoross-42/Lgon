@@ -1,7 +1,7 @@
 import { Client, Message, CommandHelp } from "discord.js";
 import { CONSTANTES } from "../config/constantes.js";
 
-export class Command
+export class BotCommand
 {
 	name: string;
 	description: string;
@@ -35,5 +35,12 @@ export class Command
 	  this.category = path.slice(initPath + 1, -1);
 	//   console.log(this.category);
 	  this.run = run;
+	}
+
+	getMainCategory(): string
+	{
+	  if (this.category.length > 0)
+		return (this.category[0]);
+	  return ("");
 	}
 }

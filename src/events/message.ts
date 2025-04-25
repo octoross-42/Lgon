@@ -1,6 +1,6 @@
 import { Client, Message, Collection } from 'discord.js';
-import { Command } from '../types/Command.js';
-import { Role } from '../types/Role.js';
+import { BotCommand } from '../types/BotCommand.js';
+import { LgonRole } from '../types/LgonRole.js';
 import { CONSTANTES } from '../config/constantes.js';
 
 function getArgv(message: Message): string[] | null
@@ -16,7 +16,7 @@ function getArgv(message: Message): string[] | null
 	return (argv);
 }
 
-function getCommand(bot: Client, argv: string[]): Command | null
+function getCommand(bot: Client, argv: string[]): BotCommand | null
 {
     const commandName:string = argv[0];
 
@@ -33,7 +33,7 @@ function getCommand(bot: Client, argv: string[]): Command | null
 	return (command);
 }
 
-function fitsPlace(bot: Client, command: Command, message: Message): boolean
+function fitsPlace(bot: Client, command: BotCommand, message: Message): boolean
 {
 
 	// TODO creer des fils pour mieux organiser la partie
@@ -51,7 +51,7 @@ function fitsPlace(bot: Client, command: Command, message: Message): boolean
 	return (false);
 }
 
-async function isOnCooldown(bot: Client, command: Command, message: Message): Promise<boolean>
+async function isOnCooldown(bot: Client, command: BotCommand, message: Message): Promise<boolean>
 {
  if (!bot.cooldowns.has(command.name))
         bot.cooldowns.set(command.name, new Collection());
@@ -98,16 +98,16 @@ export async function onEvent(bot: Client, message: Message): Promise<void>
 		return ;
 
 	// console.log(argv);
-	const command: Command | null = getCommand(bot, argv);
+	const command: BotCommand | null = getCommand(bot, argv);
 	if ( !command )
 	{
-		const role: Role = bot.roles.get(argv[0])
+		const role: LgonRole | undefined = bot.roles.get(argv[0])
 							|| bot.roles.find(cmd => cmd.aliases?.includes(argv[0]));
 		if ( !role )
 			return ;
 
 		if ( bot.commands.has("help") )
-			bot.commands.get("help").run(bot, message, argv);
+			bot.commands.get("help")!.run(bot, message, argv);
 		return ;
 	}
 
@@ -130,4 +130,4 @@ export async function onEvent(bot: Client, message: Message): Promise<void>
     await command.run(bot, message, argv);
 }
 
-export const name = "message";
+export const name = "messageCreate";

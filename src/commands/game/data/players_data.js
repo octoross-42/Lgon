@@ -1,7 +1,7 @@
 const
 { CONSTANTES } = require ("../../../config/constantes.js");
 const
-{MessageEmbed} = require('discord.js');
+{EmbedBuilder} = require('discord.js');
 
 module.exports.run = (bot, message, argsMessage) =>
 {
@@ -45,7 +45,7 @@ module.exports.run = (bot, message, argsMessage) =>
   
                 const linkImage = "https://i.imgur.com/m3SG4PB.png";
 
-                const messageEmbed = new MessageEmbed()
+                const messageEmbed = new EmbedBuilder()
                     .setColor('#158373')
                     .setTitle('Partie')
 
