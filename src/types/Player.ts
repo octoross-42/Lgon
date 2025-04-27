@@ -125,7 +125,7 @@ export class Player
 		if ( (this.waitingRoom === null) && (this.inGame === null) )
 		{
 			if ( this.tellError )
-				embed.addFields({ name: '**Error**', value: `You are not in any game`, inline: false });
+				embed.addFields({ name: '**Error**', value: `Yo're not in any game`, inline: false });
 			return (true);
 		}
 

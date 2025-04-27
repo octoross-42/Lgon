@@ -22,22 +22,22 @@ async function basic_help(bot: Client, message: Message)
 		// console.log(command);
 		if (commandCategory != command.getMainCategory())
 		{
-			// if (commandCategory !== null)
-			// 	embed.addFields(
-			// 		{	name: commandCategory.toUpperCase(),
-			// 			value: commandCatergoyContent,
-			// 			inline: true }
-			// 	);
+			if (commandCategory !== null)
+				embed.addFields(
+					{	name: commandCategory.toUpperCase(),
+						value: commandCatergoyContent,
+						inline: true }
+				);
 			commandCategory = command.getMainCategory();
 			commandCatergoyContent = "";
 		}
 		commandCatergoyContent += `- ${command.name}\n`;
 	}
-	// embed.addFields(
-	// 	{	name: commandCategory!.toUpperCase(),
-	// 		value: commandCatergoyContent,
-	// 		inline: true }
-	// );
+	embed.addFields(
+		{	name: commandCategory!.toUpperCase(),
+			value: commandCatergoyContent,
+			inline: true }
+	);
 
 	await message.reply({ embeds: [embed], flags: CONSTANTES.FLAGS });
 }
@@ -61,22 +61,22 @@ async function help_roles(bot: Client, message: Message)
 		// console.log(role);
 		if (roleCategory != role.getMainCategory())
 		{
-			// if (roleCategory !== null)
-			// 	embed.addFields(
-			// 		{	name: roleCategory,
-			// 			value: rolesContent,
-			// 			inline: true }
-			// 	);
+			if (roleCategory !== null)
+				embed.addFields(
+					{	name: roleCategory!,
+						value: rolesContent,
+						inline: true }
+				);
 			roleCategory = role.getMainCategory();
 			rolesContent = "";
 		}
 		rolesContent += `- ${role.name[0].toUpperCase()}${role.name.slice(1)}\n`;
 	}
-	// embed.addFields(
-	// 	{	name: roleCategory,
-	// 		value: rolesContent,
-	// 		inline: true }
-	// );
+	embed.addFields(
+		{	name: roleCategory!,
+			value: rolesContent,
+			inline: true }
+	);
 
 	await message.reply( { embeds: [embed], flags: CONSTANTES.FLAGS });
 }
@@ -93,11 +93,11 @@ export async function help_command(message: Message, command: BotCommand)
 		.setTitle("**" + command.name + "**")
 		.setDescription(command.description)
 	
-	// embed.addField("Utilisation", command.usage, command.defaultUsage);
-	// if (command.cooldown > 0)
-	// 	embed.addField("Cooldown", `${command.cooldown}sec`, true);
-	// if (command.aliases.length > 0)
-	// 	embed.addField("Alias", `${command.aliases.join(", ")}`, true);
+	embed.addFields({ name: "Utilisation", value: command.usage, inline: command.defaultUsage} );
+	if (command.cooldown > 0)
+		embed.addFields({ name: "Cooldown", value: `${command.cooldown}sec`, inline: true});
+	if (command.aliases.length > 0)
+		embed.addFields({ name: "Alias", value: `${command.aliases.join(", ")}`, inline: true});
 	await message.reply( { embeds: [embed], flags: CONSTANTES.FLAGS });
 }
 
