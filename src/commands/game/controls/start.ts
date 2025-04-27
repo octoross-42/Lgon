@@ -1,6 +1,8 @@
 import { CONSTANTES } from "../../../config/constantes.js";
 import { Client, Message } from "discord.js";
 
+// TODO envoyer tous les actions dispos en debut de nuit sauf les actions avec vision
+
 export function run(bot: Client, message: Message, argv: string[]): Promise<void> | void
 {
 	console.log(message.author);

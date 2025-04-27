@@ -1,7 +1,9 @@
 const PREFIX  = "lgon"
+import { MessageFlags } from "discord.js";
 
 export const CONSTANTES =
 {
+	FLAGS: MessageFlags.Ephemeral | MessageFlags.SuppressNotifications,
 	PREFIX  : PREFIX, 
 	MIN_NBR_PLAYERS : 1,
 	GAME_CHANNEL_NAME : "lgon-deroulement",
@@ -152,6 +154,15 @@ export const CONSTANTES =
 			},
 			DATA:
 			{
+				STATUS:
+				{
+					name : "status",		
+					description : "Status de la partie",
+					nbrArgsRequired : 0,
+					cooldown: 1,
+					where: "any",
+				},
+
 				RECAP:
 				{
 					name : "recap",		
@@ -205,7 +216,17 @@ export const CONSTANTES =
 						nbrArgsRequired : 0,
 						cooldown: 1,
 						where: "guild",
-						usage: `- \`${PREFIX} join\` (si une game sur le serveur, la rejoint, sinon rejoint la game définie par défaut)\n- \`${PREFIX} join <game_name>/<game_id>\``,
+						usage: `- \`${PREFIX} join\` (si une game sur le serveur, la rejoint, sinon rejoint la game définie par défaut)\n- \`${PREFIX} join <game_name>\``,
+					},
+					CHANGE_GAME:
+					{
+						name : "change_game",
+						description : "Ajouter un joueur à une game et force le joueur à change de game s'il est déjà dans une game",
+						nbrArgsRequired : 0,
+						cooldown: 1,
+						aliases: ["change"],
+						where: "guild",
+						usage: `- \`${PREFIX} change_game\` (si une game sur le serveur, la rejoint, sinon rejoint la game définie par défaut)\n- \`${PREFIX} chnage_name <game_name>\``,
 					},
 					LEAVE:
 					{

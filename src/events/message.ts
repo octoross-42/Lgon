@@ -37,7 +37,7 @@ function fitsPlace(bot: Client, command: BotCommand, message: Message): boolean
 {
 
 	// TODO creer des fils pour mieux organiser la partie
-	console.log(message.channel.type);
+	// console.log(message, message.channel);
 	if (command.where === "any")
 		return (true);
 	if (command.where === "dm")
@@ -76,7 +76,10 @@ async function isOnCooldown(bot: Client, command: BotCommand, message: Message):
         if (timeNowMs < endDownCooldownTimeMs)
 		{
 			const timeLeftSec: number = (endDownCooldownTimeMs - timeNowMs) / 1000;
-            await message.reply(` Cooldown restant pour \`${command.name}\` pour l'utilisateur \`${message.author.tag}\` : ${timeLeftSec.toFixed(0)} secondes`);
+            await message.reply({
+				content:` Cooldown restant pour \`${command.name}\` pour l'utilisateur \`${message.author.tag}\` : ${timeLeftSec.toFixed(0)} secondes`,
+				flags: CONSTANTES.FLAGS,
+		});
 	
 			return (true);
         }

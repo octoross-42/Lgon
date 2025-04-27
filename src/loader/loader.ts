@@ -20,7 +20,7 @@ export async function loader(bot: Client): Promise<void>
 	  players: new Collection<string, Player>(),
 	  // "channelsJeu",
 	  // "messagesRoles",
-	};
+	}
 	
 	Object.assign(bot, collections);
 

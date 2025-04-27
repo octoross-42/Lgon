@@ -39,7 +39,7 @@ async function basic_help(bot: Client, message: Message)
 	// 		inline: true }
 	// );
 
-	await message.reply({ embeds: [embed] });
+	await message.reply({ embeds: [embed], flags: CONSTANTES.FLAGS });
 }
 
 async function help_roles(bot: Client, message: Message)
@@ -78,7 +78,7 @@ async function help_roles(bot: Client, message: Message)
 	// 		inline: true }
 	// );
 
-	await message.reply( { embeds: [embed] });
+	await message.reply( { embeds: [embed], flags: CONSTANTES.FLAGS });
 }
 
 async function help_role(message: Message, role: LgonRole)
@@ -86,7 +86,7 @@ async function help_role(message: Message, role: LgonRole)
 
 }
 
-async function help_command(message: Message, command: BotCommand)
+export async function help_command(message: Message, command: BotCommand)
 {
 	let embed = new EmbedBuilder()
 		.setColor('#158373')
@@ -98,7 +98,7 @@ async function help_command(message: Message, command: BotCommand)
 	// 	embed.addField("Cooldown", `${command.cooldown}sec`, true);
 	// if (command.aliases.length > 0)
 	// 	embed.addField("Alias", `${command.aliases.join(", ")}`, true);
-	await message.reply( { embeds: [embed] });
+	await message.reply( { embeds: [embed], flags: CONSTANTES.FLAGS });
 }
 
 export async function run(bot: Client, message: Message, argv: string[]): Promise<void>

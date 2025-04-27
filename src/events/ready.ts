@@ -5,16 +5,16 @@ export function onEvent(bot: Client): void
 {
 	if (!bot.user)
 		return;
+	console.log("Bot is in server:");
 	for (const [name, guild] of bot.guilds.cache)
 	{
-		// console.log(name, guild);
-		// console.log(bot.games.get(guild.id));
+		console.log(`\t${guild.name}`);
 		if ( !bot.games.get(guild.id) )
 			bot.games.set(guild.id, new Collection<string, Game>());
 	}
 	console.log(`Bot ${bot.user!.tag} is online !`);
 	bot.user!.setStatus("online");
-    bot.user!.setActivity("P'tit Lg ? 😎");
+    bot.user!.setActivity("P'tit Lg ?");
 }
 
 export const name = "ready";
