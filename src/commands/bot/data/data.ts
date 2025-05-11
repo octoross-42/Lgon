@@ -1,6 +1,5 @@
-import { BotCommand } from "src/types/BotCommand.js";
 import { CONSTANTES } from "../../../config/constantes.js";
-import { Client, Message, EmbedBuilder } from "discord.js";
+import { Client, Message } from "discord.js";
 
 export function run(bot: Client, message: Message, argv: string[]): Promise<void> | void
 {

@@ -1,7 +1,6 @@
 import { Client, Message, EmbedBuilder } from "discord.js";
 import { CONSTANTES } from "../../../config/constantes.js";
-import { help_command } from "../../bot/data/help.js";
-import { Game } from "../../../types/Game.js";
+import { Game } from "../../../classes/Game/Game.js";
 
 async function statusAllGames(bot: Client, message: Message): Promise<void>
 {
@@ -34,8 +33,8 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 	// 	return ;
 	// }
 	
-	// if ( player.inGame?.game || player.waitingRoom )
-	// 	return (statusGame(bot, message, player.inGame?.game || player.waitingRoom!));
+	// if ( player.game || player.waitingRoom )
+	// 	return (statusGame(bot, message, player.game || player.waitingRoom!));
 
 	// if ( message.guild )
 	// 	return (statusAllGames(bot, message));

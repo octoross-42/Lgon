@@ -1,7 +1,7 @@
-import { BotCommand } from "./BotCommand.js";
-import { LgonRole } from "./LgonRole.js";
-import { Game } from "./Game.js";
-import { Player } from "./Player.js";
+import { BotCommand } from "../classes/Commands/BotCommand.js";
+import { LgonRoleGenerator } from "./LgonRoleGenerator.js";
+import { Game } from "../classes/Game/Game.js";
+import { Player } from "../classes/Game/Player.js";
 import
 {
 	Client,
@@ -29,10 +29,10 @@ declare module 'discord.js'
 		usage?: string;
 	}
 
-	export interface RoleHelp
+	export interface LgonRoleHelp
 	{
 		name: string;
-		category: string;
+		category: "loup" | "villageois" | "independant";
 		description: string;
 		cdv: string;
 		usage: string;
@@ -51,9 +51,11 @@ declare module 'discord.js'
 	export interface Client
 	{
 	  commands: Collection<string, BotCommand>;                     // command name -> BotCommand
-	  cooldowns: Collection<string, Collection<string, number>>; // command name -> Collection<userId, timestamp in ms> // TODO changer les cooldowns par personnes qui utilisent pas utilisation globale
-	  roles: Collection<string, LgonRole>;			     			 // role name    -> LgonRole
-	  games: Collection<string, Collection<string, Game>>;	     // guild id     -> game_name -> Game
-	  players: Collection<string, Player>;					 	 // player id    -> Player (mais ce qui arrive dans un serveur reste dans un serveur)
+	  slashCommands: Collection<string, any>;						// slash command name -> // TODO
+	  cooldowns: Collection<string, Collection<string, number>>;	// command name -> Collection<userId, timestamp in ms> // TODO changer les cooldowns par personnes qui utilisent pas utilisation globale
+	  roles: Collection<string, LgonRoleGenerator>;			     			// role name    -> LgonRoleGenerator
+	  games: Collection<string, Collection<string, Game>>;	     	// guild id     -> game_name -> Game
+	  players: Collection<string, Player>;					 	 	// player id    -> Player (mais ce qui arrive dans un serveur reste dans un serveur)
+	  awaitingInteractions: Collection<string, AwaitingInteraction>; // message id -> AwaitingInteraction
 	}
 }

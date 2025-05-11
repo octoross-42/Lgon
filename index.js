@@ -1353,7 +1353,7 @@ function verificationDebutNuit ()
 
     const linkImage = "https://i.imgur.com/m3SG4PB.png";
 
-    const messageEmbed = new Discord.MessageEmbed()
+    const messageEmbed = new Discord.EmbedBuilder()
         .setColor('#158373')
         .setTitle('Partie')
 
@@ -1478,7 +1478,7 @@ bot.on('message', (message) =>
 {
             messageText = `${messageText}\n ${rolesJeu[i]}`;
         }
-        message.channel.send(messageText);
+        await message.channel.send(messageText);
     }
 
     else if (message.content.startsWith(`${CONSTANTES.PREFIX}changer channel jeu `)){
@@ -1490,7 +1490,7 @@ bot.on('message', (message) =>
         }
         catch (err)
 {
-            message.channel.send("Le nom n'est pas un id valide");
+            await message.channel.send("Le nom n'est pas un id valide");
         }
     }
     else if (message.content.startsWith(`${CONSTANTES.PREFIX}changer channel ROLES_DATA `)){
@@ -1502,7 +1502,7 @@ bot.on('message', (message) =>
         }
         catch (err)
 {
-            message.channel.send("Le nom n'est pas un id valide");
+            await message.channel.send("Le nom n'est pas un id valide");
         }
     }
     else if (message.content.startsWith(`${CONSTANTES.PREFIX}changer channel erreurs `)){
@@ -1515,7 +1515,7 @@ bot.on('message', (message) =>
             }
             catch (err)
 {
-                message.channel.send("Le nom n'est pas un id valide");
+                await message.channel.send("Le nom n'est pas un id valide");
             }
     }
 
@@ -1556,7 +1556,7 @@ bot.on('message', (message) =>
 {
             messageText = `${messageText} ${joueurs[i].name}`;
         }
-        message.channel.send(messageText);
+        await message.channel.send(messageText);
     }
 
     
@@ -1694,7 +1694,7 @@ bot.on('message', (message) =>
                     }
                     else
 {
-                        message.channel.send (`Veuillez envoyer votre commande en privé`);
+                        await message.channel.send (`Veuillez envoyer votre commande en privé`);
                     } 
                 }
                 else
@@ -1772,7 +1772,7 @@ bot.on('message', (message) =>
 {  // choix des ROLES_DATA // check ça marche 
 
         const roleChaine = message.content.slice(CONSTANTES.PREFIX.length + 6);
-        message.channel.send(`${roleChaine.length} ${ROLES_DATA.length}`);
+        await message.channel.send(`${roleChaine.length} ${ROLES_DATA.length}`);
         if (roleChaine.length === ROLES_DATA.length)
 {
             rolesJeu = new Array();

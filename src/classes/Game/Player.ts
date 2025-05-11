@@ -1,6 +1,10 @@
-import { Client, User, Guild, EmbedBuilder, Collection, ButtonBuilder, ButtonStyle, ActionRowBuilder, APIEmbedField } from "discord.js";
-import { InGame } from "./InGame.js";
+import { Client, User, Guild, EmbedBuilder, Collection, ButtonBuilder, ButtonStyle, ActionRowBuilder, Message, PartialMessage } from "discord.js";
 import { Game, getGame } from "./Game.js";
+import { LgonEmbed } from "../Embed/LgonEmbed.js";
+import { LgonRole } from "../LgonRole/LgonRole.js";
+import { CONSTANTES } from "../../config/constantes.js";
+
+// TODO afficher joueurs par nickname et premier arrive premier servi + faire commande pour refresh nickname / changer nickname
 
 export function getPlayer(bot: Client, user: User, createPLayer: boolean = true): Player | null
 {
@@ -9,7 +13,9 @@ export function getPlayer(bot: Client, user: User, createPLayer: boolean = true)
 	{
 		if (createPLayer)
 		{
-			player = new Player(user.username, user.id);
+			// TODO: ajouter ajout message si c'est message final et parametre joueur (exemple join -> truc join truc direct et pas partie created etc)
+			// console.log(user);
+			player = new Player(user);
 			bot.players.set(player.name, player);
 		}
 		else
@@ -39,34 +45,49 @@ function askToChangeGame(bot: Client, guild: Guild, gameToJoinName: string | nul
 
 export class Player
 {
-	id: string;
 	name: string;
-	inGame: InGame | null;
+	game: Game | null;
+	role: LgonRole | null;
 	waitingRoom: Game | null;
-	historic: Game[]
+	// historic: Game[]; // TODO creer class game record
 	askConfirmation: boolean;
 	tellError: boolean;
+	user: User;
+	ready: boolean;
 
-	constructor(name: string, id: string)
+	constructor(user: User)
 	{
-		this.historic = [];
-		this.id = id;
-		this.name = name;
-		this.inGame = null;
+		// this.historic = [];
+		this.role = null;
+		this.ready = false;
+		this.name = user.username;
+		this.game = null;
 		this.waitingRoom = null;
 		this.askConfirmation = true;
 		this.tellError = true;
+		this.user = user;
 	}
 
 	getGame(): Game | null
 	{
-		if (this.inGame !== null)
-			return (this.inGame.game);
+		if (this.game !== null)
+			return (this.game);
 		if (this.waitingRoom !== null)
 			return (this.waitingRoom);
 		return (null);
 	}
 
+	setReady(message: Message | PartialMessage, ready: boolean): void
+	{
+		if (this.game !== null)
+		{
+			if (!this.ready && ready)
+				this.game.addReady(message);
+			else if (this.ready && !ready)
+				this.game.rmReady(message);
+			this.ready = ready;
+		}
+	}
 
 	joinGame(bot: Client, guild: Guild, gameToJoinName: string | null, askToChange: boolean, embed: EmbedBuilder, components: ActionRowBuilder<ButtonBuilder>[]): void
 	{
@@ -79,7 +100,7 @@ export class Player
 			{
 				if (this.tellError)
 				{
-					if (this.inGame !== null)
+					if (this.game !== null)
 						embed.addFields({ name: '**Error**', value: `You are already in this game`, inline: false });
 					else if (this.waitingRoom !== null)
 						embed.addFields({ name: '**Error**', value: `You are already in the waiting room of this game`, inline: false });
@@ -110,35 +131,35 @@ export class Player
 			gameToJoin.addPlayer(this, embed);
 			games.set(gameToJoin!.name, gameToJoin!);
 		}
-		else if ( gameToJoin.status !== "pending" )
+		else if ( gameToJoin.status !== "setup" )
 			gameToJoin.addWaitingPlayer(this, embed);
 			
 		else
 			gameToJoin.addPlayer(this, embed);
 
-		this.inGame = new InGame(gameToJoin!);
+		this.game = gameToJoin!;
 	}
 
 
 	leaveGame(bot: Client, embed: EmbedBuilder): boolean
 	{
-		if ( (this.waitingRoom === null) && (this.inGame === null) )
+		if ( (this.waitingRoom === null) && (this.game === null) )
 		{
 			if ( this.tellError )
 				embed.addFields({ name: '**Error**', value: `Yo're not in any game`, inline: false });
 			return (true);
 		}
 
-		if ( this.inGame?.game.status !== "pending" )
+		if ( this.game?.status !== "setup" )
 		{
 			embed.addFields({ name: '**No**', value: `You can't leave a game that has already started`, inline: false });
 			return (false);
 		}
 
-		if ( this.inGame !== null )
+		if ( this.game !== null )
 		{
-			this.inGame!.game.removePlayer(bot, this, embed);	
-			this.inGame = null;
+			this.game!.removePlayer(bot, this, embed);	
+			this.game = null;
 		}
 		else
 		{
@@ -148,6 +169,15 @@ export class Player
 		return (true);
 	}
 
-	
+	async sendRole(role: LgonRole)
+	{
+		this.role = role;
+		let dm = await this.user.createDM(true);
+		let embed: EmbedBuilder = LgonEmbed.newEmbed()
+			.setTitle(this.name)
+			.setDescription(`Your role is **${role.help.name[0].toUpperCase()}${role.help.name.slice(1)}**`);
+
+		await dm.send({ embeds: [embed], flags: CONSTANTES.FLAGS});
+	}
 
 }

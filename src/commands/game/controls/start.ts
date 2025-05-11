@@ -1,12 +1,16 @@
+import { Game, getGame } from "../../../classes/Game/Game.js";
 import { CONSTANTES } from "../../../config/constantes.js";
-import { Client, Message } from "discord.js";
+import { Client, Embed, EmbedBuilder, Message } from "discord.js";
+import { getPlayer, Player } from "../../../classes/Game/Player.js";
+import { StartEmbed } from "../../../classes/Embed/StartEmbed.js";
 
 // TODO envoyer tous les actions dispos en debut de nuit sauf les actions avec vision
 
-export function run(bot: Client, message: Message, argv: string[]): Promise<void> | void
+export async function run(bot: Client, message: Message, argv: string[]): Promise<void>
 {
-	console.log(message.author);
-	console.log(message.guild);
+	let player: Player | null = getPlayer(bot, message.author);
+	let startEmbed = new StartEmbed(player);
+	await startEmbed.send(bot, message);
 }
 
 export const help = CONSTANTES.COMMANDS.GAME.CONTROLS.START;

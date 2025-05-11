@@ -1,9 +1,9 @@
 import { Client, Message, EmbedBuilder } from 'discord.js';
-import { BotCommand } from '../../../types/BotCommand.js';
-import { LgonRole } from '../../../types/LgonRole.js';
+import { BotCommand } from '../../../classes/Commands/BotCommand.js';
+import { LgonRoleGenerator } from '../../../classes/LgonRole/LgonRoleGenerator.js';
 import { CONSTANTES } from '../../../config/constantes.js';
 
-async function basic_help(bot: Client, message: Message)
+export async function basic_help(bot: Client, message: Message)
 {
 	const embed = new EmbedBuilder()
 		.setColor('#158373')
@@ -42,7 +42,7 @@ async function basic_help(bot: Client, message: Message)
 	await message.reply({ embeds: [embed], flags: CONSTANTES.FLAGS });
 }
 
-async function help_roles(bot: Client, message: Message)
+export async function help_roles(bot: Client, message: Message)
 {
 	const embed = new EmbedBuilder()
 		.setColor('#158373')
@@ -81,7 +81,7 @@ async function help_roles(bot: Client, message: Message)
 	await message.reply( { embeds: [embed], flags: CONSTANTES.FLAGS });
 }
 
-async function help_role(message: Message, role: LgonRole)
+export async function help_role(message: Message, role: LgonRoleGenerator)
 {
 
 }
@@ -116,10 +116,8 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 	}
 
 	const commandName: string = argv[0].toLowerCase();
-	// console.log(commandName);
     const command = bot.commands.get(commandName)
 						|| bot.commands.find(cmd => !!cmd.aliases?.includes(commandName));
-	// console.log(command);
 	if ( command )
 	{
 		await help_command(message, command);
@@ -128,7 +126,6 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 	
 	const role = bot.roles.get(commandName)
 			|| bot.roles.find(cmd => !!cmd.aliases?.includes(commandName));
-	// console.log(role);
 	if ( role )
 	{
 		await help_role(message, role);

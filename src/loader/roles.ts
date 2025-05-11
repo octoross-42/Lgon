@@ -1,5 +1,7 @@
-import { Client } from 'discord.js';
-import { LgonRole } from '../types/LgonRole.js';
+import { Client, LgonRoleHelp } from 'discord.js';
+import { LgonRoleGenerator } from '../classes/LgonRole/LgonRoleGenerator.js';
+import { LgonRole } from "../classes/LgonRole/LgonRole.js";
+import { Player } from '../classes/Game/Player.js';
 import fg from 'fast-glob';
 
 const loadRoles = async (bot: Client, eventDir = 'build/roles'): Promise<void> =>
@@ -9,8 +11,11 @@ const loadRoles = async (bot: Client, eventDir = 'build/roles'): Promise<void> =
 
 	for (const roleFile of roleFiles)
 	{
-		const roleContent = await import(roleFile);
-		let role: LgonRole = new LgonRole(roleContent.help, roleFile);
+		const roleContent: {
+			help: LgonRoleHelp,
+			roleGenerator: <R extends LgonRole>(help : LgonRoleHelp, owner: Player | string, id: number) => R;
+		} = await import(roleFile);
+		let role: LgonRoleGenerator = new LgonRoleGenerator(roleContent.help, roleContent.roleGenerator);
 		console.log(`\t${role.name}`);
 		bot.roles.set(role.name, role);
 	}

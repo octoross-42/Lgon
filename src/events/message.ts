@@ -1,7 +1,8 @@
 import { Client, Message, Collection } from 'discord.js';
-import { BotCommand } from '../types/BotCommand.js';
-import { LgonRole } from '../types/LgonRole.js';
+import { BotCommand } from '../classes/Commands/BotCommand.js';
+import { LgonRoleGenerator, getRole } from '../classes/LgonRole/LgonRoleGenerator.js';
 import { CONSTANTES } from '../config/constantes.js';
+import { basic_help, help_role } from "../commands/bot/data/help.js";
 
 function getArgv(message: Message): string[] | null
 {
@@ -104,13 +105,11 @@ export async function onEvent(bot: Client, message: Message): Promise<void>
 	const command: BotCommand | null = getCommand(bot, argv);
 	if ( !command )
 	{
-		const role: LgonRole | undefined = bot.roles.get(argv[0])
-							|| bot.roles.find(cmd => cmd.aliases?.includes(argv[0]));
+		const role: LgonRoleGenerator | null = getRole(bot, argv[0]);
 		if ( !role )
 			return ;
 
-		if ( bot.commands.has("help") )
-			bot.commands.get("help")!.run(bot, message, argv);
+		help_role(message, role);
 		return ;
 	}
 
