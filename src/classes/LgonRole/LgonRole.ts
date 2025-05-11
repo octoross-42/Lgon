@@ -12,6 +12,7 @@ export abstract class LgonRole
 	
 	id: number;
 	owner: Player | string;
+	printName: string;
 	help: LgonRoleHelp;
 	// rolesToKill: number[];
 	// playerToKill: string[];
@@ -20,9 +21,10 @@ export abstract class LgonRole
 	
 		// run: (bot: Client, message: Message, argv: string[]) => Promise<void> | void;
 	
-	constructor(help: LgonRoleHelp, owner: Player | string, id: number)
+	constructor(help: LgonRoleHelp, printName: string, owner: Player | string, id: number)
 	{
 		this.help = help;
+		this.printName = printName;
 		this.owner = owner;
 		this.id = id;
 	}

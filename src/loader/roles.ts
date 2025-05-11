@@ -13,7 +13,7 @@ const loadRoles = async (bot: Client, eventDir = 'build/roles'): Promise<void> =
 	{
 		const roleContent: {
 			help: LgonRoleHelp,
-			roleGenerator: <R extends LgonRole>(help : LgonRoleHelp, owner: Player | string, id: number) => R;
+			roleGenerator: <R extends LgonRole>(help : LgonRoleHelp, printName: string, owner: Player | string, id: number) => R;
 		} = await import(roleFile);
 		let role: LgonRoleGenerator = new LgonRoleGenerator(roleContent.help, roleContent.roleGenerator);
 		console.log(`\t${role.name}`);

@@ -12,12 +12,13 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 	let rolesString: string = "```ansi\n";
 	for (const roleName of CONSTANTES.ROLES_ORDER)
 	{
+		// TODO faire un check si les roles existent dans roleOrder
 		let role: LgonRoleGenerator | null = getRole(bot, roleName.toLowerCase());
 		if (role !== null)
 		{
-			if (role.category === "villageois")
+			if (role.category === "Villageois")
 				rolesString += `[0;36m`
-			else if (role.category === "loup")
+			else if (role.category === "Loup")
 				rolesString += `[0;31m`;
 			else
 				rolesString += `[0;37m`;

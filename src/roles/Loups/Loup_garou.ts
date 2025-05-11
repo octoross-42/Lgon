@@ -6,9 +6,9 @@ import { LgonRoleHelp } from "discord.js";
 
 class LoupGarou extends LgonRole
 {
-	constructor(help: LgonRoleHelp, owner: Player | string, id: number)
+	constructor(help: LgonRoleHelp, printName: string, owner: Player | string, id: number)
 	{
-		super(help, owner, id);
+		super(help, printName, owner, id);
 		this.owner = "tralalalala";
 	}
 
@@ -18,9 +18,9 @@ class LoupGarou extends LgonRole
 	}
 }
 
-function roleGenerator(help: LgonRoleHelp, owner: Player | string, id: number): LoupGarou
+function roleGenerator(help: LgonRoleHelp, printName: string, owner: Player | string, id: number): LoupGarou
 {
-	return (new LoupGarou(help, owner, id));
+	return (new LoupGarou(help, printName, owner, id));
 }
 
 const help = CONSTANTES.ROLES.LOUPS.LOUP_GAROU;

@@ -175,7 +175,7 @@ export class Player
 		let dm = await this.user.createDM(true);
 		let embed: EmbedBuilder = LgonEmbed.newEmbed()
 			.setTitle(this.name)
-			.setDescription(`Your role is **${role.help.name[0].toUpperCase()}${role.help.name.slice(1)}**`);
+			.setDescription(`Your role is **${role.printName}**`);
 
 		await dm.send({ embeds: [embed], flags: CONSTANTES.FLAGS});
 	}

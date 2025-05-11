@@ -32,7 +32,7 @@ declare module 'discord.js'
 	export interface LgonRoleHelp
 	{
 		name: string;
-		category: "loup" | "villageois" | "independant";
+		category: "Loup" | "Villageois" | "Independant";
 		description: string;
 		cdv: string;
 		usage: string;

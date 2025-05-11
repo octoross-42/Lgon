@@ -59,7 +59,7 @@ export async function help_roles(bot: Client, message: Message)
 	for (const role of bot.roles.values())
 	{
 		// console.log(role);
-		if (roleCategory != role.getMainCategory())
+		if (roleCategory != role.category)
 		{
 			if (roleCategory !== null)
 				embed.addFields(
@@ -67,10 +67,10 @@ export async function help_roles(bot: Client, message: Message)
 						value: rolesContent,
 						inline: true }
 				);
-			roleCategory = role.getMainCategory();
+			roleCategory = role.category;
 			rolesContent = "";
 		}
-		rolesContent += `- ${role.name[0].toUpperCase()}${role.name.slice(1)}\n`;
+		rolesContent += `- ${role.printName}\n`;
 	}
 	embed.addFields(
 		{	name: roleCategory!,

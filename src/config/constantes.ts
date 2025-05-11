@@ -314,7 +314,7 @@ export const CONSTANTES =
             ASSASSIN:
 			{
                 name: "assassin",
-				category: "independant",
+				category: "Independant",
                 description : "L'assassin désigne sa cible la nuit qui est autre que lui",
                 cdv : "Il doit tuer sa cible pour gagner",
                 usage : `\`${PREFIX} action nom ou tag d'un joueur\` (dans liste des joueurs de début de partie)` ,
@@ -325,7 +325,7 @@ export const CONSTANTES =
             APPRENTIE_TANNEUR:
 			{
                 name: "apprentie-tanneur",
-				category: "independant",
+				category: "Independant",
                 description : "L'Apprentie-tanneur reçoit s'il existe le nom du joueur étant tanneur et sinon devient Tanneur",
                 cdv : "Le Tanneur doit mourir",
                 usage : `L'Apprentie-tanneur n'a pas d'action'` ,
@@ -337,7 +337,7 @@ export const CONSTANTES =
             TANNEUR:
 			{
                 name: "tanneur",
-				category: "independant",
+				category: "Independant",
                 description : "Il veut mourir",
                 cdv : "Le Tanneur doit mourir, le Tanneur gagne seul avec les Apprenties-tanneur",
                 usage : "Il n'a pas d'action",
@@ -348,7 +348,7 @@ export const CONSTANTES =
             BLOB:
 			{
                 name: "blob",
-				category: "independant",
+				category: "Independant",
                 description : `Le Blob s'expand dans la nuit selon ce qu'on lui indique dans son entourage`,
                 cdv : "Aucun des membres faisant parti du Blob ne doit mourir",
                 usage : "Il n'a pas d'action" ,
@@ -359,7 +359,7 @@ export const CONSTANTES =
             LAPIN:
 			{
                 name: "lapin des montagnes",
-				category: "independant",
+				category: "Independant",
                 description : `Le lapin va manger les carottes de quelqu'un qui s'en aperçoit et veut le tuer, ce qui devient son but`,
                 cdv : "Il doit survivre",
                 usage : `\`${PREFIX} action\` nom ou tag d'un joueur ` ,
@@ -376,7 +376,7 @@ export const CONSTANTES =
             LOUP_GAROU :
 			{
                 name: "loup-garou",
-				category: "loup",
+				category: "Loup",
                 description: "Le Loup-garou se réveille dans la nuit pour prendre connaissance de sa meute ou s'il est seul regarde une carte au centre (et devient un type action)",
                 cdv: "Aucun Loup ne doit mourir",
                 usage: `S'il est seul : \`${PREFIX} action\` \`droite\` ou \`milieu\` ou \`gauche\``,
@@ -388,7 +388,7 @@ export const CONSTANTES =
             LOUP_ALPHA :
 			{
                 name: "loup-alpha",
-				category: "loup",
+				category: "Loup",
                 description: "Un Loup-garou qui contamine une personne dans la nuit",
                 cdv: "Aucun Loup ne doit mourir",
                 usage: `S'il est seul : \`${PREFIX} action\` \`droite\` ou \`milieu\` ou \`gauche\` et pour contaminer : \`${PREFIX} action\` nom ou tag d'un joueur`,
@@ -400,7 +400,7 @@ export const CONSTANTES =
             LOUP_CHAMAN :
 			{
                 name: "loup-chaman",
-				category: "loup",
+				category: "Loup",
                 description: "Un Loup-garou qui regarde le rôle d'une personne dans la nuit",
                 cdv: "Aucun Loup ne doit mourir",
                 usage: `S'il est seul : \`${PREFIX} action\` \`droite\` ou \`milieu\` ou \`gauche\` et pour voir une carte : \`${PREFIX} action\` nom ou tag d'un joueur`,
@@ -412,7 +412,7 @@ export const CONSTANTES =
             LOUP_DORMEUR :
 			{
                 name: "loup-dormeur",
-				category: "loup",
+				category: "Loup",
                 description: "Le Loup-dormeur ne se réveille pas dans la nuit mais les autres loups ont connaissance de son identité de Loup",
                 cdv: "Aucun Loup ne doit mourir",
                 usage: `Il dort`,
@@ -424,7 +424,7 @@ export const CONSTANTES =
             SBIRE :
 			{
                 name: "sbire",
-				category: "loup",
+				category: "Loup",
                 description: "Le Sbire n'est pas un Loup, mais les connait et en devient un s'il n'y a aucun Loup parmi les joueurs",
                 cdv: "Aucun Loup ne doit mourir (il peut donc par exemple gagner en mourant",
                 usage: `Il reçoit les noms des Loups et se rendort (n'a pas d'action)`,
@@ -439,7 +439,7 @@ export const CONSTANTES =
             APPRENTIE_VOYANTE :
 			{
                 name: "apprentie-voyante",
-				category: "villageois",
+				category: "Villageois",
                 desscription: "L'Apprentie-voyante regarde le rôle de quelqu'un ou une carte au centre",
                 cdv: "L'Apprentie-voyante est une villageoise, elle doit tuer un Loup pour gagner",
                 usage: `\`${PREFIX} action nom ou tag d'un joueur\` (dans liste des joueurs de début de partie)`,
@@ -451,7 +451,7 @@ export const CONSTANTES =
             CHASSEUR :
 			{
                 name: "chasseur",
-				category: "villageois",
+				category: "Villageois",
                 desscription: "A sa mort, le chasseur désigne une personne qui meurt avec lui",
                 cdv: "Le Chasseur est un villageois, il doit tuer un Loup pour gagner",
                 usage: `Il n'a pas d'action`,
@@ -462,7 +462,7 @@ export const CONSTANTES =
             CUPIPUTE :
 			{
                 name: "cupipute",
-				category: "villageois",
+				category: "Villageois",
                 desscription: "Cupipute visite quelqu'un dans la nuit qui ne peut plus jouer et qui n'en est informé que s'il a un rôle à informations",
                 cdv: "Cupipute est une villageoise, elle doit tuer un Loup pour gagner",
                 usage: `\`${PREFIX} action nom ou tag d'un joueur\` (dans liste des joueurs de début de partie)`,
@@ -474,7 +474,7 @@ export const CONSTANTES =
             DOPPLEGANGER :
 			{
                 name: "doppleganger",
-				category: "villageois",
+				category: "Villageois",
                 desscription: "Le Doppleganger copie le rôle de quelqu'un qu'il joue juste après",
                 cdv: "Le Doppleganger est un villageois, il doit tuer un Loup pour gagner",
                 usage: `\`${PREFIX} \` action nom ou tag d'un joueur (dans liste des joueurs de début de partie)`,
@@ -487,7 +487,7 @@ export const CONSTANTES =
             FRANC_MACON :
 			{
                 name: "franc-maçon",
-				category: "villageois",
+				category: "Villageois",
                 desscription: "Le Franc-maçon prend connaissance de l'identité de l'autre Franc-maçon en jeu",
                 cdv: "Le Franc-maçon est un villageois, il doit tuer un Loup pour gagner",
                 usage: `\`${PREFIX} action nom ou tag d'un joueur\` (dans liste des joueurs de début de partie)`,
@@ -499,7 +499,7 @@ export const CONSTANTES =
             GARDE :
 			{
                 name: "garde du corps",
-				category: "villageois",
+				category: "Villageois",
                 desscription: "Le vote du Garde rend invulnérable",
                 cdv: "Le Garde du corps est un villageois, il doit tuer un Loup pour gagner",
                 usage: `Il n'a pas d'action`,
@@ -512,7 +512,7 @@ export const CONSTANTES =
             INSOMNIAQUE :
 			{
                 name: "insomniaque",
-				category: "villageois",
+				category: "Villageois",
                 desscription: "L'Insomniaque prend connaissance de son rôle en fin de nuit",
                 cdv: "L'Insomniaque est un villageois, il doit tuer un Loup pour gagner",
                 usage: `Il n'a pas d'action`,
@@ -523,7 +523,7 @@ export const CONSTANTES =
             LA_CHOSE :
 			{
                 name: "la chose",
-				category: "villageois",
+				category: "Villageois",
                 description: "La Chose tapote l'épaule d'une personne à sa droite ou à sa gauche qui est notifiée du tapotement",
                 cdv: "La Chose est une villageoise, il doit tuer un Loup pour gagner",
                 usage: `\`${PREFIX} action\` \`gauche\` ou \`droite\``,
@@ -536,7 +536,7 @@ export const CONSTANTES =
             NOISEUSE :
 			{
                 name: "noiseuse",
-				category: "villageois",
+				category: "Villageois",
                 description: "La Noiseuse échange les rôles de 2 personnes sans qu'ils n'en prennent connaissance",
                 cdv: "La Noiseuse est une villageoise, il doit tuer un Loup pour gagner",
                 usage: `\`${PREFIX} action\` noms ou tags de deux personnes`,
@@ -558,7 +558,7 @@ export const CONSTANTES =
             SORCIERE :
 			{
                 name: "sorciere",
-				category: "villageois",
+				category: "Villageois",
                 description: "La Sorcière regarde une carte au centre et décide de ne rien faire ou de l'attribuer à un joueur (elle y-compris)",
                 cdv: "La Sorcière est une villageoise, il doit tuer un Loup pour gagner",
                 usage: `\`${PREFIX} action \`gauche\`, \`milieu\` \`droite\` puis \`${PREFIX} action\` et le nom ou tag d'un joueur`,
@@ -570,7 +570,7 @@ export const CONSTANTES =
             SOULARD :
 			{
                 name: "soulard",
-				category: "villageois",
+				category: "Villageois",
                 description: "La Soulard échange son rôle avec un rôle au centre mais n'en prend pas connaissance",
                 cdv: "La Soulard est une villageoise, il doit tuer un Loup pour gagner",
                 usage: `\`${PREFIX} action \`gauche\` \`milieu\` ou \`droite\``,
@@ -582,11 +582,11 @@ export const CONSTANTES =
             VILLAGEOIS :
 			{
                 name: "villageois",
-				category: "villageois",
+				category: "Villageois",
                 description: "La Villageois existe...",
                 cdv: "Le Villageois est un villageois (étonnant non ?), il doit tuer un Loup pour gagner",
                 usage: `Il n'a pas d'action`,
-                aliases: ["villageois"],
+                aliases: ["Villageois"],
                 action: false,
 				information: false,
 				vote: false,
@@ -594,7 +594,7 @@ export const CONSTANTES =
             VOLEUR :
 			{
                 name: "voleur",
-				category: "villageois",
+				category: "Villageois",
                 description: "Le Voleur échange sa carte avec un joueur et prend connaissance de son nouveau rôle",
                 cdv: "Le Voleur est une villageoise, il doit tuer un Loup pour gagner",
                 usage: `\`${PREFIX} action\` nom ou tag d'une personne`,
@@ -606,7 +606,7 @@ export const CONSTANTES =
             VOYANTE :
 			{
                 name: "voyante",
-				category: "villageois",
+				category: "Villageois",
                 description: "La Voyante regarde le rôle d'une personne ou de 2 cartes au centre",
                 cdv: "La Voyante est une villageoise, elle doit tuer un Loup pour gagner",
                 usage: `\`${PREFIX} action\` nom ou tag d'une personne ou 2 centres différents (\`gauche\` \`milieu\` ou \`droite\`)`,

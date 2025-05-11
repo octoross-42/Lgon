@@ -24,19 +24,21 @@ export function getRole(bot: Client, roleName: string): LgonRoleGenerator | null
 export class LgonRoleGenerator
 {
 	name: string;
+	printName: string;
 	description: string;
 	aliases: string[];
-	category: "loup" | "villageois" | "independant";
+	category: "Loup" | "Villageois" | "Independant";
 	cdv: string;
 	usage: string;
 	action: boolean;
 	information: boolean;
 	vote: boolean;
-	roleGenerator: <R extends LgonRole>(help : LgonRoleHelp, owner: Player | string, id: number) => R;
+	roleGenerator: <R extends LgonRole>(help : LgonRoleHelp, printName: string, owner: Player | string, id: number) => R;
 
-	constructor(help : LgonRoleHelp, roleGenerator: <R extends LgonRole>(help : LgonRoleHelp, owner: Player | string, id: number) => R)
+	constructor(help : LgonRoleHelp, roleGenerator: <R extends LgonRole>(help : LgonRoleHelp, printName: string, owner: Player | string, id: number) => R)
 	{
 		this.name = help.name;
+		this.printName = this.name[0].toUpperCase() + this.name.substring(1);
 		this.description = help.description;
 		this.usage = help.usage;
 		this.aliases = help.aliases || [];
@@ -47,15 +49,8 @@ export class LgonRoleGenerator
 
 		this.category = help.category;
 		this.roleGenerator = roleGenerator;
-		// console.log(this.category);
+		console.log(this.category);
 		
-	}
-
-	getMainCategory(): string
-	{
-		if (this.category.length > 0)
-			return (this.category[0]);
-		return ("");
 	}
 
 	generateRole<R extends LgonRole>(owner: Player | string, id: number): R
@@ -70,6 +65,6 @@ export class LgonRoleGenerator
 			information: this.information,
 			vote: this.vote
 		};
-		return (this.roleGenerator(help, owner, id));
+		return (this.roleGenerator(help, this.printName, owner, id));
 	}
 }
