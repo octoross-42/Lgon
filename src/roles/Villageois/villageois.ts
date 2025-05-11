@@ -2,19 +2,13 @@ import { LgonRole } from "../../classes/LgonRole/LgonRole.js";
 import { Player } from "../../classes/Game/Player.js";
 import { CONSTANTES } from "../../config/constantes.js";
 
-import { LgonRoleHelp } from "discord.js";
+import { Client, LgonRoleHelp } from "discord.js";
 
 class Villageois extends LgonRole
 {
 	constructor(help: LgonRoleHelp, printName: string, owner: Player | string, id: number)
 	{
 		super(help, printName, owner, id);
-		this.owner = "tralalalala";
-	}
-
-	preshot_action()
-	{
-		console.log("caca");
 	}
 }
 

@@ -12,7 +12,7 @@ export function onEvent(bot: Client, reaction: MessageReaction, user: User): voi
 
 	let awaitingInteraction: AwaitingInteraction = bot.awaitingInteractions.get(reaction.message.id);
 	if (awaitingInteraction)
-		awaitingInteraction.interact(bot, reaction, user);
+		awaitingInteraction.react(bot, reaction, user);
 	// console.log("Reaction received : ", reaction.emoji);
 
 //     let partieBool = bot.parties.has(reaction.message.guild.id) && !(bot.parties.get(reaction.message.guild.id) === false);

@@ -10,7 +10,7 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 {
 	let player: Player | null = getPlayer(bot, message.author);
 	let startEmbed = new StartEmbed(player);
-	await startEmbed.send(bot, message);
+	await startEmbed.reply(bot, message);
 }
 
 export const help = CONSTANTES.COMMANDS.GAME.CONTROLS.START;

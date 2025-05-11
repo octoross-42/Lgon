@@ -1,37 +1,35 @@
-import { Client, MessageReaction, User } from "discord.js";
-import { LgonEmbed } from "./LgonEmbed";
+import { Client, MessageReaction, User, EmbedBuilder, Message, DMChannel, TextChannel, StringSelectMenuInteraction, ButtonInteraction } from "discord.js";
 
-export enum AwaitingInteractionType 
+export function newEmbed(): EmbedBuilder
 {
-	START,
-	ADD,
-	RM,
-	PLAY,
-	PREPLAY,
-	// STOP,
-	// PAUSE,
-	// RESUME,
-	// DELETE,
-	// RESTART,
-	// END
+	let embed: EmbedBuilder = new EmbedBuilder()
+			.setColor('#158373');
+	return (embed);
 }
 
-export class AwaitingInteraction
+export abstract class AwaitingInteraction
 {
-	type: AwaitingInteractionType;
+	embed: EmbedBuilder;
+	register: boolean;
 	id: string;
-	embed: LgonEmbed;
 
-	constructor(type: AwaitingInteractionType, id: string, embed: LgonEmbed)
+	constructor()
 	{
-		this.type = type;
-		this.id = id;
-		this.embed = embed;
+		this.id = "";
+		this.embed = newEmbed();
+		this.register = false;
 	}
-
 	
-	interact(bot: Client, reaction: MessageReaction, user: User)
+	public static newEmbed(): EmbedBuilder
 	{
-		this.embed.interact(bot, reaction, user);
+		let embed: EmbedBuilder = new EmbedBuilder()
+			.setColor('#158373');
+		return (embed);
 	}
-}
+
+	public async reply(bot: Client, message: Message): Promise<void> {}
+	public async send(bot: Client, channel: DMChannel | TextChannel): Promise<void> {}
+	public async react(bot: Client, reaction: MessageReaction, user: User): Promise<void> {}
+	public async select(bot: Client, selected: StringSelectMenuInteraction, user: User): Promise<void> {}
+	public async button(bot: Client, pressed: ButtonInteraction, user: User): Promise<void> {}
+};

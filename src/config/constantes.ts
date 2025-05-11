@@ -6,6 +6,7 @@ export const CONSTANTES =
 	FLAGS: MessageFlags.Ephemeral | MessageFlags.SuppressNotifications,
 	PREFIX  : PREFIX, 
 	MIN_NBR_PLAYERS : 1,
+	TURN_TIME_MS: 30000,
 	GAME_CHANNEL_NAME : "lgon-deroulement",
 	ROLES_CHANNEL_NAME : "lgon-roles",
 	ERRORS_CHANNEL_NAME : "lgon-erreurs",

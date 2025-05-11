@@ -9,12 +9,6 @@ class Sbire extends LgonRole
 	constructor(help: LgonRoleHelp, printName: string, owner: Player | string, id: number)
 	{
 		super(help, printName, owner, id);
-		this.owner = "bwahahha";
-	}
-
-	preshot_action()
-	{
-		console.log("pet");
 	}
 }
 

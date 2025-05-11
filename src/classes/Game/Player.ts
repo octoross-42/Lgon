@@ -1,8 +1,8 @@
 import { Client, User, Guild, EmbedBuilder, Collection, ButtonBuilder, ButtonStyle, ActionRowBuilder, Message, PartialMessage } from "discord.js";
 import { Game, getGame } from "./Game.js";
-import { LgonEmbed } from "../Embed/LgonEmbed.js";
 import { LgonRole } from "../LgonRole/LgonRole.js";
 import { CONSTANTES } from "../../config/constantes.js";
+import { newEmbed } from "../Embed/AwaitingInteraction.js";
 
 // TODO afficher joueurs par nickname et premier arrive premier servi + faire commande pour refresh nickname / changer nickname
 
@@ -173,7 +173,7 @@ export class Player
 	{
 		this.role = role;
 		let dm = await this.user.createDM(true);
-		let embed: EmbedBuilder = LgonEmbed.newEmbed()
+		let embed: EmbedBuilder = newEmbed()
 			.setTitle(this.name)
 			.setDescription(`Your role is **${role.printName}**`);
 

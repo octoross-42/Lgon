@@ -1,9 +1,9 @@
 import { Collection, Guild, Client, EmbedBuilder, Message, PartialMessage } from "discord.js";
 import { Player } from "./Player.js";
 import { getRoleName, LgonRoleGenerator } from "../../classes/LgonRole/LgonRoleGenerator.js";
-import { LgonEmbed } from "../Embed/LgonEmbed.js";
 import { CONSTANTES } from "../../config/constantes.js";
 import { LgonRole } from "../LgonRole/LgonRole.js";
+import { newEmbed } from "../Embed/AwaitingInteraction.js"
 
 export function getGame(bot: Client, guild: Guild, gameName: string | null, newGameName: string | null = null, createGame: boolean = false): Game | null
 {
@@ -46,6 +46,8 @@ export class Game
 	waitingRoom: Collection<string, Player>; // userId -> InGame
 	inGameRoles: LgonRole[] | null;
 	center: Collection<string, LgonRole> | null;
+	msg : Message | PartialMessage | null;
+	nightIndex: number;
 
 	constructor(guild: Guild, name: string)
 	{
@@ -77,6 +79,8 @@ export class Game
 		this.ready = 0;
 		this.rolesCount = 0;
 		this.center = null;
+		this.msg = null;
+		this.nightIndex = 0;
 	}
 
 	addReady(message: Message | PartialMessage): void
@@ -234,16 +238,60 @@ export class Game
 		}
 	}
 
+	async sendPreshotActions(bot: Client)
+	{
+		for (let player of this.players.values())
+		{
+			console.log(player);
+			if (player.role!.help.action)
+				await player.role!.preshot_action(bot);
+		}
+	}
+
 	async start(bot: Client, message: Message | PartialMessage)
 	{
 		this.status = "night";
 		const linkImage = "https://i.imgur.com/m3SG4PB.png";
-		let embed: EmbedBuilder = LgonEmbed.newEmbed();
+		let embed: EmbedBuilder = newEmbed();
 		embed.setTitle(this.name);
         embed.setThumbnail(linkImage);
 		embed.addFields({name: "Game has started !", value: "Each player will receieve its role in DM"});
-		await message.reply({embeds: [embed]});
+		await message.reply({embeds: [embed]}).then(msg => this.msg = msg);
 		await this.distributeRoles(bot);
+		await this.sendPreshotActions(bot);
+		await this.spendNight(bot);
+	}
+
+	async showNight(bot: Client, update: boolean)
+	{
+		let roleString: string = "";
+		let i: number = 0;
+		while (i < this.inGameRoles!.length)
+		{
+			roleString += `\t${this.inGameRoles![i].printName}`;
+			if (i === this.nightIndex)
+				roleString += " ◀"; //➤
+			roleString += "\n";
+			i ++;
+		}
+		
+		let embed: EmbedBuilder = newEmbed();
+		embed.setTitle(`**Night** ${this.name}`)
+			.addFields({name: "Night", value: roleString});
+		if (update)
+			await this.msg!.edit({
+			embeds: [embed]
+		});
+		else
+		{
+			await this.msg!.reply({
+			embeds: [embed]
+			}).then(msg => this.msg = msg);
+		}
+	}
+
+	async spendNight(bot: Client)
+	{
+		await this.showNight(bot, false);
 	}
 }
-

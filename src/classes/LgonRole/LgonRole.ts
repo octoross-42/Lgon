@@ -1,5 +1,5 @@
 import { Player } from "../Game/Player.js";
-import { LgonRoleHelp } from "discord.js";
+import { LgonRoleHelp, Client } from "discord.js";
 
 export abstract class LgonRole
 {
@@ -29,8 +29,7 @@ export abstract class LgonRole
 		this.id = id;
 	}
 
-	abstract preshot_action(): void;
-
-	
+	async preshot_action(bot: Client): Promise<void> {}
+	register_action(bot: Client, actions: string[]): void {}
 
 }

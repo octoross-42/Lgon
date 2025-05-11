@@ -1,11 +1,10 @@
-import { Client, User, Message, MessageReaction, PartialMessage } from "discord.js";
-import { LgonEmbed } from "./LgonEmbed.js"
+import { Client, User, Message, MessageReaction, PartialMessage, TextChannel, DMChannel } from "discord.js";
 import { Game } from "../Game/Game.js";
 import { Player } from "../Game/Player.js";
 import { CONSTANTES } from "../../config/constantes.js";
-import { AwaitingInteraction, AwaitingInteractionType } from "./AwaitingInteraction.js";
+import { AwaitingInteraction, newEmbed } from "./AwaitingInteraction.js";
 
-export class StartEmbed extends LgonEmbed
+export class StartEmbed extends AwaitingInteraction
 {
 	game: Game | null;
 
@@ -32,7 +31,6 @@ export class StartEmbed extends LgonEmbed
 			
 			this.game!.showRoles(this.embed)
 			this.game!.showPlayers(this.embed, true);
-			this.embed.addFields({ name: '', value: '\u200B'});
 
 			let rolesCount: number = 0;
 			this.game!.roles.forEach((role) => { rolesCount += role; });
@@ -46,13 +44,16 @@ export class StartEmbed extends LgonEmbed
 				error += "The game has already started";
 
 			if (error.length > 0)
+			{				
+				this.embed.addFields({ name: '', value: '\u200B'});
 				this.embed.addFields({ name: '**Error**', value: error, inline: false });
+			}
 			else
 				this.register = true;
 		}
 	}
 
-	public async send(bot: Client, message: Message): Promise<void>
+	public async reply(bot: Client, message: Message): Promise<void>
 	{
 		await message.reply(
 		{
@@ -62,7 +63,8 @@ export class StartEmbed extends LgonEmbed
 			{
 				if (this.register)
 				{
-					bot.awaitingInteractions.set(msg.id, new AwaitingInteraction(AwaitingInteractionType.START, msg.id, this));
+					this.id = msg.id;
+					bot.awaitingInteractions.set(msg.id, this);
 					msg.react("✅");
 					msg.react("❌");
 					console.log("startConfirmation", message.id);
@@ -71,10 +73,42 @@ export class StartEmbed extends LgonEmbed
 		);
 	}
 
+	public async send(bot: Client, channel: TextChannel | DMChannel): Promise<void>
+	{
+		// TODO : check all channel type: CategoryChannel
+										// DMChannel
+										// PartialDMChannel
+										// PartialGroupDMChannel
+										// NewsChannel
+										// StageChannel
+										// TextChannel
+										// AnyThreadChannel
+										// VoiceChannel
+										// ForumChannel
+										// MediaChannel
+
+										// guild Channel :
+										// TextChannel - VoiceChannel - CategoryChannel - NewsChannel - StageChannel - ForumChannel - MediaChannel
+		await channel.send(
+		{
+			embeds: [this.embed],
+			flags: CONSTANTES.FLAGS,
+		}).then(msg =>
+			{
+				if (this.register)
+				{
+					this.id = msg.id;
+					bot.awaitingInteractions.set(msg.id, this);
+					msg.react("✅");
+					msg.react("❌");
+				}
+			}
+		);
+	}
 
 	public update(message: Message | PartialMessage, user: User, yes: boolean): void
 	{
-		this.embed = LgonEmbed.newEmbed();
+		this.embed = newEmbed();
 		if (this.game)
 		{
 			this.game.players.get(user.username)?.setReady(message, yes);
@@ -89,7 +123,6 @@ export class StartEmbed extends LgonEmbed
 		}
 	}
 
-
 	async updateGame(bot: Client, message: Message | PartialMessage)
 	{
 		if (!this.game || (this.game.status !== "setup"))
@@ -98,7 +131,7 @@ export class StartEmbed extends LgonEmbed
 			await this.game!.start(bot, message);
 	}
 
-	public async interact(bot: Client, reaction: MessageReaction, user: User): Promise<void>
+	public async react(bot: Client, reaction: MessageReaction, user: User): Promise<void>
 	{
 		if ((reaction.emoji.name !== "✅") && (reaction.emoji.name !== "❌"))
 				return ;
