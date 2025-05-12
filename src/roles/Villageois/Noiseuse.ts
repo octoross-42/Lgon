@@ -3,7 +3,7 @@ import { Player, getPlayer } from "../../classes/Game/Player.js";
 import { CONSTANTES } from "../../config/constantes.js";
 import { AwaitingInteraction } from "../../classes/Embed/AwaitingInteraction.js"
 
-import { LgonRoleHelp, Client, Message, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, MessageReaction, User, TextChannel, DMChannel, StringSelectMenuInteraction, ButtonInteraction } from "discord.js";
+import { LgonRoleHelp, Client, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, MessageReaction, User, TextChannel, DMChannel, StringSelectMenuInteraction, ButtonInteraction } from "discord.js";
 
 class NoiseuseActionEmbed extends AwaitingInteraction
 {
@@ -22,7 +22,7 @@ class NoiseuseActionEmbed extends AwaitingInteraction
 			.addFields({name: "Change 2 players cards", value: "The 2 players have to be different, and you can select yourself\nYou also can't see the cards of the players you exchange cards of 🫶"});
 	
 		const selectPlayer1Menu = new StringSelectMenuBuilder()
-			.setCustomId("select_player1")
+			.setCustomId("select_players")
 			.setPlaceholder("Select two players")
 			.setMinValues(2)
 			.setMaxValues(2)

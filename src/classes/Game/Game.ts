@@ -48,6 +48,7 @@ export class Game
 	center: Collection<string, LgonRole> | null;
 	msg : Message | PartialMessage | null;
 	nightIndex: number;
+	timeoutId: NodeJS.Timeout | null;
 
 	constructor(guild: Guild, name: string)
 	{
@@ -65,6 +66,7 @@ export class Game
 			day: '2-digit'
 		}).format(new Date());
 
+		this.timeoutId = null;
 		this.inGameRoles = null;
 		this.guildId = guild.id;
 		this.guildName = guild.name;
@@ -99,8 +101,7 @@ export class Game
 	}
 	
 	addPlayer(player: Player, embed: EmbedBuilder): void
-	{	
-		// console.log("add player", player.name, this.name);
+	{
 		this.players.set(player.name, player);
 		embed.addFields({ name: '**Join**', value: `${player.name} has joined **${this.name}**`, inline: false });
 	}
@@ -186,7 +187,7 @@ export class Game
 			// console.log(role);
 			if (role[1] > 1)
 				rolesString += role[1] + " ";
-			rolesString += role[0] + "\n";
+			rolesString += role[0][0].toUpperCase() + role[0].substr(1) + "\n";
 		}
 		if (rolesString.length > 0)
 			embed.addFields({ name: `**Roles**`, value: rolesString, inline: true });
@@ -269,15 +270,23 @@ export class Game
 		while (i < this.inGameRoles!.length)
 		{
 			roleString += `\t${this.inGameRoles![i].printName}`;
+			if (this.inGameRoles![i].help.action)
+				roleString += "  💪";
+			if (this.inGameRoles![i].help.information)
+				roleString += "  🧠";
+			else
+				roleString += "  💤";
 			if (i === this.nightIndex)
-				roleString += " ◀"; //➤
+				roleString += "  ◀"; //➤
 			roleString += "\n";
 			i ++;
 		}
+		if (i === this.nightIndex)
+			roleString += '__________';
 		
 		let embed: EmbedBuilder = newEmbed();
 		embed.setTitle(`**Night** ${this.name}`)
-			.addFields({name: "Night", value: roleString});
+			.addFields({name: "", value: roleString});
 		if (update)
 			await this.msg!.edit({
 			embeds: [embed]
@@ -290,8 +299,45 @@ export class Game
 		}
 	}
 
-	async spendNight(bot: Client)
+	async nextNightTurn(bot: Client)
 	{
-		await this.showNight(bot, false);
+		this.nightIndex ++;
+		if (this.nightIndex === this.inGameRoles!.length)
+			await this.endNight(bot);
+		else
+			await this.spendNight(bot, true);
+	}
+
+	async spendNight(bot: Client, update: boolean = false)
+	{
+		await this.showNight(bot, update);
+		if (!this.inGameRoles![this.nightIndex].help.action)
+			await this.nextNightTurn(bot);
+		else if (typeof(this.inGameRoles![this.nightIndex].owner === "string"))
+		{
+			setTimeout(async (): Promise<void> => {
+				await this.nextNightTurn(bot);
+			}, Math.floor(Math.random() * CONSTANTES.TURN_TIME_MS / 3));
+		}
+		else
+		{
+			this.timeoutId = setTimeout(async (): Promise<void> => {
+				await this.inGameRoles![this.nightIndex].play_auto();
+				await this.nextNightTurn(bot);
+			}, CONSTANTES.TURN_TIME_MS);
+		}
+	}
+	
+	async endNight(bot: Client): Promise<void>
+	{
+		await this.showNight(bot, true);
+
+		let embed = newEmbed()
+			.setTitle(this.name)
+			.addFields({name: "Night has ended", value: "You can now proceed to vote when you're ready !"});
+		
+		await this.msg!.reply({
+			embeds: [embed]
+		});
 	}
 }

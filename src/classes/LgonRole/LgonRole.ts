@@ -32,4 +32,6 @@ export abstract class LgonRole
 	async preshot_action(bot: Client): Promise<void> {}
 	register_action(bot: Client, actions: string[]): void {}
 
+	async play_auto() {}
+
 }
