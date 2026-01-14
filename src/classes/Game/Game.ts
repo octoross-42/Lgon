@@ -48,6 +48,8 @@ export class Game
 	center: Collection<string, LgonRole> | null;
 	msg : Message | PartialMessage | null;
 	nightIndex: number;
+	pause: boolean;
+	remainingTimeout: number;
 	timeoutId: NodeJS.Timeout | null;
 
 	constructor(guild: Guild, name: string)
@@ -78,6 +80,8 @@ export class Game
 		this.waitingRoom = new Collection<string, Player>();
 		this.roles = new Collection<string, number>();
 		this.isDefaultGame = false;
+		this.pause = false;
+		this.remainingTimeout = -1;
 		this.ready = 0;
 		this.rolesCount = 0;
 		this.center = null;
@@ -227,6 +231,7 @@ export class Game
 					{
 						const index: number = Math.floor(Math.random() * tmpPlayers.length);
 						lgonRole = roleGen.generateRole(tmpPlayers[index], roleId);
+						// let lgonNightyRole: LgonRole = roleGen.generateRole(tmpPlayers[index], roleId);
 						await tmpPlayers[index].sendRole(lgonRole);
 						tmpPlayers.splice(index, 1);
 					}
@@ -244,7 +249,7 @@ export class Game
 		for (let player of this.players.values())
 		{
 			console.log(player);
-			if (player.role!.help.action)
+			if (player.role!.generator.action)
 				await player.role!.preshot_action(bot);
 		}
 	}
@@ -269,10 +274,10 @@ export class Game
 		let i: number = 0;
 		while (i < this.inGameRoles!.length)
 		{
-			roleString += `\t${this.inGameRoles![i].printName}`;
-			if (this.inGameRoles![i].help.action)
+			roleString += `\t${this.inGameRoles![i].generator.printName}`;
+			if (this.inGameRoles![i].generator.action)
 				roleString += "  💪";
-			if (this.inGameRoles![i].help.information)
+			if (this.inGameRoles![i].generator.information)
 				roleString += "  🧠";
 			else
 				roleString += "  💤";
@@ -282,7 +287,7 @@ export class Game
 			i ++;
 		}
 		if (i === this.nightIndex)
-			roleString += '__________';
+			roleString += '________';
 		
 		let embed: EmbedBuilder = newEmbed();
 		embed.setTitle(`**Night** ${this.name}`)
@@ -311,7 +316,7 @@ export class Game
 	async spendNight(bot: Client, update: boolean = false)
 	{
 		await this.showNight(bot, update);
-		if (!this.inGameRoles![this.nightIndex].help.action)
+		if (!this.inGameRoles![this.nightIndex].generator.action)
 			await this.nextNightTurn(bot);
 		else if (typeof(this.inGameRoles![this.nightIndex].owner === "string"))
 		{
