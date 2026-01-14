@@ -29,7 +29,9 @@ declare module 'discord.js'
 		usage?: string;
 	}
 
-	export interface LgonRoleHelp
+	
+
+	export interface LgonRoleMeta
 	{
 		name: string;
 		category: "Loup" | "Villageois" | "Independant";
