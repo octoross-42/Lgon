@@ -1,4 +1,6 @@
 import { Client, Event } from 'discord.js';
+
+import { pathToFileURL } from "node:url";
 import fg from 'fast-glob';
 
 const loadEvents = async (bot: Client, eventDir = 'build/events'): Promise<void> =>
@@ -8,7 +10,8 @@ const loadEvents = async (bot: Client, eventDir = 'build/events'): Promise<void>
 
 	for (const evenFile of eventsFiles)
 	{
-		const event: Event = await import(evenFile);
+		const event: Event = await import(pathToFileURL(evenFile).href);
+			
 		console.log(`\t${event.name}`);
 		bot.on(event.name, event.onEvent.bind(null, bot));
 	}

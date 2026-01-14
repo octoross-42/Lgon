@@ -1,5 +1,7 @@
 import { Client, CommandHelp } from 'discord.js';
 import { BotCommand } from '../classes/Commands/BotCommand.js';
+
+import { pathToFileURL } from "node:url";
 import fg from 'fast-glob';
 
 const loadCommands =  async (bot: Client, commandDir: string = 'build/commands'): Promise<void> =>
@@ -9,7 +11,7 @@ const loadCommands =  async (bot: Client, commandDir: string = 'build/commands')
 
 	for (const commandFile of commandFiles)
 	{
-		const commandContent = await import(commandFile);
+		const commandContent = await import(pathToFileURL(commandFile).href);
 		let command: BotCommand = new BotCommand(commandContent.help, commandFile, commandContent.run);
 		console.log(`\t${command.name}`);
 		bot.commands.set(command.name, command);
