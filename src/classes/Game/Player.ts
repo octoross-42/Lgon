@@ -48,6 +48,7 @@ export class Player
 	name: string;
 	game: Game | null;
 	role: LgonRole | null;
+	nightyRole: LgonRole | null;
 	waitingRoom: Game | null;
 	// historic: Game[]; // TODO creer class game record
 	askConfirmation: boolean;
@@ -59,6 +60,7 @@ export class Player
 	{
 		// this.historic = [];
 		this.role = null;
+		this.nightyRole = null;
 		this.ready = false;
 		this.name = user.username;
 		this.game = null;
@@ -172,10 +174,11 @@ export class Player
 	async sendRole(role: LgonRole)
 	{
 		this.role = role;
+		this.nightyRole = role.generator.generateRole(this, role.id);
 		let dm = await this.user.createDM(true);
 		let embed: EmbedBuilder = newEmbed()
 			.setTitle(this.name)
-			.setDescription(`Your role is **${role.printName}**`);
+			.setDescription(`Your role is **${role.generator.printName}**`);
 
 		await dm.send({ embeds: [embed], flags: CONSTANTES.FLAGS});
 	}
