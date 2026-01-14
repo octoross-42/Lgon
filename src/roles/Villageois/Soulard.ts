@@ -1,12 +1,13 @@
+// TODO CHECK double de roels
 import { LgonRole } from "../../classes/LgonRole/LgonRole.js";
-import { Player, getPlayer } from "../../classes/Game/Player.js";
-import { CONSTANTES } from "../../config/constantes.js";
+import { Player } from "../../classes/Game/Player.js";
 import { AwaitingInteraction } from "../../classes/Embed/AwaitingInteraction.js"
+import { CONSTANTES } from "../../config/constantes.js";
 
-import { Client, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, MessageReaction, User, TextChannel, DMChannel, StringSelectMenuInteraction, ButtonInteraction } from "discord.js";
+import { LgonRoleMeta, Client, User, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, StringSelectMenuInteraction, TextChannel, DMChannel } from "discord.js";
 import { LgonRoleGenerator } from "src/classes/LgonRole/LgonRoleGenerator.js";
 
-class NoiseuseActionEmbed extends AwaitingInteraction
+class SoulardActionEmbed extends AwaitingInteraction
 {
 	actionRow: ActionRowBuilder<StringSelectMenuBuilder>;
 	player: Player;
@@ -20,17 +21,17 @@ class NoiseuseActionEmbed extends AwaitingInteraction
 		this.role = player.role!;
 		this.embed.setTitle("Action")
 			.setDescription(`You can preshot your action as a ${player.role!.generator.printName}\nYour action will only be done on your turn`)
-			.addFields({name: "Change 2 players cards", value: "The 2 players have to be different, and you can select yourself\nYou also can't see the cards of the players you exchange cards of 🫶"});
+			.addFields({name: "Select one center card", value: "As you're drunk, you mistakly exchange your card at the bar, one of the center, choose one, not optional, and you won't know which card it is"});
 	
 		const selectPlayer1Menu = new StringSelectMenuBuilder()
-			.setCustomId("select_players")
-			.setPlaceholder("Select two players")
-			.setMinValues(2)
-			.setMaxValues(2)
-			.addOptions(player.game!.players.map((player: Player) =>
+			.setCustomId("select_center")
+			.setPlaceholder("Select center")
+			.setMinValues(1)
+			.setMaxValues(1)
+			.addOptions(["left", "middle", "right"].map(center =>
 				new StringSelectMenuOptionBuilder()
-					.setLabel(player.name)
-					.setValue(player.name)
+					.setLabel(center)
+					.setValue(center)
 		));
 		this.actionRow = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectPlayer1Menu);
 
@@ -45,60 +46,51 @@ class NoiseuseActionEmbed extends AwaitingInteraction
 			bot.awaitingInteractions.set(msg.id, this));
 	}
 
-	public async select(bot: Client, selected: StringSelectMenuInteraction,user: User): Promise<void>
+	public async select(bot: Client, selected: StringSelectMenuInteraction, user: User): Promise<void>
 	{
-		// TODO link select modify (la je crois cest que create)
-		// TODO : interdire jeu ou les roles peuvent pas se faire exemple noiseuse a 1 joueur
-		console.log("lala : ", selected.values);
 		this.player.role!.register_action(bot, selected.values);
 		selected.deferUpdate();
 	}
 }
 
-
-export class Noiseuse extends LgonRole
+class Soulard extends LgonRole
 {
-	player1: Player | null;
-	player2: Player | null;
+	center: "left" | "middle" | "right" | null;
 	
 	constructor(generator: LgonRoleGenerator, owner: Player | string, id: number)
 	{
 		super(generator, owner, id);
-		this.player1 = null;
-		this.player2 = null;
+		this.center = null;
 	}
 
 	// TODO faire plusieurs types de classes -> Action et tout
 
 	async preshot_action(bot: Client)
 	{
-		let actionEmbed = new NoiseuseActionEmbed(this.owner as Player);
+		let actionEmbed = new SoulardActionEmbed(this.owner as Player);
 		let dm = await (this.owner as Player).user.createDM();
 		await actionEmbed.send(bot, dm);
 	}
 
 	register_action(bot: Client, actions: string[]): void
 	{
-		this.player1 = bot.players.get(actions[0])!;
-		this.player2 = bot.players.get(actions[1])!;
+		this.center = actions[0] as "left" | "middle" | "right";
 	}
-
-	do_action()
-	{}
 }
 
 const roleGenerator: LgonRoleGenerator = new LgonRoleGenerator(
 	{
-		name: "noiseuse",
+		name: "soulard",
 		category: "Villageois",
-		description: "La Noiseuse échange les rôles de 2 personnes sans qu'ils n'en prennent connaissance",
-		cdv: "La Noiseuse est une villageoise, il doit tuer un Loup pour gagner",
-		usage: `\`${CONSTANTES.PREFIX} action\` noms ou tags de deux personnes`,
-		action: true,
+		description: "La Soulard échange son rôle avec un rôle au centre mais n'en prend pas connaissance",
+		cdv: "La Soulard est une villageoise, il doit tuer un Loup pour gagner",
+		usage: `\`${CONSTANTES.PREFIX} action \`gauche\` \`milieu\` ou \`droite\``,
+		aliases: ["soulard"],
+		action: false,
 		information: false,
 		vote: false,
 	},
-	Noiseuse
+	Soulard
 )
 
 export default {

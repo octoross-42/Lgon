@@ -1,26 +1,30 @@
 import { LgonRole } from "../../classes/LgonRole/LgonRole.js";
 import { Player } from "../../classes/Game/Player.js";
-import { CONSTANTES } from "../../config/constantes.js";
 
-import { Client, LgonRoleHelp } from "discord.js";
+import { LgonRoleGenerator } from "src/classes/LgonRole/LgonRoleGenerator.js";
 
 class Villageois extends LgonRole
 {
-	constructor(help: LgonRoleHelp, printName: string, owner: Player | string, id: number)
+	constructor(generator: LgonRoleGenerator, owner: Player | string, id: number)
 	{
-		super(help, printName, owner, id);
+		super(generator, owner, id);
 	}
 }
+const roleGenerator: LgonRoleGenerator = new LgonRoleGenerator(
+	{
+		name: "villageois",
+		category: "Villageois",
+		description: "La Villageois existe...",
+		cdv: "Le Villageois est un villageois (étonnant non ?), il doit tuer un Loup pour gagner",
+		usage: `Il n'a pas d'action`,
+		aliases: ["Villageois"],
+		action: false,
+		information: false,
+		vote: false,
+	},
+	Villageois
+)
 
-function roleGenerator(help: LgonRoleHelp, printName: string, owner: Player | string, id: number): Villageois
-{
-	return (new Villageois(help, printName, owner, id));
-}
-
-const help = CONSTANTES.ROLES.VILLAGEOIS.VILLAGEOIS;
-
-export
-{
-	roleGenerator,
-	help
+export default {
+	roleGenerator
 }

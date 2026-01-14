@@ -1,26 +1,29 @@
-import { CONSTANTES } from "../../config/constantes.js";
 import { LgonRole } from "../../classes/LgonRole/LgonRole.js";
+import { LgonRoleGenerator } from "../../classes/LgonRole/LgonRoleGenerator.js";
 import { Player } from "../../classes/Game/Player.js";
-
-import { LgonRoleHelp } from "discord.js";
 
 class Sbire extends LgonRole
 {
-	constructor(help: LgonRoleHelp, printName: string, owner: Player | string, id: number)
+	constructor(generator: LgonRoleGenerator, owner: Player | string, id: number)
 	{
-		super(help, printName, owner, id);
+		super(generator, owner, id);
 	}
 }
 
-function roleGenerator(help: LgonRoleHelp, printName: string, owner: Player | string, id: number): Sbire
-{
-	return (new Sbire(help, printName, owner, id));
-}
+const roleGenerator: LgonRoleGenerator = new LgonRoleGenerator(
+	{
+		name: "sbire",
+		category: "Loup",
+		description: "Le Sbire n'est pas un Loup, mais les connait et en devient un s'il n'y a aucun Loup parmi les joueurs",
+		cdv: "Aucun Loup ne doit mourir (il peut donc par exemple gagner en mourant",
+		usage: `Il reçoit les noms des Loups et se rendort (n'a pas d'action)`,
+		action: false,
+		information: true,
+		vote: false,
+	},
+	Sbire
+)
 
-const help = CONSTANTES.ROLES.LOUPS.SBIRE;
-
-export
-{
-	roleGenerator,
-	help
+export default {
+	roleGenerator
 }
