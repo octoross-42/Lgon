@@ -33,7 +33,6 @@ export class BotCommand
 	  const path = commandFilePath.split("/");
 	  const initPath = path.indexOf("commands");
 	  this.category = path.slice(initPath + 1, -1);
-	//   console.log(this.category);
 	  this.run = run;
 	}
 
