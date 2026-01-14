@@ -1,4 +1,4 @@
-const PREFIX  = "lgon"
+export const PREFIX  = "lgon"
 import { MessageFlags } from "discord.js";
 
 export const CONSTANTES =
@@ -41,28 +41,6 @@ export const CONSTANTES =
 	{
         BOT :
 		{
-			DATA:
-			{
-				HELP:
-				{
-					name : "help",
-					description : "Aide pour utilisation des commandes",
-					nbrArgsRequired : 0,
-					cooldown: 1,
-					where: "any",
-					aliases: ["aled"], 
-					usage : `seul pour la liste des commandes sinon \`<command_name>\` pour l'aide sur la commande`,
-				},
-				DATA:
-				{
-					name : "data",
-					description : "Envoie en privé toutes les infos du bot sur ce serveur",
-					nbrArgsRequired : 0,
-					cooldown: 5,
-					where: "guild",
-					aliases: [],
-				},
-			},
 			MISC:
 			{
 				CLEAR_CHANNEL:
@@ -143,36 +121,11 @@ export const CONSTANTES =
 					where: "guild",
 					
 				},
-				START:
-				{
-					name : "start",
-					description : "Commence la nuit manuellement",
-					nbrArgsRequired : 0,
-					cooldown: 1,
-					where: "guild",
-					
-				},
+				
 			},
 			DATA:
-			{
-				STATUS:
-				{
-					name : "status",		
-					description : "Status de la partie",
-					nbrArgsRequired : 0,
-					cooldown: 1,
-					where: "any",
-				},
-				SHOW:
-				{
-					name : "show",
-					description : "Montre les parametres d'une game",
-					nbrArgsRequired : 0,
-					cooldown: 1,
-					where: "any",
-				},
-
-				RECAP:
+			{	
+			    RECAP:
 				{
 					name : "recap",		
 					description : "Recap pour la fin de partie",
@@ -203,86 +156,13 @@ export const CONSTANTES =
 					aliases: ["ROLES_DATA"], 
 					usage : `\`${PREFIX} ROLES_DATA\``,
 				},
-				RULES:
-				{
-					name : "rules",		
-					description : "Afficher les règles du jeu",
-					nbrArgsRequired : 0,
-					cooldown: 1,
-					where: "any",
-				},
-				ORDER:
-				{
-					name : "order",		
-					description : "Affiche l'ordre des rôles dans la nuit",
-					nbrArgsRequired : 0,
-					cooldown: 1,
-					where: "any",
-				}
+				
+				
 			},
 			SETUP:
 			{
-				PLAYERS:
-				{
-					PLAY:
-					{
-						name : "play",
-						description : "Exécute l'action d'un joueur",
-						nbrArgsRequired : 0,
-						cooldown: 1,
-						where: "dm",
-						aliases: ["action"], 
-						usage : `\`${PREFIX} action\` seul pour la liste des rôles sinon \`<role_name>\` pour l'aide sur le rôle`,
-					},
-					JOIN:
-					{
-						name : "join",
-						description : "Ajouter un joueur à une game",
-						nbrArgsRequired : 0,
-						cooldown: 1,
-						where: "guild",
-						usage: `- \`${PREFIX} join\` (si une game sur le serveur, la rejoint, sinon rejoint la game définie par défaut)\n- \`${PREFIX} join <game_name>\``,
-					},
-					CHANGE_GAME:
-					{
-						name : "change_game",
-						description : "Ajouter un joueur à une game et force le joueur à change de game s'il est déjà dans une game",
-						nbrArgsRequired : 0,
-						cooldown: 1,
-						aliases: ["change"],
-						where: "guild",
-						usage: `- \`${PREFIX} change_game\` (si une game sur le serveur, la rejoint, sinon rejoint la game définie par défaut)\n- \`${PREFIX} chnage_name <game_name>\``,
-					},
-					LEAVE:
-					{
-						name : "leave",
-						description : "Enlever un joueur",
-						nbrArgsRequired : 0,
-						cooldown: 1,
-						where: "guild",
-						aliases: ["unjoin"],
-					},
-					SPECTATE:
-					{
-						name : "spectate",
-						description : "Spectate une game",
-						nbrArgsRequired : 0,
-						cooldown: 1,
-						where: "guild",
-					},
-				},
 				ROLES:
 				{
-					ADD_ROLES:
-					{
-						name : "add_roles",
-						description : "ajoute des rôles à la composition",
-						nbrArgsRequired : 1,
-						cooldown: 0,
-						where: "guild",
-						aliases: ["add_roles", "add"], 
-						usage : `\`${PREFIX} add_roles\` \`quantité du rôle ajouté\` \`role_name\``,
-					},
 					SET_ROLES:
 					{
 						name : "set_roles",
@@ -374,18 +254,7 @@ export const CONSTANTES =
         
         LOUPS :
 		{
-            LOUP_GAROU :
-			{
-                name: "loup-garou",
-				category: "Loup",
-                description: "Le Loup-garou se réveille dans la nuit pour prendre connaissance de sa meute ou s'il est seul regarde une carte au centre (et devient un type action)",
-                cdv: "Aucun Loup ne doit mourir",
-                usage: `S'il est seul : \`${PREFIX} action\` \`droite\` ou \`milieu\` ou \`gauche\``,
-                aliases: ["lg"],
-                action: false,
-				information: true,
-				vote: false,
-            },
+           
             LOUP_ALPHA :
 			{
                 name: "loup-alpha",
@@ -422,17 +291,7 @@ export const CONSTANTES =
 				information: false,
 				vote: false,
             },
-            SBIRE :
-			{
-                name: "sbire",
-				category: "Loup",
-                description: "Le Sbire n'est pas un Loup, mais les connait et en devient un s'il n'y a aucun Loup parmi les joueurs",
-                cdv: "Aucun Loup ne doit mourir (il peut donc par exemple gagner en mourant",
-                usage: `Il reçoit les noms des Loups et se rendort (n'a pas d'action)`,
-                action: false,
-				information: true,
-				vote: false,
-            },
+           
         },
 
         VILLAGEOIS :
@@ -534,17 +393,7 @@ export const CONSTANTES =
 				vote: false,
 
             },
-            NOISEUSE :
-			{
-                name: "noiseuse",
-				category: "Villageois",
-                description: "La Noiseuse échange les rôles de 2 personnes sans qu'ils n'en prennent connaissance",
-                cdv: "La Noiseuse est une villageoise, il doit tuer un Loup pour gagner",
-                usage: `\`${PREFIX} action\` noms ou tags de deux personnes`,
-                action: true,
-				information: false,
-				vote: false,
-            },
+            
             PRINCE :
 			{
                 name: "prince",
@@ -568,30 +417,8 @@ export const CONSTANTES =
 				information: false,
 				vote: false,
             },
-            SOULARD :
-			{
-                name: "soulard",
-				category: "Villageois",
-                description: "La Soulard échange son rôle avec un rôle au centre mais n'en prend pas connaissance",
-                cdv: "La Soulard est une villageoise, il doit tuer un Loup pour gagner",
-                usage: `\`${PREFIX} action \`gauche\` \`milieu\` ou \`droite\``,
-                aliases: ["soulard"],
-                action: false,
-				information: false,
-				vote: false,
-            },
-            VILLAGEOIS :
-			{
-                name: "villageois",
-				category: "Villageois",
-                description: "La Villageois existe...",
-                cdv: "Le Villageois est un villageois (étonnant non ?), il doit tuer un Loup pour gagner",
-                usage: `Il n'a pas d'action`,
-                aliases: ["Villageois"],
-                action: false,
-				information: false,
-				vote: false,
-            },
+            
+          
             VOLEUR :
 			{
                 name: "voleur",
