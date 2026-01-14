@@ -44,4 +44,11 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 }
 
 
-export const help = CONSTANTES.COMMANDS.GAME.DATA.ORDER;
+export const meta =
+{
+	name : "order",		
+	description : "Affiche l'ordre des rôles dans la nuit",
+	nbrArgsRequired : 0,
+	cooldown: 1,
+	where: "any",
+}

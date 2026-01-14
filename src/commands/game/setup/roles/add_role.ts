@@ -136,4 +136,13 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 		
 }
 
-export const help = CONSTANTES.COMMANDS.GAME.SETUP.ROLES.ADD_ROLES;
+export const meta =
+{
+	name : "add_roles",
+	description : "ajoute des rôles à la composition",
+	nbrArgsRequired : 1,
+	cooldown: 0,
+	where: "guild",
+	aliases: ["add_roles", "add"], 
+	usage : `\`${CONSTANTES.PREFIX} add_roles\` \`quantité du rôle ajouté\` \`role_name\``,
+};

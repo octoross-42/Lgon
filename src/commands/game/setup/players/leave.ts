@@ -21,4 +21,12 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 	});
 }
 
-export const help = CONSTANTES.COMMANDS.GAME.SETUP.PLAYERS.LEAVE;
+export const meta = 
+{
+	name : "leave",
+	description : "Enlever un joueur",
+	nbrArgsRequired : 0,
+	cooldown: 1,
+	where: "guild",
+	aliases: ["unjoin"],
+};

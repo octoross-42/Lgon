@@ -1,4 +1,4 @@
-const
+                                                                                                                                                                                                 const
 { CONSTANTES } = require ("../../../config/constantes.js");
 
 module.exports.run = (bot, message, argsMessage) =>

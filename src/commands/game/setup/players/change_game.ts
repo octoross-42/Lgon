@@ -26,4 +26,13 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 		
 }
 
-export const help = CONSTANTES.COMMANDS.GAME.SETUP.PLAYERS.CHANGE_GAME;
+export const meta =
+{
+	name : "change_game",
+	description : "Ajouter un joueur à une game et force le joueur à change de game s'il est déjà dans une game",
+	nbrArgsRequired : 0,
+	cooldown: 1,
+	aliases: ["change"],
+	where: "guild",
+	usage: `- \`${CONSTANTES.PREFIX} change_game\` (si une game sur le serveur, la rejoint, sinon rejoint la game définie par défaut)\n- \`${CONSTANTES.PREFIX} chnage_name <game_name>\``,
+};

@@ -135,4 +135,12 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 	// await message.channel.send(`Votre commande n'est pas valide !  (\`${CONSTANTES.PREFIX} help action\` pour afficher les rôles)`);
 };
 
-export const help = CONSTANTES.COMMANDS.BOT.DATA.HELP;
+export const meta = {
+	name : "help",
+	description : "Aide pour utilisation des commandes",
+	nbrArgsRequired : 0,
+	cooldown: 1,
+	where: "any",
+	aliases: ["aled"], 
+	usage : `seul pour la liste des commandes sinon \`<command_name>\` pour l'aide sur la commande`,
+};

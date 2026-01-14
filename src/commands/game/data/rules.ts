@@ -27,4 +27,11 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 }
 
 
-export const help = CONSTANTES.COMMANDS.GAME.DATA.RULES;
+export const meta =
+{
+	name : "rules",		
+	description : "Afficher les règles du jeu",
+	nbrArgsRequired : 0,
+	cooldown: 1,
+	where: "any",
+};

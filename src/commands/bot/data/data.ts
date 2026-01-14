@@ -106,4 +106,12 @@ export function run(bot: Client, message: Message, argv: string[]): Promise<void
 //     })
 }
 
-export const help = CONSTANTES.COMMANDS.BOT.DATA.DATA;
+export const meta = 
+{
+	name : "data",
+	description : "Envoie en privé toutes les infos du bot sur ce serveur",
+	nbrArgsRequired : 0,
+	cooldown: 5,
+	where: "guild",
+	aliases: [],
+};

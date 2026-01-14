@@ -7,4 +7,11 @@ export function run(bot: Client, message: Message, argv: string[]): Promise<void
 	// console.log(message.guild);
 }
 
-export const help = CONSTANTES.COMMANDS.GAME.SETUP.PLAYERS.SPECTATE;
+export const meta =
+{
+	name : "spectate",
+	description : "Spectate une game",
+	nbrArgsRequired : 0,
+	cooldown: 1,
+	where: "guild",
+};

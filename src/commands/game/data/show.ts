@@ -32,4 +32,11 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 }
 
 
-export const help = CONSTANTES.COMMANDS.GAME.DATA.SHOW;
+export const meta =
+{
+	name : "show",
+	description : "Montre les parametres d'une game",
+	nbrArgsRequired : 0,
+	cooldown: 1,
+	where: "any",
+};

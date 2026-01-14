@@ -7,4 +7,13 @@ export function run(bot: Client, message: Message, argv: string[]): Promise<void
 	// console.log(message.guild);
 }
 
-export const help = CONSTANTES.COMMANDS.GAME.SETUP.PLAYERS.PLAY;
+export const meta =
+{
+	name : "play",
+	description : "Exécute l'action d'un joueur",
+	nbrArgsRequired : 0,
+	cooldown: 1,
+	where: "dm",
+	aliases: ["action"], 
+	usage : `\`${CONSTANTES.PREFIX} action\` seul pour la liste des rôles sinon \`<role_name>\` pour l'aide sur le rôle`,
+};

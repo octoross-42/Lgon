@@ -13,4 +13,12 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 	await startEmbed.reply(bot, message);
 }
 
-export const help = CONSTANTES.COMMANDS.GAME.CONTROLS.START;
+export const meta =
+{
+	name : "start",
+	description : "Commence la nuit manuellement",
+	nbrArgsRequired : 0,
+	cooldown: 1,
+	where: "guild",
+	
+};

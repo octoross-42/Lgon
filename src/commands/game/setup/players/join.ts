@@ -43,6 +43,14 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 	});
 }
 
-export const help = CONSTANTES.COMMANDS.GAME.SETUP.PLAYERS.JOIN;
+export const meta =
+{
+	name : "join",
+	description : "Ajouter un joueur à une game",
+	nbrArgsRequired : 0,
+	cooldown: 1,
+	where: "guild",
+	usage: `- \`${CONSTANTES.PREFIX} join\` (si une game sur le serveur, la rejoint, sinon rejoint la game définie par défaut)\n- \`${CONSTANTES.PREFIX} join <game_name>\``,
+};
 
 // TODO : gerer waiting room en fonction de connexion vocale (a la fin de la partie, si des gens quittent le vocal, ca enleve la personne par defaut) -> en faire un paramètre modifiable

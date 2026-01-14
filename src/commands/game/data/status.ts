@@ -45,4 +45,11 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 	// 	return ;
 }
 
-export const help = CONSTANTES.COMMANDS.GAME.DATA.STATUS;
+export const meta =
+{
+	name : "status",		
+	description : "Status de la partie",
+	nbrArgsRequired : 0,
+	cooldown: 1,
+	where: "any",
+};
