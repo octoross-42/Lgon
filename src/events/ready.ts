@@ -17,4 +17,4 @@ export function onEvent(bot: Client): void
     bot.user!.setActivity("P'tit Lg ?");
 }
 
-export const name = "ready";
+export const name = "clientReady";
