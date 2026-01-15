@@ -17,7 +17,7 @@ import
 	
 declare module 'discord.js'
 {
-	export interface CommandHelp
+	export interface CommandMeta
 	{
 		name: string;
 		aliases?: string[];

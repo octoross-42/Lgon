@@ -1,4 +1,4 @@
-import { Client, Message, CommandHelp } from "discord.js";
+import { Client, Message, CommandMeta } from "discord.js";
 import { CONSTANTES } from "../../config/constantes.js";
 
 export class BotCommand
@@ -14,7 +14,7 @@ export class BotCommand
 	where: "dm" | "guild" | "any";
 	run: (bot: Client, message: Message, argv: string[]) => Promise<void> | void;
 
-	constructor(help : CommandHelp, commandFilePath: string, run: (bot: Client, message: Message, argv: string[]) => Promise<void> | void)
+	constructor(help : CommandMeta, commandFilePath: string, run: (bot: Client, message: Message, argv: string[]) => Promise<void> | void)
 	{
 	  this.name = help.name;
 	  this.description = help.description;
