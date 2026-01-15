@@ -4,7 +4,7 @@ import { CONSTANTES } from "../../config/constantes.js";
 import { AwaitingInteraction } from "../../classes/Embed/AwaitingInteraction.js"
 
 import { Client, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, MessageReaction, User, TextChannel, DMChannel, StringSelectMenuInteraction, ButtonInteraction } from "discord.js";
-import { LgonRoleGenerator } from "src/classes/LgonRole/LgonRoleGenerator.js";
+import { LgonRoleGenerator } from "../../classes/LgonRole/LgonRoleGenerator.js";
 
 class NoiseuseActionEmbed extends AwaitingInteraction
 {
@@ -56,7 +56,7 @@ class NoiseuseActionEmbed extends AwaitingInteraction
 }
 
 
-export class Noiseuse extends LgonRole
+class Noiseuse extends LgonRole
 {
 	player1: Player | null;
 	player2: Player | null;
@@ -87,7 +87,7 @@ export class Noiseuse extends LgonRole
 	{}
 }
 
-const roleGenerator: LgonRoleGenerator = new LgonRoleGenerator(
+export const roleGenerator: LgonRoleGenerator = new LgonRoleGenerator(
 	{
 		name: "noiseuse",
 		category: "Villageois",
@@ -100,7 +100,3 @@ const roleGenerator: LgonRoleGenerator = new LgonRoleGenerator(
 	},
 	Noiseuse
 )
-
-export default {
-	roleGenerator
-}

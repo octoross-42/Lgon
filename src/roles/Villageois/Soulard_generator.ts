@@ -5,7 +5,7 @@ import { AwaitingInteraction } from "../../classes/Embed/AwaitingInteraction.js"
 import { CONSTANTES } from "../../config/constantes.js";
 
 import { LgonRoleMeta, Client, User, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, StringSelectMenuInteraction, TextChannel, DMChannel } from "discord.js";
-import { LgonRoleGenerator } from "src/classes/LgonRole/LgonRoleGenerator.js";
+import { LgonRoleGenerator } from "../../classes/LgonRole/LgonRoleGenerator.js";
 
 class SoulardActionEmbed extends AwaitingInteraction
 {
@@ -78,7 +78,7 @@ class Soulard extends LgonRole
 	}
 }
 
-const roleGenerator: LgonRoleGenerator = new LgonRoleGenerator(
+export const roleGenerator: LgonRoleGenerator = new LgonRoleGenerator(
 	{
 		name: "soulard",
 		category: "Villageois",
@@ -92,7 +92,3 @@ const roleGenerator: LgonRoleGenerator = new LgonRoleGenerator(
 	},
 	Soulard
 )
-
-export default {
-	roleGenerator
-}

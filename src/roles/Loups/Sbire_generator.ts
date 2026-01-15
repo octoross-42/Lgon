@@ -10,7 +10,7 @@ class Sbire extends LgonRole
 	}
 }
 
-const roleGenerator: LgonRoleGenerator = new LgonRoleGenerator(
+export const roleGenerator: LgonRoleGenerator = new LgonRoleGenerator(
 	{
 		name: "sbire",
 		category: "Loup",
@@ -23,7 +23,3 @@ const roleGenerator: LgonRoleGenerator = new LgonRoleGenerator(
 	},
 	Sbire
 )
-
-export default {
-	roleGenerator
-}
