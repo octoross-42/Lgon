@@ -1,22 +1,28 @@
-import { Client } from 'discord.js';
+import { Client, } from 'discord.js';
 import { LgonRoleGenerator } from '../classes/LgonRole/LgonRoleGenerator.js';
-import { LgonRole } from "../classes/LgonRole/LgonRole.js";
 
 import { pathToFileURL } from "node:url";
 import fg from 'fast-glob';
 
+type RoleFileContent =
+{
+	roleGenerator: LgonRoleGenerator;
+}
+
 const loadRoles = async (bot: Client, eventDir = 'build/roles'): Promise<void> =>
 {
-	const roleFiles = await fg(['**/*.js'], { cwd: eventDir, dot: true, absolute: true });
+	const roleFiles = await fg(['**/*_generator.js'], { cwd: eventDir, dot: true, absolute: true });
 	console.log(`\nLoading roles...`);
+	console.log(roleFiles);
 
 	for (const roleFile of roleFiles)
 	{
-		const { roleGenerator }: { roleGenerator: LgonRoleGenerator; }
+		console.log(roleFile);
+		const roleFileContent : RoleFileContent
 			= await import(pathToFileURL(roleFile).href);
-		console.log(`\t${roleGenerator.name}`);
-		bot.roles.set(roleGenerator.name, roleGenerator.name);
+		console.log(`\t${roleFileContent.roleGenerator.name}`);
+		bot.roles.set(roleFileContent.roleGenerator.name, roleFileContent.roleGenerator);
 	}
 };
 
-export { loadRoles }
+export default loadRoles;

@@ -17,4 +17,4 @@ const loadEvents = async (bot: Client, eventDir = 'build/events'): Promise<void>
 	}
 };
 
-export { loadEvents }
+export default loadEvents;

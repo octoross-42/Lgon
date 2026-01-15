@@ -4,13 +4,12 @@ import { Game } from "../classes/Game/Game.js";
 import { Player } from "../classes/Game/Player.js";
 import { AwaitingInteraction } from "../classes/Embed/AwaitingInteraction.js";
 import { LgonRoleGenerator } from "../classes/LgonRole/LgonRoleGenerator.js";
-
-import { loadCommands } from "./commands.js";
-import { loadSlashCommands} from "./slashCommands.js";
-import { loadEvents } from "./events.js";
-import { loadRoles } from "./roles.js";
 import { SlashCommand } from "../classes/Commands/SlashCommand.js";
-import { LgonRole } from "src/classes/LgonRole/LgonRole.js";
+
+import loadCommands from "./commands.js";
+import loadSlashCommands from "./slashCommands.js";
+import loadEvents from "./events.js";
+import loadRoles from "./roles.js";
 
 export async function loader(bot: Client): Promise<void>
 {
