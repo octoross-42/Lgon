@@ -97,7 +97,7 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 		});
 		return ;
 	}
-	embed.setTitle(`**Game ${player.game!.name}**`);
+	embed.setTitle(`**Game ${player.game!.meta.name}**`);
 	
 		
 	if ( player.game!.phase !== "setup")
@@ -111,7 +111,7 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 		return ;
 	}
 
-	if ( player.game!.guildId !== message.guild!.id)
+	if ( player.game!.meta.guildId !== message.guild!.id)
 	{
 		embed.addFields( { name: "**Error**", value: "You can only add roles in the guild where your game proceeds", inline: false });
 		await message.reply(

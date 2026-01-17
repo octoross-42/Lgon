@@ -1,6 +1,6 @@
 import { Collection, Client } from "discord.js";
 import { BotCommand } from "../classes/Commands/BotCommand.js";
-import { Game } from "../classes/Game/Game.js";
+import { Game } from "../classes/Game/Game/Game.js";
 import { Player } from "../classes/Game/Player.js";
 import { AwaitingInteraction } from "../classes/Embed/AwaitingInteraction.js";
 import { LgonRoleGenerator } from "../classes/LgonRole/LgonRoleGenerator.js";

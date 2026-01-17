@@ -1,6 +1,6 @@
 import { Client, Message, EmbedBuilder } from "discord.js";
 import { CONSTANTES } from "../../../config/constantes.js";
-import { Game } from "../../../classes/Game/Game.js";
+import { Game } from "../../../classes/Game/Game/Game.js";
 
 async function statusAllGames(bot: Client, message: Message): Promise<void>
 {

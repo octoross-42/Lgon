@@ -1,6 +1,6 @@
-import { LgonRole } from "../../classes/LgonRole/LgonRole.js";
-import { LgonRoleGenerator } from "../../classes/LgonRole/LgonRoleGenerator.js";
-import { Player } from "../../classes/Game/Player.js";
+import { LgonRole } from "../../../classes/LgonRole/LgonRole.js";
+import { LgonRoleGenerator } from "../../../classes/LgonRole/LgonRoleGenerator.js";
+import { Player } from "../../../classes/Game/Player.js";
 
 class Sbire extends LgonRole
 {

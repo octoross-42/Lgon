@@ -1,5 +1,5 @@
 import { Client, User, Guild, EmbedBuilder, Collection, ButtonBuilder, ButtonStyle, ActionRowBuilder, Message, PartialMessage } from "discord.js";
-import { Game, getGame } from "./Game.js";
+import { Game, getGame } from "./Game/Game.js";
 import { LgonRole } from "../LgonRole/LgonRole.js";
 import { CONSTANTES } from "../../config/constantes.js";
 import { newEmbed } from "../Embed/AwaitingInteraction.js";
@@ -123,17 +123,17 @@ export class Player
 			if ( !gameToJoinName )
 				gameToJoinName = this.name;
 			gameToJoin = new Game(guild, gameToJoinName!);
-			embed.addFields({ name: '**Game**', value: `The game **${gameToJoin.name}** has been created`, inline: false });
+			embed.addFields({ name: '**Game**', value: `The game **${gameToJoin.meta.name}** has been created`, inline: false });
 			
 			if ( games.size === 0 )
 			{
 				gameToJoin.setDefaultGame(true);		
-				embed.addFields({ name: '**Default**', value: `The game **${gameToJoin.name}** has been set as default`, inline: false });
+				embed.addFields({ name: '**Default**', value: `The game **${gameToJoin.meta.name}** has been set as default`, inline: false });
 			}
 			gameToJoin.addPlayer(this, embed);
-			games.set(gameToJoin!.name, gameToJoin!);
+			games.set(gameToJoin!.meta.name, gameToJoin!);
 		}
-		else if ( gameToJoin.status !== "setup" )
+		else if ( gameToJoin.phase !== "setup" )
 			gameToJoin.addWaitingPlayer(this, embed);
 			
 		else
@@ -152,7 +152,7 @@ export class Player
 			return (true);
 		}
 
-		if ( this.game?.status !== "setup" )
+		if ( this.game?.phase !== "setup" )
 		{
 			embed.addFields({ name: '**No**', value: `You can't leave a game that has already started`, inline: false });
 			return (false);

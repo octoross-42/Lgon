@@ -1,6 +1,6 @@
-import { Client, User, Message, MessageReaction, PartialMessage, TextChannel, DMChannel } from "discord.js";
-import { Game } from "../Game/Game/Game.js";
-import { Player } from "../Game/Player.js";
+import type { Client, User, Message, MessageReaction, PartialMessage, TextChannel, DMChannel } from "discord.js";
+import type { Game } from "../Game/Game/Game.js";
+import type { Player } from "../Game/Player.js";
 import { CONSTANTES } from "../../config/constantes.js";
 import { AwaitingInteraction, newEmbed } from "./AwaitingInteraction.js";
 
@@ -112,7 +112,7 @@ export class StartEmbed extends AwaitingInteraction
 		if (this.game)
 		{
 			this.game.players.get(user.username)?.setReady(message, yes);
-			this.embed.setTitle(`**Start ${this.game!.name}**`);
+			this.embed.setTitle(`**Start ${this.game!.meta.name}**`);
 			this.game!.showRoles(this.embed);
 			this.game!.showPlayers(this.embed, true);
 		}

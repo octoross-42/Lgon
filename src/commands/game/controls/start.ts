@@ -1,4 +1,4 @@
-import { Game, getGame } from "../../../classes/Game/Game.js";
+import { Game, getGame } from "../../../classes/Game/Game/Game.js";
 import { CONSTANTES } from "../../../config/constantes.js";
 import { Client, Embed, EmbedBuilder, Message } from "discord.js";
 import { getPlayer, Player } from "../../../classes/Game/Player.js";

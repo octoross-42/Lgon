@@ -1,5 +1,5 @@
 import { Client, Collection } from "discord.js";
-import { Game } from "../classes/Game/Game.js";
+import { Game } from "../classes/Game/Game/Game.js";
 
 export function onEvent(bot: Client): void
 {

@@ -19,7 +19,7 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 		return ;
 	}
 
-	embed.setTitle(`**Game ${player.game.name}**`);
+	embed.setTitle(`**Game ${player.game.meta.name}**`);
 	// embed.addFields( { name: '', value: '\u200B', inline: false });
 	embed.setDescription("Config of the game");
 	player.game.showPlayers(embed);

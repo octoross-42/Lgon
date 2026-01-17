@@ -1,5 +1,4 @@
-import type { Client, MessageReaction, User, Message, DMChannel, TextChannel, StringSelectMenuInteraction, ButtonInteraction } from "discord.js";
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, type Client, type MessageReaction, type User, type Message, type DMChannel, type TextChannel, type StringSelectMenuInteraction, type ButtonInteraction } from "discord.js";
 
 export function newEmbed(): EmbedBuilder
 {
