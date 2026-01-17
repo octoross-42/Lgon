@@ -1,5 +1,5 @@
 import { Client, User, Message, MessageReaction, PartialMessage, TextChannel, DMChannel } from "discord.js";
-import { Game } from "../Game/Game.js";
+import { Game } from "../Game/Game/Game.js";
 import { Player } from "../Game/Player.js";
 import { CONSTANTES } from "../../config/constantes.js";
 import { AwaitingInteraction, newEmbed } from "./AwaitingInteraction.js";
@@ -27,7 +27,7 @@ export class StartEmbed extends AwaitingInteraction
 		else
 		{
 			this.game = player.game!;
-			this.embed.setTitle(`**Start ${this.game!.name}**`);
+			this.embed.setTitle(`**Start ${this.game!.meta.name}**`);
 			
 			this.game!.showRoles(this.embed)
 			this.game!.showPlayers(this.embed, true);
@@ -40,7 +40,7 @@ export class StartEmbed extends AwaitingInteraction
 			if (this.game!.players.size !== rolesCount - 3)
 				error += `Not enough roles for the players ${rolesCount}/${this.game!.players.size + 3}\nThere needs to be 3 more roles than players to play`;
 	
-			if (this.game!.status !== "setup")
+			if (this.game!.phase !== "setup")
 				error += "The game has already started";
 
 			if (error.length > 0)
@@ -125,7 +125,7 @@ export class StartEmbed extends AwaitingInteraction
 
 	async updateGame(bot: Client, message: Message | PartialMessage)
 	{
-		if (!this.game || (this.game.status !== "setup"))
+		if (!this.game || (this.game.phase !== "setup"))
 			return ;
 		if ((this.game!.ready === this.game!.players.size) && (this.game!.players.size + 3 === this.game!.rolesCount) && (this.game!.players.size >= CONSTANTES.MIN_NBR_PLAYERS))
 			await this.game!.start(bot, message);
