@@ -1,9 +1,10 @@
 import { Collection, Guild, Client, EmbedBuilder, Message, PartialMessage } from "discord.js";
-import { Player } from "./Player.js";
-import { getRoleName, LgonRoleGenerator } from "../../classes/LgonRole/LgonRoleGenerator.js";
-import { CONSTANTES } from "../../config/constantes.js";
-import { LgonRole } from "../LgonRole/LgonRole.js";
-import { newEmbed } from "../Embed/AwaitingInteraction.js"
+import { Player } from ".././Player.js";
+import { getRoleName, LgonRoleGenerator } from "../../../classes/LgonRole/LgonRoleGenerator.js";
+import { CONSTANTES } from "../../../config/constantes.js";
+import { LgonRole } from "../../LgonRole/LgonRole.js";
+import { newEmbed } from "../../Embed/AwaitingInteraction.js"
+import { GameMeta } from "./GameMeta.js";
 
 export function getGame(bot: Client, guild: Guild, gameName: string | null, newGameName: string | null = null, createGame: boolean = false): Game | null
 {
@@ -21,61 +22,48 @@ export function getGame(bot: Client, guild: Guild, gameName: string | null, newG
 			game = new Game(guild, newGameName!);
 		else
 			return (null);
-		bot.games.get(guild!.id)!.set(game!.name, game!);
+		bot.games.get(guild!.id)!.set(game!.meta.name, game!);
 	}
 	return (game || null);
 }
 
 export class Game
 {
-	name: string;
-	guildId: string;
-	guildName: string;
-	time: string;
-	date: string;
-	id: number;
-	ready: number;
-	rolesCount: number;
+	meta: GameMeta;
+	
 	isDefaultGame: boolean = false;
 	
 	static games_nbr: number = 0;
 	
-	status: "setup" | "night" | "vote" | "ended";
-	players: Collection<string, Player>; 				// userId -> InGame
+	phase: "setup" | "night" | "day" | "voting" | "ended";
+	
+	players: Collection<string, Player>; 				// userId -> Player
+	waitingRoom: Collection<string, Player>; // userId -> Player
+	ready: number;
+	
+	rolesCount: number;
 	roles: Collection<string, number>;
-	waitingRoom: Collection<string, Player>; // userId -> InGame
-	inGameRoles: LgonRole[] | null;
+	playersRoles: LgonRole[] | null;
 	center: Collection<string, LgonRole> | null;
+	
+
 	msg : Message | PartialMessage | null;
-	nightIndex: number;
-	pause: boolean;
+	
+	nightTurn: number;
 	remainingTimeout: number;
+	pause: boolean;
 	timeoutId: NodeJS.Timeout | null;
 
 	constructor(guild: Guild, name: string)
 	{
 		// TODO GERER LES OVERFLOW D'ids
-		const date = new Date();
-		this.time = new Intl.DateTimeFormat('fr', {
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit',
-			hour12: false
-		}).format(date);
-		this.date = new Intl.DateTimeFormat('fr', {
-			year: 'numeric',
-			month: '2-digit',
-			day: '2-digit'
-		}).format(new Date());
+		this.meta = new GameMeta(Game.games_nbr, guild, name);
 
 		this.timeoutId = null;
-		this.inGameRoles = null;
-		this.guildId = guild.id;
-		this.guildName = guild.name;
+		this.playersRoles = null;
+		
 		Game.games_nbr ++;
-		this.id = Game.games_nbr;
-		this.name = name;
-		this.status = "setup";
+		this.phase = "setup";
 		this.players = new Collection<string, Player>();
 		this.waitingRoom = new Collection<string, Player>();
 		this.roles = new Collection<string, number>();
@@ -86,7 +74,7 @@ export class Game
 		this.rolesCount = 0;
 		this.center = null;
 		this.msg = null;
-		this.nightIndex = 0;
+		this.nightTurn = 0;
 	}
 
 	addReady(message: Message | PartialMessage): void
@@ -107,29 +95,29 @@ export class Game
 	addPlayer(player: Player, embed: EmbedBuilder): void
 	{
 		this.players.set(player.name, player);
-		embed.addFields({ name: '**Join**', value: `${player.name} has joined **${this.name}**`, inline: false });
+		embed.addFields({ name: '**Join**', value: `${player.name} has joined **${this.meta.name}**`, inline: false });
 	}
 
 	addWaitingPlayer(player: Player, embed: EmbedBuilder): void
 	{
 		this.waitingRoom.set(player.name, player);
-		embed.addFields({ name: '**Join**', value: `${player.name} has joined **${this.name}**'s waiting room`, inline: false });
+		embed.addFields({ name: '**Join**', value: `${player.name} has joined **${this.meta.name}**'s waiting room`, inline: false });
 	}
 
 	removePlayer(bot: Client, player: Player, embed: EmbedBuilder): void
 	{
 		this.players.delete(player.name);
-		embed.addFields({ name: '**Leave**', value: `${player.name} has left **${this.name}**`, inline: false });
+		embed.addFields({ name: '**Leave**', value: `${player.name} has left **${this.meta.name}**`, inline: false });
 		if ( this.players.size === 0 )
 		{
-			let games: Collection<string, Game> = bot.games.get(this.guildId)!;
-			games.delete(this.name);
-			embed.addFields({ name: '**Delete**', value: `Game **${this.name}** has no player left, it has been destroyed`, inline: false });
+			let games: Collection<string, Game> = bot.games.get(this.meta.guildId)!;
+			games.delete(this.meta.name);
+			embed.addFields({ name: '**Delete**', value: `Game **${this.meta.name}** has no player left, it has been destroyed`, inline: false });
 			if (games.size === 1)
 			{
 				const game = games.first()!;
 				game.setDefaultGame(true);
-				embed.addFields({ name: '**Default**', value: `Game **${game.name}** has been set to default`, inline: false });
+				embed.addFields({ name: '**Default**', value: `Game **${game.meta.name}** has been set to default`, inline: false });
 			}
 		}
 	}
@@ -137,7 +125,7 @@ export class Game
 	removeWaitingPlayer(player: Player, embed: EmbedBuilder): void
 	{
 		this.waitingRoom.delete(player.name);
-		embed.addFields({ name: '**Leave**', value: `${player.name} has left **${this.name}**'s waiting room`, inline: false });
+		embed.addFields({ name: '**Leave**', value: `${player.name} has left **${this.meta.name}**'s waiting room`, inline: false });
 	}
 
 	
@@ -201,7 +189,7 @@ export class Game
 
 	async distributeRoles(bot: Client): Promise<void>
 	{
-		this.inGameRoles = [];
+		this.playersRoles = [];
 		let rolesOrder: string[] = CONSTANTES.ROLES_ORDER;
 
 		let i: number = 0;
@@ -235,7 +223,7 @@ export class Game
 						await tmpPlayers[index].sendRole(lgonRole);
 						tmpPlayers.splice(index, 1);
 					}
-					this.inGameRoles.push(lgonRole);
+					this.playersRoles.push(lgonRole);
 					j ++;
 					roleId ++;
 				}
@@ -256,10 +244,10 @@ export class Game
 
 	async start(bot: Client, message: Message | PartialMessage)
 	{
-		this.status = "night";
+		this.phase = "night";
 		const linkImage = "https://i.imgur.com/m3SG4PB.png";
 		let embed: EmbedBuilder = newEmbed();
-		embed.setTitle(this.name);
+		embed.setTitle(this.meta.name);
         embed.setThumbnail(linkImage);
 		embed.addFields({name: "Game has started !", value: "Each player will receieve its role in DM"});
 		await message.reply({embeds: [embed]}).then(msg => this.msg = msg);
@@ -272,25 +260,25 @@ export class Game
 	{
 		let roleString: string = "";
 		let i: number = 0;
-		while (i < this.inGameRoles!.length)
+		while (i < this.playersRoles!.length)
 		{
-			roleString += `\t${this.inGameRoles![i].generator.printName}`;
-			if (this.inGameRoles![i].generator.action)
+			roleString += `\t${this.playersRoles![i].generator.printName}`;
+			if (this.playersRoles![i].generator.action)
 				roleString += "  💪";
-			if (this.inGameRoles![i].generator.information)
+			if (this.playersRoles![i].generator.information)
 				roleString += "  🧠";
 			else
 				roleString += "  💤";
-			if (i === this.nightIndex)
+			if (i === this.nightTurn)
 				roleString += "  ◀"; //➤
 			roleString += "\n";
 			i ++;
 		}
-		if (i === this.nightIndex)
+		if (i === this.nightTurn)
 			roleString += '________';
 		
 		let embed: EmbedBuilder = newEmbed();
-		embed.setTitle(`**Night** ${this.name}`)
+		embed.setTitle(`**Night** ${this.meta.name}`)
 			.addFields({name: "", value: roleString});
 		if (update)
 			await this.msg!.edit({
@@ -306,8 +294,8 @@ export class Game
 
 	async nextNightTurn(bot: Client)
 	{
-		this.nightIndex ++;
-		if (this.nightIndex === this.inGameRoles!.length)
+		this.nightTurn ++;
+		if (this.nightTurn === this.playersRoles!.length)
 			await this.endNight(bot);
 		else
 			await this.spendNight(bot, true);
@@ -316,9 +304,9 @@ export class Game
 	async spendNight(bot: Client, update: boolean = false)
 	{
 		await this.showNight(bot, update);
-		if (!this.inGameRoles![this.nightIndex].generator.action)
+		if (!this.playersRoles![this.nightTurn].generator.action)
 			await this.nextNightTurn(bot);
-		else if (typeof(this.inGameRoles![this.nightIndex].owner === "string"))
+		else if (typeof(this.playersRoles![this.nightTurn].owner === "string"))
 		{
 			setTimeout(async (): Promise<void> => {
 				await this.nextNightTurn(bot);
@@ -327,7 +315,7 @@ export class Game
 		else
 		{
 			this.timeoutId = setTimeout(async (): Promise<void> => {
-				await this.inGameRoles![this.nightIndex].play_auto();
+				await this.playersRoles![this.nightTurn].play_auto();
 				await this.nextNightTurn(bot);
 			}, CONSTANTES.TURN_TIME_MS);
 		}
@@ -338,7 +326,7 @@ export class Game
 		await this.showNight(bot, true);
 
 		let embed = newEmbed()
-			.setTitle(this.name)
+			.setTitle(this.meta.name)
 			.addFields({name: "Night has ended", value: "You can now proceed to vote when you're ready !"});
 		
 		await this.msg!.reply({
