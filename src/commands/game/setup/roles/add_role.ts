@@ -1,7 +1,7 @@
 import { CONSTANTES } from "../../../../config/constantes.js";
 import { Player, getPlayer } from "../../../../classes/Game/Player.js";
 import { LgonRoleGenerator } from "../../../../classes/LgonRole/LgonRoleGenerator.js";
-import { Game } from "../../../../classes/Game/Game.js";
+import { Game } from "../../../../classes/Game/Game/Game.js";
 
 import { Client, Message, EmbedBuilder, ActionRowBuilder, ButtonBuilder } from "discord.js";
 
@@ -100,7 +100,7 @@ export async function run(bot: Client, message: Message, argv: string[]): Promis
 	embed.setTitle(`**Game ${player.game!.name}**`);
 	
 		
-	if ( player.game!.status !== "setup")
+	if ( player.game!.phase !== "setup")
 	{
 		embed.addFields( { name: "**Error**", value: "You can only add roles in setup phase", inline: false });
 		await message.reply(
