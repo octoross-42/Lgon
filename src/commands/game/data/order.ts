@@ -1,6 +1,7 @@
-import { Client, Message, EmbedBuilder } from "discord.js";
+import { type Client, type Message, EmbedBuilder } from "discord.js";
 import { CONSTANTES } from "../../../config/constantes.js";
-import { getRole, LgonRoleGenerator } from "../../../classes/LgonRole/LgonRoleGenerator.js";
+import type { LgonRoleGenerator } from "../../../classes/LgonRole/LgonRoleGenerator.js";
+import { getRole } from "../../../roles/helpers.js"
 
 export async function run(bot: Client, message: Message, argv: string[]): Promise<void>
 {

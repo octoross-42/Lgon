@@ -1,5 +1,6 @@
 import { Client, Guild } from "discord.js";
-import { LgonRoleGenerator, getRole } from "../classes/LgonRole/LgonRoleGenerator.js";
+import { LgonRoleGenerator } from "../classes/LgonRole/LgonRoleGenerator.js";
+import { getRole } from "../roles/helpers.js"
 import { Player } from "../classes/Game/Player";
 import { Game, getGame } from "../classes/Game/Game/Game";
 

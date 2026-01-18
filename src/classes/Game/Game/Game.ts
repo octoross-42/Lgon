@@ -1,6 +1,7 @@
 import { Collection, type Guild, type Client, type EmbedBuilder, type Message, type PartialMessage } from "discord.js";
 import type { Player } from "../Player.js";
-import { getRoleName, type LgonRoleGenerator } from "../../../classes/LgonRole/LgonRoleGenerator.js";
+import type { LgonRoleGenerator } from "../../../classes/LgonRole/LgonRoleGenerator.js";
+import { getRoleName } from "../../../roles/helpers.js"
 import { CONSTANTES } from "../../../config/constantes.js";
 import type { LgonRole } from "../../LgonRole/LgonRole.js";
 import { newEmbed } from "../../Embed/AwaitingInteraction.js"
