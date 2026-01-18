@@ -1,8 +1,8 @@
-import { Game, getGame } from "../../../classes/Game/Game/Game.js";
+import { type Game, getGame } from "../../..//Game/Game.js";
 import { CONSTANTES } from "../../../config/constantes.js";
-import { Client, Embed, EmbedBuilder, Message } from "discord.js";
-import { getPlayer, Player } from "../../../classes/Game/Player.js";
-import { StartEmbed } from "../../../classes/Embed/StartEmbed.js";
+import type { Client, Message } from "discord.js";
+import { getPlayer, Player } from "../../../Player/Player.js";
+import { StartEmbed } from "../../../Embed/StartEmbed.js";
 
 // TODO envoyer tous les actions dispos en debut de nuit sauf les actions avec vision
 

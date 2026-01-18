@@ -1,6 +1,6 @@
-import type { LgonRoleMeta, Client } from "discord.js";
-import { LgonRole } from "./LgonRole.js"
-import { Player } from "../Game/Player.js";
+import type { LgonRoleMeta } from "discord.js";
+import type { LgonRole } from "./LgonRole.js"
+import type { Player } from "../Player/Player.js";
 
 export class LgonRoleGenerator
 {

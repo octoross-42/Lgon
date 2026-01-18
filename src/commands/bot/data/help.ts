@@ -1,6 +1,6 @@
-import { Client, Message, EmbedBuilder } from 'discord.js';
-import { BotCommand } from '../../../classes/Commands/BotCommand.js';
-import { LgonRoleGenerator } from '../../../classes/LgonRole/LgonRoleGenerator.js';
+import { type Client, type Message, EmbedBuilder } from 'discord.js';
+import type { BotCommand } from '../../../commands/BotCommand.js';
+import type { LgonRoleGenerator } from '../../../roles/LgonRoleGenerator.js';
 import { CONSTANTES } from '../../../config/constantes.js';
 
 export async function basic_help(bot: Client, message: Message)

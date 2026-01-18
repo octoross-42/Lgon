@@ -1,7 +1,7 @@
-import { Client, User, Guild, EmbedBuilder, Collection, ButtonBuilder, ButtonStyle, ActionRowBuilder, Message, PartialMessage } from "discord.js";
-import { Game, getGame } from "./Game/Game.js";
-import { LgonRole } from "../LgonRole/LgonRole.js";
-import { CONSTANTES } from "../../config/constantes.js";
+import { type Client, type User, type Guild, type EmbedBuilder, type Collection, ButtonBuilder, ButtonStyle, ActionRowBuilder, type Message, type PartialMessage } from "discord.js";
+import { Game, getGame } from "../Game/Game.js";
+import type { LgonRole } from "../roles/LgonRole.js";
+import { CONSTANTES } from "../config/constantes.js";
 import { newEmbed } from "../Embed/AwaitingInteraction.js";
 
 // TODO afficher joueurs par nickname et premier arrive premier servi + faire commande pour refresh nickname / changer nickname
@@ -30,7 +30,7 @@ function askToChangeGame(bot: Client, guild: Guild, gameToJoinName: string | nul
 	
 	embed.addFields({ name: '**?**', value: "Do you want to change game ?", inline: false });
 	if (gameToJoinName === null)
-		gameToJoinName = bot.games.get(guild!.id)!.find(game => game.isDefaultGame)?.name!;
+		gameToJoinName = bot.games.get(guild!.id)!.find(game => game.isDefaultGame)?.meta.name!;
 	const button = new ButtonBuilder()
 		.setCustomId('change_game ' + gameToJoinName)
 		.setLabel(`Join ${gameToJoinName}`)

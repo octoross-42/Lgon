@@ -1,7 +1,7 @@
 import type { Client, User, Message, MessageReaction, PartialMessage, TextChannel, DMChannel } from "discord.js";
-import type { Game } from "../Game/Game/Game.js";
-import type { Player } from "../Game/Player.js";
-import { CONSTANTES } from "../../config/constantes.js";
+import type { Game } from "../Game/Game.js";
+import type { Player } from "../Player/Player.js";
+import { CONSTANTES } from "../config/constantes.js";
 import { AwaitingInteraction, newEmbed } from "./AwaitingInteraction.js";
 
 export class StartEmbed extends AwaitingInteraction

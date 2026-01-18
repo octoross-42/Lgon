@@ -1,10 +1,10 @@
-import { LgonRole } from "../../../classes/LgonRole/LgonRole.js";
-import { Player, getPlayer } from "../../../classes/Game/Player.js";
+import { LgonRole } from "../../../roles/LgonRole.js";
+import { LgonRoleGenerator } from "../../../roles/LgonRoleGenerator.js";
+import type { Player } from "../../../Player/Player.js";
 import { CONSTANTES } from "../../../config/constantes.js";
-import { AwaitingInteraction } from "../../../classes/Embed/AwaitingInteraction.js"
+import { AwaitingInteraction } from "../../../Embed/AwaitingInteraction.js"
 
-import { Client, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, MessageReaction, User, TextChannel, DMChannel, StringSelectMenuInteraction, ButtonInteraction } from "discord.js";
-import { LgonRoleGenerator } from "../../../classes/LgonRole/LgonRoleGenerator.js";
+import { type Client, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, type User, type TextChannel, type DMChannel, type StringSelectMenuInteraction, type ButtonInteraction } from "discord.js";
 
 class NoiseuseActionEmbed extends AwaitingInteraction
 {

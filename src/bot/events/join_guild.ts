@@ -1,5 +1,5 @@
-import { Guild, Collection, Client } from "discord.js";
-import { Game } from "../classes/Game/Game/Game.js";
+import { type Guild, Collection, type Client } from "discord.js";
+import type { Game } from "../../Game/Game.js";
 
 export function onEvent(bot: Client, guild: Guild): void
 {

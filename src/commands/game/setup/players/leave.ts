@@ -1,6 +1,6 @@
 import { CONSTANTES } from "../../../../config/constantes.js";
-import { Player, getPlayer } from "../../../../classes/Game/Player.js";
-import { Client, Message, EmbedBuilder } from "discord.js";
+import { type Player, getPlayer } from "../../../../Player/Player.js";
+import { type Client, type Message, EmbedBuilder } from "discord.js";
 
 export async function run(bot: Client, message: Message, argv: string[]): Promise<void>
 {

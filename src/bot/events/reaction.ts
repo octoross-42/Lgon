@@ -1,5 +1,5 @@
-import { Client, MessageReaction, User } from "discord.js";
-import { AwaitingInteraction } from "../classes/Embed/AwaitingInteraction.js";
+import type { Client, MessageReaction, User } from "discord.js";
+import type { AwaitingInteraction } from "../../Embed/AwaitingInteraction.js";
 // import { CONSTANTES } from "../config/constantes.js";
 
 export function onEvent(bot: Client, reaction: MessageReaction, user: User): void

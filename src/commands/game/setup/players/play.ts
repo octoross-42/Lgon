@@ -1,5 +1,5 @@
 import { CONSTANTES } from "../../../../config/constantes.js";
-import { Client, Message } from "discord.js";
+import type { Client, Message } from "discord.js";
 
 export function run(bot: Client, message: Message, argv: string[]): Promise<void> | void
 {

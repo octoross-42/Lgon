@@ -1,7 +1,7 @@
 import { CONSTANTES } from "../../../../config/constantes.js";
-import { Player, getPlayer } from "../../../../classes/Game/Player.js";
-import { LgonRoleGenerator } from "../../../../classes/LgonRole/LgonRoleGenerator.js";
-import { Game } from "../../../../classes/Game/Game/Game.js";
+import { type Player, getPlayer } from "../../../../Player/Player.js";
+import type { LgonRoleGenerator } from "../../../../roles/LgonRoleGenerator.js";
+import type { Game } from "../../../../Game/Game.js";
 
 import { Client, Message, EmbedBuilder, ActionRowBuilder, ButtonBuilder } from "discord.js";
 

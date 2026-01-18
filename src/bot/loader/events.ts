@@ -1,4 +1,4 @@
-import { Client, Event } from 'discord.js';
+import type { Client, Event } from 'discord.js';
 
 import { pathToFileURL } from "node:url";
 import fg from 'fast-glob';

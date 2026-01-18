@@ -1,8 +1,6 @@
-import { Client, Guild } from "discord.js";
-import { LgonRoleGenerator } from "../classes/LgonRole/LgonRoleGenerator.js";
-import { getRole } from "../roles/helpers.js"
-import { Player } from "../classes/Game/Player";
-import { Game, getGame } from "../classes/Game/Game/Game";
+import type { Client, Guild } from "discord.js";
+import { getRole } from "../roles/helpers.js";
+import { getGame } from "../Game/Game";
 
 function fitsType(bot: Client, guild: Guild, type: string, value: string): any
 {

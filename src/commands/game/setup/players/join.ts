@@ -1,6 +1,6 @@
 import { CONSTANTES } from "../../../../config/constantes.js";
-import { Client, Message, Collection, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags, APIEmbedField } from "discord.js";
-import { Player, getPlayer } from "../../../../classes/Game/Player.js";
+import { type Client, type Message, EmbedBuilder, type ActionRowBuilder, type ButtonBuilder } from "discord.js";
+import { type Player, getPlayer } from "../../../../Player/Player.js";
 
 // TODO : gestion de vocal dans la nuit (exemple seuls les lgs peuvenet parler mais faut que ca soit invisible et inentandables par les autres)
 

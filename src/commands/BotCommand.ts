@@ -1,5 +1,5 @@
 import type { Client, Message, CommandMeta } from "discord.js";
-import { CONSTANTES } from "../../config/constantes.js";
+import { CONSTANTES } from "../config/constantes.js";
 
 export class BotCommand
 {

@@ -1,7 +1,6 @@
-import { LgonRole } from "../../../classes/LgonRole/LgonRole.js";
-import { Player } from "../../../classes/Game/Player.js";
-
-import { LgonRoleGenerator } from "../../../classes/LgonRole/LgonRoleGenerator.js";
+import { LgonRole } from "../../../roles/LgonRole.js";
+import { LgonRoleGenerator } from "../../../roles/LgonRoleGenerator.js";
+import type { Player } from "../../../Player/Player.js";
 
 class Villageois extends LgonRole
 {

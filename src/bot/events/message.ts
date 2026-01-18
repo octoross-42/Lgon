@@ -1,9 +1,9 @@
-import { Client, Message, Collection } from 'discord.js';
-import { BotCommand } from '../classes/Commands/BotCommand.js';
-import { LgonRoleGenerator } from '../classes/LgonRole/LgonRoleGenerator.js';
-import { getRole } from "../roles/helpers.js"
-import { CONSTANTES } from '../config/constantes.js';
-import { basic_help, help_role } from "../commands/bot/data/help.js";
+import { type Client, type Message, Collection } from 'discord.js';
+import type { BotCommand } from '../../commands/BotCommand.js';
+import type { LgonRoleGenerator } from '../../roles/LgonRoleGenerator.js';
+import { getRole } from "../../roles/helpers.js"
+import { CONSTANTES } from '../../config/constantes.js';
+import { help_role } from "../../commands/bot/data/help.js";
 
 function getArgv(message: Message): string[] | null
 {

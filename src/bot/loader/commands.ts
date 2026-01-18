@@ -1,5 +1,5 @@
-import { Client, CommandMeta, Message } from 'discord.js';
-import { BotCommand } from '../classes/Commands/BotCommand.js';
+import type { Client, CommandMeta, Message } from 'discord.js';
+import { BotCommand } from '../../commands/BotCommand.js';
 
 import { pathToFileURL } from "node:url";
 import fg from 'fast-glob';

@@ -1,10 +1,10 @@
-import { Collection, Client } from "discord.js";
-import { BotCommand } from "../classes/Commands/BotCommand.js";
-import { Game } from "../classes/Game/Game/Game.js";
-import { Player } from "../classes/Game/Player.js";
-import { AwaitingInteraction } from "../classes/Embed/AwaitingInteraction.js";
-import { LgonRoleGenerator } from "../classes/LgonRole/LgonRoleGenerator.js";
-import { SlashCommand } from "../classes/Commands/SlashCommand.js";
+import { Collection, type Client } from "discord.js";
+import type { BotCommand } from "../../commands/BotCommand.js";
+import type { Game } from "../../Game/Game.js";
+import type { Player } from "../../Player/Player.js";
+import type { AwaitingInteraction } from "../../Embed/AwaitingInteraction.js";
+import type { LgonRoleGenerator } from "../../roles/LgonRoleGenerator.js";
+import type { SlashCommand } from "../../commands/SlashCommand.js";
 
 import loadCommands from "./commands.js";
 import loadSlashCommands from "./slashCommands.js";

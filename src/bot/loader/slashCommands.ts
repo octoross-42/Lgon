@@ -1,5 +1,5 @@
-import { Client, CommandMeta } from 'discord.js';
-import { BotCommand } from '../classes/Commands/BotCommand.js';
+import type { Client, CommandMeta } from 'discord.js';
+// import { BotCommand } from '../../commands/BotCommand.js';
 import fg from 'fast-glob';
 
 const loadSlashCommands =  async (bot: Client, commandDir: string = 'build/slashCommands'): Promise<void> =>

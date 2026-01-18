@@ -1,8 +1,9 @@
-import { BotCommand } from "../classes/Commands/BotCommand.js";
-import { LgonRoleGenerator } from "./LgonRoleGenerator.js";
-import { Game } from "../classes/Game/Game.js";
-import { Player } from "../classes/Game/Player.js";
-import
+import type { BotCommand } from "../commands/BotCommand.js";
+import type { LgonRoleGenerator } from "./LgonRoleGenerator.js";
+import type { Game } from "../Game/Game.js";
+import type { Player } from "../Game/Player.js";
+
+import type
 {
 	Client,
 	Collection,
@@ -14,7 +15,6 @@ import
 	SelectMenuBuilder
 } from 'discord.js';
   
-	
 declare module 'discord.js'
 {
 	export interface CommandMeta

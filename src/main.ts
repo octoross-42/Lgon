@@ -1,5 +1,5 @@
 import { Client, GatewayIntentBits } from "discord.js";
-import { loader } from "./loader/loader.js"
+import { loader } from "./bot/loader/loader.js"
 
 import 'dotenv/config';
 

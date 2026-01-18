@@ -1,4 +1,4 @@
-import { ButtonInteraction, Client, Interaction, StringSelectMenuInteraction, User } from "discord.js";
+import type { ButtonInteraction, Client, Interaction, StringSelectMenuInteraction, User } from "discord.js";
 
 async function changeGame(bot: Client, interaction: ButtonInteraction, argv: string[]): Promise<void>
 {

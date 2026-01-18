@@ -1,8 +1,7 @@
 import { PREFIX } from "../../../config/constantes.js"
-import { LgonRole } from "../../../classes/LgonRole/LgonRole.js";
-import { Player } from "../../../classes/Game/Player.js";
-
-import { LgonRoleGenerator } from "../../../classes/LgonRole/LgonRoleGenerator.js"
+import type { Player } from "../../../Player/Player.js";
+import { LgonRole } from "../../../roles/LgonRole.js";
+import { LgonRoleGenerator } from "../../../roles/LgonRoleGenerator.js"
 
 class LoupGarou extends LgonRole
 {

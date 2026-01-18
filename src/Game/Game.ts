@@ -1,10 +1,10 @@
 import { Collection, type Guild, type Client, type EmbedBuilder, type Message, type PartialMessage } from "discord.js";
-import type { Player } from "../Player.js";
-import type { LgonRoleGenerator } from "../../../classes/LgonRole/LgonRoleGenerator.js";
-import { getRoleName } from "../../../roles/helpers.js"
-import { CONSTANTES } from "../../../config/constantes.js";
-import type { LgonRole } from "../../LgonRole/LgonRole.js";
-import { newEmbed } from "../../Embed/AwaitingInteraction.js"
+import type { Player } from "../Player/Player.js";
+import type { LgonRoleGenerator } from "../roles/LgonRoleGenerator.js";
+import { getRoleName } from "../roles/helpers.js"
+import { CONSTANTES } from "../config/constantes.js";
+import type { LgonRole } from "../roles/LgonRole.js";
+import { newEmbed } from "../Embed/AwaitingInteraction.js"
 import { GameMeta } from "./GameMeta.js";
 
 export function getGame(bot: Client, guild: Guild, gameName: string | null, newGameName: string | null = null, createGame: boolean = false): Game | null

@@ -1,5 +1,5 @@
 import type { Client, Message } from "discord.js";
-import { CONSTANTES } from "../../config/constantes.js";
+import { CONSTANTES } from "../config/constantes.js";
 
 export class SlashCommand
 {

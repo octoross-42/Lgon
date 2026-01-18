@@ -1,5 +1,5 @@
-import { Client, } from 'discord.js';
-import { LgonRoleGenerator } from '../classes/LgonRole/LgonRoleGenerator.js';
+import type { Client, } from 'discord.js';
+import type { LgonRoleGenerator } from '../../roles/LgonRoleGenerator.js';
 
 import { pathToFileURL } from "node:url";
 import fg from 'fast-glob';

@@ -1,5 +1,5 @@
 import type { Client } from "discord.js"
-import type { LgonRoleGenerator } from "../classes/LgonRole/LgonRoleGenerator.js"
+import type { LgonRoleGenerator } from "../roles/LgonRoleGenerator.js"
 
 export function getRoleName(bot: Client, roleName : string) : string | null
 {

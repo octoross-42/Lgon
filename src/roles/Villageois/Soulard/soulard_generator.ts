@@ -1,11 +1,11 @@
 // TODO CHECK double de roels
-import { LgonRole } from "../../../classes/LgonRole/LgonRole.js";
-import { Player } from "../../../classes/Game/Player.js";
-import { AwaitingInteraction } from "../../../classes/Embed/AwaitingInteraction.js"
+import { LgonRole } from "../../../roles/LgonRole.js";
+import { LgonRoleGenerator } from "../../../roles/LgonRoleGenerator.js";
+import type { Player } from "../../../Player/Player.js";
+import { AwaitingInteraction } from "../../../Embed/AwaitingInteraction.js"
 import { CONSTANTES } from "../../../config/constantes.js";
 
-import { LgonRoleMeta, Client, User, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, StringSelectMenuInteraction, TextChannel, DMChannel } from "discord.js";
-import { LgonRoleGenerator } from "../../../classes/LgonRole/LgonRoleGenerator.js";
+import { type Client, type User, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, type StringSelectMenuInteraction, type TextChannel, type DMChannel } from "discord.js";
 
 class SoulardActionEmbed extends AwaitingInteraction
 {

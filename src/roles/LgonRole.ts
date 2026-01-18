@@ -1,10 +1,9 @@
-import { Player } from "../Game/Player.js";
-import { LgonRoleGenerator } from "./LgonRoleGenerator.js";
-import { Client } from "discord.js";
+import type { Player } from "../Player/Player.js";
+import type { LgonRoleGenerator } from "./LgonRoleGenerator.js";
+import type { Client } from "discord.js";
 
 export abstract class LgonRole
 {
-	id: number;
 	owner: Player | string;
 	// rolesToKill: number[];
 	// playerToKill: string[];
@@ -15,10 +14,9 @@ export abstract class LgonRole
 	
 	constructor(public readonly generator: LgonRoleGenerator,
 			owner: Player | string,
-			id: number)
+			public readonly id: number)
 	{
 		this.owner = owner;
-		this.id = id;
 	}
 
 	async preshot_action(bot: Client): Promise<void> {}
