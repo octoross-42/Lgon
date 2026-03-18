@@ -1,0 +1,109 @@
+src/
+  domain/                           # 100% indépendant Discord
+    game/
+      entities/
+        Game.ts
+        Player.ts
+        Role.ts
+        Action.ts
+        Step.ts
+      services/
+        GameEngine.ts               # exécute la logique/steps
+        ActionResolver.ts           # map role -> actions possibles
+      rules/
+        timers.ts                   # 1h validity, 2j finish...
+      events/
+        DomainEvent.ts
+        GameEvents.ts               # GameStarted, StepLocked...
+      ports/
+        GameRepository.ts
+        Clock.ts
+        Random.ts
+                                                                                                                                                                                                                                                                                                                                                       
+  application/                      # orchestration: use-cases
+    usecases/
+      StartSession.ts
+      JoinSession.ts
+      LeaveSession.ts
+      StopSession.ts
+      BeginGame.ts                  # envoi roles en MP, kickoff steps
+      SelectAction.ts               # choix joueur (select)
+      NavigateFlow.ts               # page/step navigation
+    dtos/
+      SessionDTO.ts
+      PlayerDTO.ts
+    ports/                          # interfaces vers l’extérieur
+      MessagingPort.ts              # send/edit/delete/ephemeral
+      SessionRepository.ts
+      UserRepository.ts
+
+  messaging/                        # ton “système central” step/page
+    model/
+      MessageSession.ts             # 1 message = 1 session affichée
+      Page.ts
+      Component.ts                  # buttons/selects
+      Renderer.ts                   # compose pages -> payload
+      Navigation.ts                 # next/prev/goto
+    flows/
+      lobby/
+        LobbyFlow.ts                # join/leave/start/stop + timer 1h
+        LobbyPages.ts
+      game/
+        NightFlow.ts                # étapes auto + inputs joueurs
+        NightPages.ts
+      post/
+        ResultsFlow.ts
+    registry/
+      FlowRegistry.ts               # route session -> flow
+      PageRegistry.ts               # pageId -> builder
+    state/
+      MessageStateStore.ts          # state step/page par session
+      Locks.ts                      # step locked, idempotence
+
+  adapters/
+    discord/
+      bootstrap/
+        client.ts
+        registerCommands.ts
+        registerInteractions.ts
+      commands/
+        start.ts
+        join.ts
+        leave.ts
+        stop.ts
+      interactions/
+        buttons/
+        selects/
+		
+      messaging/
+        DiscordMessagingAdapter.ts  # impl MessagingPort
+        DiscordRenderer.ts          # map Component -> discord.js
+        ids/
+          customId.ts               # encode/decode sessionId/pageId/actionId
+      mappers/
+        discordToApp.ts             # Interaction -> DTO
+        appToDiscord.ts             # Payload -> API
+      errors/
+        DiscordErrorMapper.ts
+
+  infrastructure/
+    persistence/
+      memory/
+        InMemorySessionRepository.ts
+        InMemoryGameRepository.ts
+      prisma/                       # si tu veux DB plus tard
+        PrismaSessionRepository.ts
+    scheduler/
+      Scheduler.ts                  # timers (1h / 2j / auto steps)
+    logging/
+      logger.ts
+    config/
+      env.ts
+
+  shared/
+    types/
+    utils/
+    errors/
+    constants/
+
+index.ts

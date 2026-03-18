@@ -1,0 +1,39 @@
+{
+  "dependencies": {
+    "@discordjs/rest": "^2.4.3",
+    "discord": "^0.8.2",
+    "discord-api-types": "^0.38.1",
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.5.0",
+    "fast-glob": "^3.3.3",
+    "typescript": "^5.9.3"
+  },
+  "name": "lgon",
+  "version": "1.0.0",
+  "description": "Werewolves discord bot (one night version)",
+  "main": "build/main.js",
+  "directories": {
+    "test": "tests"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/octoross-42/Lgon.git"
+  },
+  "keywords": [
+    "werewolves",
+    "discord",
+    "bot"
+  ],
+  "author": "octoross",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/octoross-42/Lgon/issues"
+  },
+  "homepage": "https://github.com/octoross-42/Lgon#readme"
+}

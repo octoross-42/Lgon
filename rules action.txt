@@ -1,0 +1,20 @@
+debut de la nuit: distribution de tous les ActionEmbed en mode preshot.
+
+En mode preshot:
+Par defaut, l'option autoBlindConfirm est sur false, donc pour une liste d'actions confirmed, lorsque vient le temps de jouer de la personne, toutes les actions confirmed s'executent jusqu'a la premiere action [see], puis donne l'information au joueur et fait confirmer les actions suivantes, en repetant le processus jusqu'a la fin de toutes les actions.
+De plus si autoBlindConfirm est sur false, alors tous les confirm de l'ActionEmbed apres le see sont disable, pas possible de cliquer dessus mais visible tout de meme, mais un bouton forceConfirm apparait, ajoutant la possibilite a forcer le confirm et l'execution de l'action confirmed peu importe s'il y a un see avant.
+
+Si l'option autoBlindConfirm est sur true, lorsque vient le tour du joueur, toutes les actions confirmed sont automatiquement executees.
+Si une action est confirmed, il est toujours possible de la changer jusqu'au jour du joueur ou l'action est automatiquement executee (le bouton confirm confirme l'action au moment de jouer en gros).
+
+
+
+Au moment du tour:
+Les actions confirmed sont disable et immediatement executees, donc impossible a modifier (si j'ai confirm la selection de octoross, l'action se fait immediatement lors de mon tour, et octoross sera une option impossible a changer mais toujours visibles).
+Un minuteur est lance pour chaque action par encore confirmed, par exemple
+1. 30sec pour confirm un select1Player
+puis 2. 25sec pour confirm un select1Center.
+les temps sont des donnees predefinies des actions, et si le confirm n'est pas fait dans les temps, alors un choix est fait aleatoirement, les memes effets se font que si le joueur avait select et confirm (le select bloque sur l'option choisit et devient impossible a changer, et le confirm aussi se disable).
+
+Bonus, un joueur peut se faire silence, si c'est le cas et qu'il possede au moins une action see alors il sera notifie et tous ses choix sera null et lock au moment de son tour seulement. Sinon ses actions seront bien fait tout comme avant mais juste pas executes.
+
