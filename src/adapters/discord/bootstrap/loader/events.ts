@@ -3,7 +3,10 @@ import type { Client, Event } from 'discord.js';
 import { pathToFileURL } from "node:url";
 import fg from 'fast-glob';
 
-const loadEvents = async (bot: Client, eventDir = 'build/discord/events'): Promise<void> =>
+import type { LgonContext } from '../../../../application/context/LgonContext.js';
+import type { SequenceStore } from '../../../../messagingFlows/store/SequenceStore.js';
+
+const loadEvents = async (bot: Client, lgon: LgonContext, eventDir = 'build/discord/events'): Promise<void> =>
 {
 	const eventsFiles = await fg(['**/*.js'], { cwd: eventDir, dot: true, absolute: true });
 	console.log(`\nLoading events...`); 
@@ -13,7 +16,7 @@ const loadEvents = async (bot: Client, eventDir = 'build/discord/events'): Promi
 		const event: Event = await import(pathToFileURL(evenFile).href);
 			
 		console.log(`\t${event.name}`);
-		bot.on(event.name, event.onEvent.bind(null, bot));
+		bot.on(event.name, event.onEvent.bind(null, lgon));
 	}
 };
 

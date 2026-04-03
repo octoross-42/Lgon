@@ -1,6 +1,7 @@
 import { type Client, type Message, Collection } from 'discord.js';
 import type { Command } from '../commands/entity/Command.js';
-import { CONSTANTES } from '../../../config/constantes.js';
+import { PREFIX } from '../../../constants.js';
+import { FLAGS } from '../../config.js';
 
 function getArgv(message: Message): string[] | null
 {
@@ -8,7 +9,7 @@ function getArgv(message: Message): string[] | null
 	const argv: string[] = message.content.split(/\s+/);
 	if (argv.length < 2)
 		return (null);
-	if (argv[0].toLowerCase() !== CONSTANTES.PREFIX)
+	if (argv[0].toLowerCase() !== PREFIX)
 		return (null);
 	argv.shift(); // remove PREFIX
 	argv[0] = argv[0].toLowerCase();
@@ -77,7 +78,7 @@ async function isOnCooldown(bot: Client, command: Command, message: Message): Pr
 			const timeLeftSec: number = (endDownCooldownTimeMs - timeNowMs) / 1000;
             await message.reply({
 				content:` Cooldown restant pour \`${command.meta.name}\` pour l'utilisateur \`${message.author.tag}\` : ${timeLeftSec.toFixed(0)} secondes`,
-				flags: CONSTANTES.FLAGS,
+				flags: FLAGS,
 		});
 	
 			return (true);

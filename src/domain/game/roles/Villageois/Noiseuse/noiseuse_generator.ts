@@ -1,7 +1,7 @@
 import { NightRole } from "../../../entities/LgonRole/NightRole.js";
 import { RoleGenerator } from "../../../entities/LgonRole/RoleGenerator.js";
 import type { Player } from "../../../entities/Game/modules/Players/Player.js";
-import { CONSTANTES } from "../../../../../config/constantes.js";
+import { PREFIX } from "../../../../../constants.js";
 
 import { LgonRoleMeta } from "../../../entities/LgonRole/LgonRoleMeta.js";
 
@@ -89,7 +89,7 @@ export const roleGenerator: RoleGenerator = new RoleGenerator(
 		category: "Villageois",
 		description: "La Noiseuse échange les rôles de 2 personnes sans qu'ils n'en prennent connaissance",
 		cdv: "La Noiseuse est une villageoise, il doit tuer un Loup pour gagner",
-		usage: `\`${CONSTANTES.PREFIX} action\` noms ou tags de deux personnes`,
+		usage: `\`${PREFIX} action\` noms ou tags de deux personnes`,
 		action: true,
 		information: false,
 		vote: false,

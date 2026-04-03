@@ -14,15 +14,15 @@ import type
 	ButtonBuilder,
 	SelectMenuBuilder
 } from 'discord.js';
-import { EmbedManager } from "../discord/EmbedManagment/EmbedManager.js";
-import { LgonContext } from "../core/LgonContext/LgonContext.js";
-  
+
+import type { LgonContext } from "../core/LgonContext/LgonContext.js";
+
 declare module 'discord.js'
 {
 	export interface Event
 	{
 		name: string;
-		onEvent: (bot: Client, ...args: any[]) => Promise<void> | void;
+		onEvent: (lgon: LgonContext, ...args: any[]) => Promise<void> | void;
 	}
 
 	export interface Client

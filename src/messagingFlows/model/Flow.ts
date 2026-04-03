@@ -2,7 +2,7 @@ export type MessageScript =
 {
 	title: string,
 	description?: string,
-	fields: { title: string, value: string, inline?: boolean }[]
+	fields: { title?: string, value: string, inline?: boolean }[]
 }
 
 export type InteractionKind = "button" | "select";
@@ -41,7 +41,7 @@ export type LgonInteraction = ButtonInteraction | SelectInteraction;
 export type ModeDefinition =
 {
 	mode: string,
-	script: (contextId: string) => MessageScript,
+	script: (contextId: string, userId: string) => MessageScript,
 	interactions: LgonInteraction[][]
 }
 

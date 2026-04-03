@@ -1,6 +1,6 @@
 import type { Flow, MessageScript } from "../../model/Flow.js"
 
-function scriptLobbyControls(contextId: string): MessageScript
+function scriptLobbyControls(contextId: string, userId: string): MessageScript
 {
 	return {
 		title: "Controls",
@@ -13,7 +13,7 @@ function scriptLobbyControls(contextId: string): MessageScript
 	}
 }
 
-function TODOO(contextId: string): MessageScript
+function TODOO(contextId: string, userId: string): MessageScript
 {
 	return {
 		title: "TODO",
@@ -36,7 +36,7 @@ export const LobbyFlow: Flow =
 		modes: [
 		{
 			mode: "basic",
-			script: (contextId: string) => scriptLobbyControls(contextId),
+			script: (contextId: string, userId: string) => scriptLobbyControls(contextId, userId),
 			interactions: [
 				[
 					{
@@ -93,7 +93,7 @@ export const LobbyFlow: Flow =
 		modes: [
 		{
 			mode: "basic",
-			script: (contextId: string) => TODOO(contextId),
+			script: (contextId: string, userId: string) => TODOO(contextId, userId),
 			interactions: [ 
 			[
 				{
@@ -124,7 +124,7 @@ export const LobbyFlow: Flow =
 		modes: [
 		{
 			mode: "manual",
-			script: (contextId: string) => TODOO(contextId),
+			script: (contextId: string, userId: string) => TODOO(contextId, userId),
 			interactions: [
 			[
 				{
@@ -163,7 +163,7 @@ export const LobbyFlow: Flow =
 		},
 		{
 			mode: "preset",
-			script: (contextId: string) => TODOO(contextId),
+			script: (contextId: string, userId: string) => TODOO(contextId, userId),
 			interactions: [
 			[
 				{

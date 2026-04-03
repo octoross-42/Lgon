@@ -1,5 +1,4 @@
 import type { Client, MessageReaction, User } from "discord.js";
-// import { CONSTANTES } from "../config/constantes.js";
 
 export function onEvent(bot: Client, reaction: MessageReaction, user: User): void
 {

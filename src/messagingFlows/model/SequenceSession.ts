@@ -1,7 +1,8 @@
 import type { LgonContext } from "../../application/context/LgonContext.js";
-import type { LgonId } from "../../types/LgonId.js";
+import type { LgonId, LgonIdKind } from "../../types/LgonId.js";
 import type { LgonUser } from "../../domain/game/entities/LgonUser/LgonUser.js";
 import type { SequenceDefinition } from "./Flow.js";
+import { SequenceContext } from "./View.js";
 
 export type StepData = 
 {
@@ -15,17 +16,19 @@ export class SequenceSession
 	stepMode: "compact" | "long";
 	nbrSteps: number;
 	stepsData: StepData[];
+	contextId: LgonId<LgonIdKind>;
+	userId: LgonId<"user">;
 
 	constructor(
 		public readonly lgon: LgonContext,
-		userId: LgonId<"user">,
+		public readonly id: string,
+		sequenceContext: SequenceContext,
 		public readonly sequence: SequenceDefinition)
 	{
-		this.currentStep = 0;
-		const user: LgonUser | undefined = lgon.users.get(userId);
-		this.stepMode = "compact";
-		if ( user )
-			this.stepMode = user.preferences.stepMode;
+		this.contextId = sequenceContext.contextId;
+		this.userId = sequenceContext.userId;
+		this.currentStep = sequenceContext.step;
+		this.stepMode = sequenceContext.stepMode;
 
 		this.nbrSteps = this.sequence.steps.length;
 		// TODO check qu'il y ait au moins 1 step

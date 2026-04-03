@@ -3,7 +3,7 @@ import { loader } from "./loader/loader.js";
 
 import { LgonContext } from "../../../application/context/LgonContext.js";
 
-const lgon = new LgonContext(); 
+const lgon = new LgonContext();
 
 import 'dotenv/config';
 
