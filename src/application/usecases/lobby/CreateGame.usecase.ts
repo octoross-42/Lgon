@@ -4,6 +4,19 @@ import type { LgonId } from "../../../types/LgonId.js";
 import type { Logger } from "../../../infra/Logger.js";
 import { LgonUser } from "../../../domain/game/entities/LgonUser/LgonUser.js";
 import { Game } from "../../../domain/game/entities/Game/Game.js";
+import type { Flow, MessageScript } from "../../../messagingFlows/model/Flow.js";
+import { NotifierMaker } from "../../../messagingFlows/flows/NotifierMaker.js";
+import { LobbyFlow } from "src/messagingFlows/flows/Lobby/LobbyFlow.js";
+
+function cannotCreateGameScript(contextId: string, userId: string): MessageScript
+{
+	return {
+		title: "Error",
+		fields: [{
+			value: `<@${userId}> are already in game: ${contextId}, cannot leave and create another game`
+		}]
+	}
+}
 
 export class startGameUseCase
 {
@@ -23,6 +36,9 @@ export class startGameUseCase
 
 	async run(authorId: LgonId<"user">): Promise<void>
 	{
+		let flow: Flow | null = null;
+		let gameId: LgonId<"game"> | null = null;
+
 		let user: LgonUser | undefined = this.lgon.users.get(authorId);
 		if ( !user )
 		{
@@ -32,10 +48,21 @@ export class startGameUseCase
 		else if ( !user.canLeave() )
 		{
 			this.logger.event( { code: "CANNOT_CREATE_GAME", data: { userId: user.id } } );
-			// this.messagingPort.send();
+
+			if ( user.preferences.notifyError )
+				flow = NotifierMaker(cannotCreateGameScript);
 		}
-
-		const game: Game = this.createGame(user);
-
+		else
+		{
+			const game: Game = this.createGame(user);
+			gameId = game.meta.id;
+			flow = LobbyFlow;
+		}
+		
+		if ( !flow || !gameId )
+			return ;
+		
+		this.lgon.sequenceStore.add(gameId, authorId, flow);
+		await this.messagingPort.send()
 	}
 }
