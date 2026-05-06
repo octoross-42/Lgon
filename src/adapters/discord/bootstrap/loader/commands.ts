@@ -14,7 +14,7 @@ type CommandFileContent =
 		argv: string[]) => void | Promise<void>
 }
 
-const loadCommands =  async (bot: Client, commandDir: string = 'build/discord/commands'): Promise<void> =>
+const loadCommands =  async (bot: Client, commandDir: string = 'build/adapters/discord/commands'): Promise<void> =>
 {
 	const commandFiles = await fg(['**/*_command.js'], { cwd: commandDir, dot: true, absolute: true });
 	console.log(`\nLoading commands...`);

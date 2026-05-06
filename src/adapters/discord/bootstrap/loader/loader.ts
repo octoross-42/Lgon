@@ -7,7 +7,6 @@ import loadSlashCommands from "./slashCommands.js";
 import loadEvents from "./events.js";
 import loadRoles from "./roles.js";
 import type { LgonContext } from "../../../../application/context/LgonContext.js";
-import type { SequenceStore } from "../../../../messagingFlows/store/SequenceStore.js";
 
 export async function loader(bot: Client, lgon: LgonContext): Promise<void>
 {

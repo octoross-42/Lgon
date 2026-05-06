@@ -1,5 +1,5 @@
 import type { LgonContext } from '../../../../application/context/LgonContext.js';
-import type { RoleGenerator } from '../../../../domain/game/entities/LgonRole/RoleGenerator.js';
+import type { RoleGenerator } from '../../../../core/game/entities/LgonRole/RoleGenerator.js';
 import { makeLgonId } from '../../../../types/LgonId.js';
 
 import { pathToFileURL } from "node:url";
@@ -20,7 +20,7 @@ function loadRole(lgon: LgonContext, generator: RoleGenerator): void
 
 }
 
-const loadRoles = async (lgon: LgonContext, eventDir = 'build/core/roles'): Promise<void> =>
+const loadRoles = async (lgon: LgonContext, eventDir = 'build/core/game/roles'): Promise<void> =>
 {
 	const roleFiles = await fg(['**/*_generator.js'], { cwd: eventDir, dot: true, absolute: true });
 	console.log(`\nLoading roles...`);

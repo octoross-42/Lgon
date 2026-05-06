@@ -4,13 +4,11 @@ import { pathToFileURL } from "node:url";
 import fg from 'fast-glob';
 
 import type { LgonContext } from '../../../../application/context/LgonContext.js';
-import type { SequenceStore } from '../../../../messagingFlows/store/SequenceStore.js';
 
-const loadEvents = async (bot: Client, lgon: LgonContext, eventDir = 'build/discord/events'): Promise<void> =>
+const loadEvents = async (bot: Client, lgon: LgonContext, eventDir = 'build/adapters/discord/events'): Promise<void> =>
 {
 	const eventsFiles = await fg(['**/*.js'], { cwd: eventDir, dot: true, absolute: true });
-	console.log(`\nLoading events...`); 
-
+	console.log(`\nLoading events...`);
 	for (const evenFile of eventsFiles)
 	{
 		const event: Event = await import(pathToFileURL(evenFile).href);
