@@ -1,12 +1,10 @@
-import type { LgonContext } from "../../context/LgonContext.js";
-import type { MessagingPort } from "../../ports/MessagingPort.js";
-import type { LgonId } from "../../../types/LgonId.js";
-import type { Logger } from "../../../infra/Logger.js";
-import { LgonUser } from "../../../domain/game/entities/LgonUser/LgonUser.js";
-import { Game } from "../../../domain/game/entities/Game/Game.js";
-import type { Flow, MessageScript } from "../../../messagingFlows/model/Flow.js";
-import { NotifierMaker } from "../../../messagingFlows/flows/NotifierMaker.js";
-import { LobbyFlow } from "src/messagingFlows/flows/Lobby/LobbyFlow.js";
+import type { LgonId } from "types/LgonId.js";
+import { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
+import { Game } from "core/game/entities/Game/Game.js";
+import type { Flow, MessageScript } from "messagingFlows/model/Flow.js";
+import { NotifierFlowMaker } from "messagingFlows/flows/NotifierFlowMaker.js";
+import { LobbyFlow } from "messagingFlows/flows/Lobby/LobbyFlow.js";
+import { Usecase, type UsecasesRegistry } from "application/entities/UsecasesRegistry.js";
 
 function cannotCreateGameScript(contextId: string, userId: string): MessageScript
 {
@@ -18,17 +16,17 @@ function cannotCreateGameScript(contextId: string, userId: string): MessageScrip
 	}
 }
 
-export class startGameUseCase
+export class CreateGameUsecase extends Usecase
 {
-	constructor(
-		private readonly lgon: LgonContext,
-		private readonly messagingPort: MessagingPort,
-		private readonly logger: Logger) {}
+	constructor(registry: UsecasesRegistry)
+	{
+		super(registry);
+	}
 
 	private	createGame(user: LgonUser): Game
 	{
-		const newGame: Game = new Game(this.lgon, user.id);
-		this.lgon.games.set(newGame.meta.id, newGame);
+		const newGame: Game = new Game(this.registry.lgon, user.id);
+		this.registry.lgon.games.set(newGame.meta.id, newGame);
 		user.joinGame(newGame); 
 		
 		return (newGame);
@@ -39,18 +37,18 @@ export class startGameUseCase
 		let flow: Flow | null = null;
 		let gameId: LgonId<"game"> | null = null;
 
-		let user: LgonUser | undefined = this.lgon.users.get(authorId);
+		let user: LgonUser | undefined = this.registry.lgon.users.get(authorId);
 		if ( !user )
 		{
-			user = new LgonUser(this.lgon, authorId);
-			this.logger.event( { code: "CREATE_USER", data: { userId: user.id } } );
+			user = new LgonUser(this.registry.lgon, authorId);
+			this.registry.logger.event( { code: "CREATE_USER", data: { userId: user.id } } );
 		}
 		else if ( !user.canLeave() )
 		{
-			this.logger.event( { code: "CANNOT_CREATE_GAME", data: { userId: user.id } } );
+			this.registry.logger.event( { code: "CANNOT_CREATE_GAME", data: { userId: user.id } } );
 
 			if ( user.preferences.notifyError )
-				flow = NotifierMaker(cannotCreateGameScript);
+				flow = NotifierFlowMaker(cannotCreateGameScript);
 		}
 		else
 		{
@@ -62,7 +60,7 @@ export class startGameUseCase
 		if ( !flow || !gameId )
 			return ;
 		
-		this.lgon.sequenceStore.add(gameId, authorId, flow);
-		await this.messagingPort.send()
+		// ADD TO STORE EVERYTHING AND SEND
+		// await this.registry.messagingPort.send()
 	}
 }
