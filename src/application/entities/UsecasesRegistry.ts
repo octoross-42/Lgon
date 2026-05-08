@@ -9,7 +9,7 @@ export abstract class Usecase
 	abstract run(args: any): void
 }
 
-export abstract class UsecasesRegistry
+export class UsecasesRegistry
 {
 	private usecases: Record<string, Usecase>;
 

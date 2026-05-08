@@ -1,14 +1,17 @@
-import type { RoleGenerator } from "../../domain/game/entities/LgonRole/RoleGenerator.js";
-import type { Game } from "../../domain/game/entities/Game/Game.js";
-import type { LgonUser } from "../../domain/game/entities/LgonUser/LgonUser.js";
+import type { RoleGenerator } from "../../core/game/entities/LgonRole/RoleGenerator.js";
+import type { Game } from "../../core/game/entities/Game/Game.js";
+import type { LgonUser } from "../../core/game/entities/LgonUser/LgonUser.js";
 import type { LgonId } from "../../types/LgonId.js";
 import { SequenceStore } from "../../messagingFlows/store/SequenceStore.js";
+import { UseCase } from "application/entities/UseCase.js";
 
 export class LgonContext
 {
 	public readonly roles: Map<LgonId<"role">, RoleGenerator>;
 	public readonly games: Map<LgonId<"game">, Game>;
 	public readonly users: Map<LgonId<"user">, LgonUser>;
+	
+	public readonly usecases: Record<string, UseCase>;
 	// public readonly onPropertyUpdate: Map<LgonProperty, (prop: LgonProperty) => void>;
 
 	public readonly sequenceStore: SequenceStore;
@@ -21,6 +24,8 @@ export class LgonContext
 		// this.activeFlows = new Map<LgonId<"embed">, ActionFlow>();
 		// this.onPropertyUpdate = new Map<LgonProperty, (prop: LgonProperty) => void>;
 	
+		this.usecases = {};
+
 		this.sequenceStore = new SequenceStore(this);
 	}
 
