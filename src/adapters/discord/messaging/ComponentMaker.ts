@@ -1,4 +1,5 @@
 import { ActionRowBuilder, type MessageActionRowComponentBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } from "discord.js";
+import type { LgonInteraction } from "../../../messagingFlows/model/Flow.js";
 
 export type InteractionBuilder = ButtonBuilder | StringSelectMenuBuilder;
 
@@ -7,21 +8,26 @@ export type InteractionBuilder = ButtonBuilder | StringSelectMenuBuilder;
 
 // }
 
-function componentMaker(interaction: LgonInteraction): InteractionBuilder
+const DISCORD_BUTTON_STYLES: Record<string, ButtonStyle> =
+{
+	"command": ButtonStyle.Primary
+}
+
+function	componentMaker(interaction: LgonInteraction): InteractionBuilder
 {
 	if (interaction.kind === "button")
 		return new ButtonBuilder()
 			.setCustomId("youpi") // TODO
 			.setLabel(interaction.build.label)
-			.setDisabled(interaction.build.disabled)
-			.setStyle(interaction.build.style);
+			.setDisabled(false)
+			.setStyle(DISCORD_BUTTON_STYLES[interaction.build.style]);
 	
 	return (new StringSelectMenuBuilder()
 		.setCustomId("yaha") // TODO
 		.setPlaceholder(interaction.build.placeholder)
 		.setMinValues(interaction.build.minValues)
 		.setMaxValues(interaction.build.maxValues)
-		.setDisabled(interaction.build.disabled)
+		.setDisabled(false)
 		.addOptions(interaction.build.options));
 }
 
