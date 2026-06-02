@@ -4,7 +4,7 @@
     "discord": "^0.8.2",
     "discord-api-types": "^0.38.1",
     "discord.js": "^14.18.0",
-    "dotenv": "^16.5.0",
+    "dotenv": "^16.6.1",
     "fast-glob": "^3.3.3",
     "typescript": "^5.9.3"
   },
@@ -17,7 +17,7 @@
   },
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "start": "node build/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -35,5 +35,8 @@
   "bugs": {
     "url": "https://github.com/octoross-42/Lgon/issues"
   },
-  "homepage": "https://github.com/octoross-42/Lgon#readme"
+  "homepage": "https://github.com/octoross-42/Lgon#readme",
+  "devDependencies": {
+    "tsc-alias": "^1.8.17"
+  }
 }
