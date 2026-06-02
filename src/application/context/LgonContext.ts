@@ -1,39 +1,46 @@
-import type { RoleGenerator } from "../../core/game/entities/LgonRole/RoleGenerator.js";
-import type { Game } from "../../core/game/entities/Game/Game.js";
-import type { LgonUser } from "../../core/game/entities/LgonUser/LgonUser.js";
-import type { LgonId } from "../../types/LgonId.js";
-import { SequenceStore } from "../../messagingFlows/store/SequenceStore.js";
-import { UseCase } from "application/entities/UseCase.js";
+import { DEFAULT_USER_STEPMODE } from "constants.js";
+import { LgonUser } from "../../core/game/entities/LgonUser/LgonUser.js";
+import { makeLgonId, type LgonId } from "../../types/LgonId.js";
+import { UsecasesRegistry } from "application/context/modules/UsecasesRegistry.js";
+import type { Logger } from "infra/Logger.js";
+import { GameStore } from "./modules/GameStore.js";
+import { UserStore } from "./modules/UserStore.js";
+
+import { loadUsescases } from "application/usecases/loadUsecases.js";
+import { LgonRoleGeneratorRegistry } from "./modules/LgonRoleGeneratorRegistry.js";
+import { loadRoles } from "core/game/roles/loadRoles.js";
+import type { FlowRunner } from "messagingFlows/model/FlowRunner.js";
+import { InteractionRegistry } from "./modules/InteractionRegistry.js";
+import { loadInteractions } from "messagingFlows/loadInteractions.js";
 
 export class LgonContext
-{
-	public readonly roles: Map<LgonId<"role">, RoleGenerator>;
-	public readonly games: Map<LgonId<"game">, Game>;
-	public readonly users: Map<LgonId<"user">, LgonUser>;
-	
-	public readonly usecases: Record<string, UseCase>;
+{	
+	public readonly usecases: UsecasesRegistry;
+	public readonly interactions: InteractionRegistry
 	// public readonly onPropertyUpdate: Map<LgonProperty, (prop: LgonProperty) => void>;
 
-	public readonly sequenceStore: SequenceStore;
-
-	constructor()
+	private constructor(public readonly gameStore: GameStore,
+						public readonly userStore: UserStore,
+						public readonly roleRegistry: LgonRoleGeneratorRegistry,
+						public readonly flowRunner: FlowRunner,
+						public readonly logger: Logger)
 	{
-		this.roles = new Map<LgonId<"role">, RoleGenerator>();
-		this.games = new Map<LgonId<"game">, Game>();
-		this.users = new Map<LgonId<"user">, LgonUser>();
-		// this.activeFlows = new Map<LgonId<"embed">, ActionFlow>();
+		this.usecases = loadUsescases(this.gameStore, this.userStore, this.flowRunner, this.logger);
+		this.interactions = loadInteractions(this.gameStore, this.userStore, this.flowRunner, this.logger);
 		// this.onPropertyUpdate = new Map<LgonProperty, (prop: LgonProperty) => void>;
-	
-		this.usecases = {};
-
-		this.sequenceStore = new SequenceStore(this);
 	}
 
-	getUserStepMode(userId: LgonId<"user">): "compact" | "long"
+	static async create(gameStore: GameStore, userStore: UserStore, flowRunner: FlowRunner, logger: Logger): Promise<LgonContext>
 	{
-		const user: LgonUser | undefined = this.users.get(userId);
+		const roleRegistry: LgonRoleGeneratorRegistry = await loadRoles();
+		return ( new LgonContext(gameStore, userStore, roleRegistry, flowRunner, logger) );
+	}
+
+	getStepMode(userId: LgonId<"user">): "compact" | "long"
+	{
+		const user: LgonUser | undefined = this.userStore.get(userId);
 		if ( !user )
-			return ("compact");
+			return ( DEFAULT_USER_STEPMODE );
 		return ( user.preferences.stepMode );
 	}
 }

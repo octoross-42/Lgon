@@ -1,40 +1,21 @@
 import type { LgonId } from "types/LgonId.js";
 import { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 import { Game } from "core/game/entities/Game/Game.js";
-import { Usecase, type UsecasesRegistry } from "application/entities/UsecasesRegistry.js";
+import { Usecase, type UsecasesRegistry } from "application/context/modules/UsecasesRegistry.js";
+import type { UserStore } from "application/context/modules/UserStore.js";
+import type { Logger } from "infra/Logger.js";
+import type { GameStore } from "application/context/modules/GameStore.js";
+import type { FlowRunner } from "messagingFlows/model/FlowRunner.js";
 
-export class StartGameUsecase extends Usecase
+export class StartGameUsecase implements Usecase
 {
-	constructor(registry: UsecasesRegistry)
-	{
-		super(registry);
-	}
-
-	private	getStartableUser(authorId: LgonId<"user">): LgonUser | null
-	{
-		let user: LgonUser | undefined = this.registry.lgon.users.get(authorId);
-		if ( !user )
-		{
-			user = new LgonUser(this.registry.lgon, authorId);
-			this.registry.logger.event( { code: "CREATE_USER", data: { userId: user.id } } );
-		}
-		else if ( !user.canLeave() )
-		{
-			this.registry.logger.event( { code: "CANNOT_CREATE_GAME", data: { userId: user.id } } );
-			return (null);
-		}
-		return (user);
-	}
+	constructor(private readonly gameStore: GameStore,
+				private readonly userStore: UserStore,
+				private readonly flowRunner: FlowRunner,
+				private readonly logger: Logger
+	) {}
 
 	async run(authorId: LgonId<"user">): Promise<void>
 	{
-		const user: LgonUser | null = this.getStartableUser(authorId);
-		if ( !user )
-			return ;
-
-		const newGame: Game = new Game(this.registry.lgon, authorId);
-		this.registry.lgon.games.set(newGame.meta.id, newGame);
-		user.joinGame(newGame);
-
 	}
 }

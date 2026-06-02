@@ -1,66 +1,63 @@
 import type { LgonId } from "types/LgonId.js";
 import { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
-import { Game } from "core/game/entities/Game/Game.js";
-import type { Flow, MessageScript } from "messagingFlows/model/Flow.js";
-import { NotifierFlowMaker } from "messagingFlows/flows/NotifierFlowMaker.js";
+
 import { LobbyFlow } from "messagingFlows/flows/Lobby/LobbyFlow.js";
-import { Usecase, type UsecasesRegistry } from "application/entities/UsecasesRegistry.js";
+import { Usecase } from "application/context/modules/UsecasesRegistry.js";
 
-function cannotCreateGameScript(contextId: string, userId: string): MessageScript
+import type { Logger } from "infra/Logger.js";
+
+import type { UserStore } from "application/context/modules/UserStore.js";
+import type { GameStore } from "application/context/modules/GameStore.js";
+import type { FlowRunner } from "messagingFlows/model/FlowRunner.js";
+import type { MessagingTarget } from "application/ports/MessagingPort.js";
+import { NotifyFlow } from "messagingFlows/flows/Notify/NotifyFlow.js";
+import { SwitchGameFlow } from "messagingFlows/flows/Lobby/SwitchGameFlow.js";
+
+export class CreateGameUsecase implements Usecase
 {
-	return {
-		title: "Error",
-		fields: [{
-			value: `<@${userId}> are already in game: ${contextId}, cannot leave and create another game`
-		}]
-	}
-}
+	constructor(private readonly gameStore: GameStore,
+				private readonly userStore: UserStore,
+				private readonly flowRunner: FlowRunner,
+				private readonly logger: Logger
+	) {}
 
-export class CreateGameUsecase extends Usecase
-{
-	constructor(registry: UsecasesRegistry)
-	{
-		super(registry);
-	}
 
-	private	createGame(user: LgonUser): Game
+	async run(authorId: LgonId<"user">, originMsgTarget: MessagingTarget): Promise<void>
 	{
-		const newGame: Game = new Game(this.registry.lgon, user.id);
-		this.registry.lgon.games.set(newGame.meta.id, newGame);
-		user.joinGame(newGame); 
-		
-		return (newGame);
-	}
 
-	async run(authorId: LgonId<"user">): Promise<void>
-	{
-		let flow: Flow | null = null;
 		let gameId: LgonId<"game"> | null = null;
 
-		let user: LgonUser | undefined = this.registry.lgon.users.get(authorId);
+		let user: LgonUser | undefined = this.userStore.get(authorId);
 		if ( !user )
 		{
-			user = new LgonUser(this.registry.lgon, authorId);
-			this.registry.logger.event( { code: "CREATE_USER", data: { userId: user.id } } );
+			user = this.userStore.new(authorId);
+			if ( !user )
+			{
+				await this.flowRunner.run(NotifyFlow("INTERNAL_ERROR"), this.userStore.lgon(), originMsgTarget, true);
+				return ;
+			}
+			this.logger.event( { code: "CREATE", data: { whatId: user.id } } );
+			console.log("??");
 		}
-		else if ( !user.canLeave() )
-		{
-			this.registry.logger.event( { code: "CANNOT_CREATE_GAME", data: { userId: user.id } } );
+		
 
-			if ( user.preferences.notifyError )
-				flow = NotifierFlowMaker(cannotCreateGameScript);
-		}
-		else
+		switch ( this.gameStore.new(user) )
 		{
-			const game: Game = this.createGame(user);
-			gameId = game.meta.id;
-			flow = LobbyFlow;
+			case "SUCCESS":
+			{
+				await this.flowRunner.run(LobbyFlow, user, originMsgTarget);		
+				break ;
+			}
+			case "CANNOT_LEAVE":
+			{
+				await this.flowRunner.run(NotifyFlow("CANNOT_LEAVE"), user, originMsgTarget, true);
+				break ;
+			}
+			case "SWITCH":
+			{
+				await this.flowRunner.run(SwitchGameFlow, user, originMsgTarget, true);
+				break ;
+			}
 		}
-		
-		if ( !flow || !gameId )
-			return ;
-		
-		// ADD TO STORE EVERYTHING AND SEND
-		// await this.registry.messagingPort.send()
 	}
 }
