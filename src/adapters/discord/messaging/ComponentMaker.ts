@@ -1,78 +1,115 @@
-import { ActionRowBuilder, type MessageActionRowComponentBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } from "discord.js";
-import type { LgonInteraction } from "../../../messagingFlows/model/Flow.js";
+import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
+import { ActionRowBuilder, type MessageActionRowComponentBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, userMention } from "discord.js";
+import type { Logger } from "infra/Logger.js";
+import type { InteractionModel, LgonButtonStyle } from "messagingFlows/model/Flow.js";
+import type { InteractionView,  } from "messagingFlows/model/View.js";
 
 export type InteractionBuilder = ButtonBuilder | StringSelectMenuBuilder;
 
-// function componentIdMaker(): string
-// {
-
-// }
-
-const DISCORD_BUTTON_STYLES: Record<string, ButtonStyle> =
+const DISCORD_BUTTON_STYLES: Record<LgonButtonStyle, ButtonStyle> =
 {
-	"command": ButtonStyle.Primary
+	"blue": ButtonStyle.Primary,
+	"red": ButtonStyle.Danger,
+	"green": ButtonStyle.Success,
+	"grey": ButtonStyle.Secondary,
+	"link": ButtonStyle.Link
 }
 
-function	componentMaker(interaction: LgonInteraction): InteractionBuilder
+export class ComponentMaker
 {
-	if (interaction.kind === "button")
-		return new ButtonBuilder()
-			.setCustomId("youpi") // TODO
-			.setLabel(interaction.build.label)
-			.setDisabled(false)
-			.setStyle(DISCORD_BUTTON_STYLES[interaction.build.style]);
-	
-	return (new StringSelectMenuBuilder()
-		.setCustomId("yaha") // TODO
-		.setPlaceholder(interaction.build.placeholder)
-		.setMinValues(interaction.build.minValues)
-		.setMaxValues(interaction.build.maxValues)
-		.setDisabled(false)
-		.addOptions(interaction.build.options));
-}
+	constructor(private readonly logger: Logger) {}
 
-
-export function ComponentsMaker(interactions: LgonInteraction[][]): ActionRowBuilder<MessageActionRowComponentBuilder>[]
-{
-	if (interactions.length === 0)
-		return [];
-	
-	const components = [];
-	let actionRow: ActionRowBuilder<MessageActionRowComponentBuilder>;
-	let component: MessageActionRowComponentBuilder;
-
-	let nrbStringByRow: number;
-	let nbrButtonByRow: number;
-	let nbrRows: number;
-
-	let i: number = 0;
-	let j: number;
-	while (i < interactions.length)
+	private makeComponentId(interaction: InteractionModel, author: LgonUser): string
 	{
-		j = 0;
-		actionRow  = new ActionRowBuilder<MessageActionRowComponentBuilder>();
-		
-		nrbStringByRow = 0;
-		nbrButtonByRow = 0;
-
-		while (j < interactions.length)
+		let id: string = interaction.id + ":";
+		switch (interaction.customIdKind)
 		{
-			if ((j >= 5) || (nrbStringByRow >= 1) || (nbrButtonByRow >= 5))
+			case ( "game" ):
 			{
-				console.log("error component maker components composition");
-				return (components);
+				if ( author.game )
+					id = id.concat( author.game.meta.id );
+				else
+					id = id.concat( "error" );
+				break;
 			}
-
-			component = componentMaker(interactions[i][j ++]);
-			actionRow.addComponents(component);
-			
-			if (interactions[i][j].kind === "select")
-				nrbStringByRow ++;
-			else if (interactions[i][j].kind === "button")
-				nbrButtonByRow ++;
+			case ( "user" ):
+			{
+				id = id.concat( author.id );
+				break;
+			}
+			default:
+			{
+				console.log(interaction.customIdKind);
+				id = id.concat( "error" );
+				break;
+			}
 		}
-		components.push(actionRow);
-		i ++;
+		return (id);
 	}
-	return (components);
+
+	private	componentMaker(interaction: InteractionView, author: LgonUser): InteractionBuilder
+	{
+		if (interaction.model.kind === "button")
+			return new ButtonBuilder()
+				.setCustomId(this.makeComponentId(interaction.model, author))
+				.setLabel(interaction.model.build.label)
+				.setDisabled(!interaction.enabled)
+				.setStyle(DISCORD_BUTTON_STYLES[interaction.model.build.style]);
+		
+		return (new StringSelectMenuBuilder()
+			.setCustomId(this.makeComponentId(interaction.model, author))
+			.setPlaceholder(interaction.model.build.placeholder)
+			.setMinValues(interaction.model.build.minValues)
+			.setMaxValues(interaction.model.build.maxValues)
+			.setDisabled(!interaction.enabled)
+			.addOptions(interaction.model.build.options));
+}
+
+
+	public make(interactions: InteractionView[][], author: LgonUser): ActionRowBuilder<MessageActionRowComponentBuilder>[]
+	{
+		if (interactions.length === 0)
+			return [];
+		
+		const components = [];
+		let actionRow: ActionRowBuilder<MessageActionRowComponentBuilder>;
+		let component: MessageActionRowComponentBuilder;
+
+		let nbrSelectByRow: number;
+		let nbrButtonByRow: number;
+		let nbrRows: number;
+
+		let i: number = 0;
+		let j: number;
+		while (i < interactions.length)
+		{
+			j = 0;
+			actionRow  = new ActionRowBuilder<MessageActionRowComponentBuilder>();
+			
+			nbrSelectByRow = 0;
+			nbrButtonByRow = 0;
+
+			while (j < interactions[i].length)
+			{
+				if ((j >= 5) || (nbrSelectByRow >= 1) || (nbrButtonByRow >= 5))
+				{
+					this.logger.event( { code: "COMPONENTS_ERROR", data: { error_on: `${interactions[i][j].model.kind}`, reason: `too many components a row (select: ${nbrSelectByRow}, buttons: ${nbrButtonByRow})` } } )
+					return (components);
+				}
+
+				component = this.componentMaker(interactions[i][j], author);
+				actionRow.addComponents(component);
+				
+				if (interactions[i][j].model.kind === "select")
+					nbrSelectByRow ++;
+				else if (interactions[i][j].model.kind === "button")
+					nbrButtonByRow ++;
+
+				j ++;
+			}
+			components.push(actionRow);
+			i ++;
+		}
+		return (components);
+	}
 }
