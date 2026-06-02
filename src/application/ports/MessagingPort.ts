@@ -1,13 +1,17 @@
-import type { LgonContext } from "../context/LgonContext.js";
+import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
+import type { MessageView } from "messagingFlows/model/View.js";
+import type { LgonId } from "types/LgonId.js";
 
-type MessagingTarget =
-	| { kind: "channel"; channelId: string }
-	| { kind: "message"; channelId: string; messageId: string }
-	| { kind: "interaction"; interactionId: string }
-	| { kind: "dm"; userId: string };
-
-export interface MessagingPort
+export type MessagingTarget =
 {
-	send(lgon: LgonContext, msgTarget: MessagingTarget): Promise<void>;
-	update(lgon: LgonContext): Promise<void>;
+	kind: "send" | "reply" | "dm",
+	viewId: LgonId<"view">
+}
+
+export abstract class MessagingPort
+{
+	constructor() {}
+
+	abstract send(views: MessageView[], author: LgonUser, msgTarget: MessagingTarget, ephemeral: boolean): Promise<void>;
+	abstract update(): Promise<void>;
 };
