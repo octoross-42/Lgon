@@ -6,16 +6,11 @@ import type { Player } from "../Game/Player.js";
 import type
 {
 	Client,
-	Collection,
-	ChatInputCommandInteraction,
-	Message,
-	EmbedBuilder,
-	ActionRowBuilder,
-	ButtonBuilder,
-	SelectMenuBuilder
+	Collection
 } from 'discord.js';
 
 import type { LgonContext } from "../core/LgonContext/LgonContext.js";
+import type { MessagingPort } from "application/ports/MessagingPort.ts";
 
 declare module 'discord.js'
 {
@@ -27,9 +22,9 @@ declare module 'discord.js'
 
 	export interface Client
 	{
-		lgon: LgonContext;
-		commands: Collection<string, Command>;                     // command name -> Command
-		slashCommands: Collection<string, any>;						// slash command name -> // TODO
-		cooldowns: Collection<string, Collection<string, number>>;	// command name -> Collection<userId, timestamp in ms> // TODO changer les cooldowns par personnes qui utilisent pas utilisation globale
+		messenger: MessagingPort;
+		commands: Collection<string, Command>;					 // command name -> Command
+		// slashCommands: Map<string, any>;						// slash command name -> // TODO
+		cooldowns: Map<string, Map<string, number>>;	// command name -> Map<userId, timestamp in ms> // TODO changer les cooldowns par personnes qui utilisent pas utilisation globale
 	}
 }
