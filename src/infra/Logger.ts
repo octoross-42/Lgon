@@ -1,127 +1,44 @@
+import { getTraceId } from "./trace.js";
+
 const LOG_LEVELS = ["debug", "info", "warning", "error", "silent"]; 
 export type LogLevel = typeof LOG_LEVELS[number];
 
 export const defaultLogLvl = "info";
 
-type LogEvent =
-{
-	code: EventCode;
-	caller: {
-		function: string,
-		file: string,
-		line: string
-	} | null;
-	data? : Record<string, unknown>;
-	date: Date;
-}
-
-type EventCode = "COMMAND" | "ALREADY_JOINED" | "JOINED" | "CANNOT_JOIN" | "LEFT" | "CANNOT_LEAVE" | "SWITCHED" | 
-				"CREATE_USER" |
-				"GAME_NOT_FOUND" | "DESTROY_GAME" | "CANNOT_CREATE_GAME"; 
-type EventDescription =
-{
-	lvl: "info" | "warning" | "error";
-	audience: "user" | "system";
-	log: (data ? : Record<string, unknown>) => string;
-	user_text? : (data ? : Record<string, unknown>) => string;
-}
-
-const EVENTS_DESCRIPTIONS: Record<EventCode, EventDescription> =
-{
-	COMMAND: {
-		lvl: "info",
-		audience: "system",
-		log: d => `${d?.userId} did: '${d?.command}`
-	},
-	JOINED: {
-		lvl: "info",
-		audience: "user",
-		log: d => `${d?.userId} joined game ${d?.gameId}`,
-		user_text: d => `You joined game ${d?.gameId}.`
-	},
-	CANNOT_JOIN: {
-		lvl: "error",
-		audience: "user",
-		log: d => `${d?.userId} could not join game ${d?.gameId} (not in setup phase)`,
-		user_text: d => `You didn't join game ${d?.gameId} because it's not in setup phase.`
-	},
-	ALREADY_JOINED: {
-		lvl: "warning",
-		audience: "user",
-		log: d => `${d?.userId} tried to join game ${d?.gameId} but already joined`,
-		user_text: () => `You're already in this game.`                                                                                                                                                                                                                                                                          
-	},
-	LEFT: {
-		lvl: "info",
-		audience: "user",
-		log: d => `${d?.userId} left game ${d?.gameId}`,
-		user_text: d => `You left game ${d?.gameId}.`
-	},
-	CANNOT_LEAVE: {
-		lvl: "error",
-		audience: "user",
-		log: d => `${d?.userId} tried to leave game ${d?.gameId} but cannot leave: ${d?.reason}`,
-		user_text: d => `You cannot leave ${d?.gameId}: ${d?.reason}.`
-	},
-	SWITCHED: {
-		lvl: "warning",
-		audience: "user",
-		log: d => `${d?.userId} switched game from ${d?.from} to ${d?.to}`,
-		user_text: d => `You switched game from ${d?.from} to ${d?.to}.`
-	},
-
-	CREATE_USER: {
-		lvl: "info",
-		audience: "system",
-		log: d => `Created user ${d?.userId}`
-	},
-
-	GAME_NOT_FOUND: {
-		lvl: "error",
-		audience: "user",
-		log: d => `Game ${d?.gameId} not found when ${d?.userId} ${d?.origin}`,
-		user_text: d => `Game ${d?.gameId} not found`
-	},
-
-	DESTROY_GAME: {
-		lvl: "info",
-		audience: "user",
-		log: d => `Game ${d?.gameId} has been destroyed: ${d?.reason}`,
-		user_text: d => `${d?.reason}, ${d?.gameId} has been destroyed`
-	},
-
-	CANNOT_CREATE_GAME: {
-		lvl: "error",
-		audience: "user",
-		log: d => `Cannot create game: creator ${d?.userId} cannot leave its game`,
-		user_text: d => `You cannot create a new game when you cannot join it: you can't leave your current game`
-	}
-}
-
+import { L_GREY, L_LBLUE, L_RED, L_ORANGE, L_RESET, L_ITALIC, L, L_LGREY, L_BLACK, L_YELLOW, L_BLUE } from "./LOG_FORMAT.js"
 
 const colors: Record<LogLevel, string> =
 {
-	debug: "\x1b[90m",
-	info: "\x1b[36m",
-	warn: "\x1b[33m",
-	error: "\x1b[31m",
+	debug: `${L(L_GREY)}`,
+	info: `${L(L_BLUE)}`,
+	warn: `${L(L_YELLOW)}`,
+	error: `${L(L_RED)}`,
 };
 
+import { type LogEvent, EVENTS_DESCRIPTIONS } from "./LOG_EVENTS.js";
+
+// {
+// 	lvl: "info" | "warning" | "error" | "debug";
+// 	audience: "system";
+// 	log: (data ? : Record<string, unknown>) => string;
+// 	user_text : (data ? : Record<string, unknown>) => string;
+// }
 
 const CURRENT_LOG_LVL: LogLevel = (process.env.LOG_LEVEL as LogLevel) ?? "info";
+console.log(`LOG LEVEL${colors[CURRENT_LOG_LVL]}`, CURRENT_LOG_LVL, L(L_RESET));
 
 export class Logger
 {
 	ok: boolean;
 	private events: LogEvent[];
-	userLog: LogEvent[];
+	// userLog: LogEvent[];
 	
 
 	constructor(private readonly log_lvl: LogLevel = defaultLogLvl)
 	{
 		this.ok = true;
 		this.events = [];
-		this.userLog = [];
+		// this.userLog = [];
 	}
 
 	private this_log_lvl_allows(to_approve_lvl: LogLevel): boolean { return (LOG_LEVELS.indexOf(to_approve_lvl) >= LOG_LEVELS.indexOf(this.log_lvl)); }
@@ -135,7 +52,7 @@ export class Logger
 			return null;
 
 		const lines = stack.split("\n");
-		const line = lines[2];
+		const line = lines[3];
 
 		let match = line.match(/at (.+) \((.+):(\d+):(\d+)\)/);
 		if (!match)
@@ -166,20 +83,34 @@ export class Logger
 		const event_description = EVENTS_DESCRIPTIONS[logEvent.code];
 		if (event_description.lvl === "error")
 			this.ok = false;
-		if (this.this_log_lvl_allows(event_description.lvl) && (event_description.audience === "user"))
-			this.userLog.push(logEvent);
+		// if (this.this_log_lvl_allows(event_description.lvl) && (event_description.audience === "user"))
+		// 	this.userLog.push(logEvent);
 	
 		Logger.console_log(logEvent);
+	}
+
+	static getTraceId(len: number): string
+	{
+		const traceIdStr: string | undefined = getTraceId();
+
+		if (traceIdStr)
+			return (`${L(L_RESET)}${" ".repeat(145 - len)}${L(L_ITALIC, L_GREY)}🠒 id: ${traceIdStr}${L(L_RESET)}}`);
+		return ("");
 	}
 
 	static console_log(level: LogEvent)
 	{
 		const time = level.date.toISOString().slice(11, 19);
 		const description = EVENTS_DESCRIPTIONS[level.code];
-		if (Logger.process_log_lvl_allows(level.code))
-			console.log(
-				`${colors[description.lvl]}[${time}] [${description.lvl.toUpperCase()}] [${level.caller}] ${description.log(level.data)}\x1b[0m`
-			);
+		
+		if (Logger.process_log_lvl_allows(description.lvl))
+		{
+			const log: string = `${colors[description.lvl]}[${time}] [${description.lvl.toUpperCase()}] ${L(L_RESET)}${description.log(level.data)}`;
+			const len: number = log.length;
+			console.log(`${log}${this.getTraceId(len)}`);
+			if (level.caller)
+				console.log(`\t⤷ ${L(L_ITALIC, L_GREY)}[${level.caller?.file}:${level.caller?.function}:${level.caller?.line}]${L(L_RESET)}`);
+		}
 	}
 }
 
