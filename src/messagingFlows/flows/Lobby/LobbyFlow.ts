@@ -1,31 +1,8 @@
-import type { Flow, MessageScript } from "../../model/Flow.js"
-
-function scriptLobbyControls(contextId: string, userId: string): MessageScript
-{
-	return {
-		title: "Controls",
-		fields: [
-			{
-				title: "",
-				value: "TODO"
-			}
-		]
-	}
-}
-
-function TODOO(contextId: string, userId: string): MessageScript
-{
-	return {
-		title: "TODO",
-		fields: []
-	}
-}
+import type { Flow } from "../../model/Flow.js";
 
 // playersIds // TODO max 1024 caracteres -> envoyer plusieurs fields
 // 				.map(id => `- <@${id}>`)
 // 				.join("\n"),
-
-function TODO(contextId: string, userId: string): void { return ; }
 
 export const LobbyFlow: Flow = 
 [{
@@ -36,49 +13,59 @@ export const LobbyFlow: Flow =
 		modes: [
 		{
 			mode: "basic",
-			script: (contextId: string, userId: string) => scriptLobbyControls(contextId, userId),
+			script: "LobbyControls",
 			interactions: [
 				[
 					{
+						id: "start_game",
+						customIdKind: "game",
 						kind: "button",
 						build: {
 							label: "Start",
-							style: "command"				
+							style: "green"
 						},
-						onSubmit: (contextId: string, userId: string) => TODO(contextId, userId)
+						// onSubmit: (userId: string) => TODO(userId)
 					},
 					{
+						id: "pause_game",
+						customIdKind: "game",
 						kind: "button",
 						build: {
-							label: "Stop",
-							style: "command"				
+							label: "Pause",
+							style: "grey"
 						},
-						onSubmit: (contextId: string, userId: string) => TODO(contextId, userId)
+						// onSubmit: (userId: string) => TODO(userId)
 					},
 					{
-						kind: "button",
-						build: {
-							label: "Reset",
-							style: "command"				
-						},
-						onSubmit: (contextId: string, userId: string) => TODO(contextId, userId)
-					},
-					{
-						kind: "button",
-						build: {
-							label: "End",
-							style: "command"				
-						},
-						onSubmit: (contextId: string, userId: string) => TODO(contextId, userId)
-					},
-					{
+						id: "restart_game",
+						customIdKind: "game",
 						kind: "button",
 						build: {
 							label: "Restart",
-							style: "command"				
+							style: "grey"				
 						},
-						onSubmit: (contextId: string, userId: string) => TODO(contextId, userId)
-					}
+						// onSubmit: (userId: string) => TODO(userId)
+					},
+					// {
+					// 	id: "reset_game",
+					// 	customIdKind: "game",
+					// 	kind: "button",
+					// 	build: {
+					// 		label: "Reset",
+					// 		style: "grey"
+					// 	},
+					// 	// onSubmit: (userId: string) => TODO(userId)
+					// },
+					// {
+					// 	id: "delete_game",
+					// 	customIdKind: "game",
+					// 	kind: "button",
+					// 	build: {
+					// 		label: "Delete",
+					// 		style: "red"				
+					// 	},
+					// 	// onSubmit: (userId: string) => TODO(userId)
+					// }
 				]
 			]
 		}],
@@ -93,24 +80,28 @@ export const LobbyFlow: Flow =
 		modes: [
 		{
 			mode: "basic",
-			script: (contextId: string, userId: string) => TODOO(contextId, userId),
+			script: "LobbyPlayers",
 			interactions: [ 
 			[
 				{
+					id: "join_game",
+					customIdKind: "game",
 					kind: "button",
 					build: {
 						label: "Join",
-						style: "command"				
+						style: "green"				
 					},
-					onSubmit: (contextId: string, userId: string) => TODO(contextId, userId)
+					// onSubmit: (userId: string) => TODO(userId)
 				},
 				{
+					id: "leave_game",
+					customIdKind: "game",
 					kind: "button",
 					build: {
 						label: "Leave",
-						style: "command"				
+						style: "red"				
 					},
-					onSubmit: (contextId: string, userId: string) => TODO(contextId, userId)
+					// onSubmit: (userId: string) => TODO(userId)
 				}
 			]]
 		}
@@ -124,10 +115,12 @@ export const LobbyFlow: Flow =
 		modes: [
 		{
 			mode: "manual",
-			script: (contextId: string, userId: string) => TODOO(contextId, userId),
+			script: "LobbyRoles",
 			interactions: [
 			[
 				{
+					id: "choose_role",
+					customIdKind: "game",
 					kind: "select",
 					build: {
 						placeholder: "Select role",
@@ -141,32 +134,40 @@ export const LobbyFlow: Flow =
 						minValues: 1,
 						maxValues: 1
 					},
-					onSubmit: (contextId: string, userId: string) => TODO(contextId, userId)
-				},
+					// onSubmit: (userId: string) => TODO(userId)
+				}
+			],
+			[
 				{
+					id: "add_role",
+					customIdKind: "game",
 					kind: "button",
 					build: {
 						label: "+",
-						style: "command"				
+						style: "green",			
 					},
-					onSubmit: (contextId: string, userId: string) => TODO(contextId, userId)
+					// onSubmit: (userId: string) => TODO(userId)
 				},
 				{
+					id: "rm_role",
+					customIdKind: "game",
 					kind: "button",
 					build: {
 						label: "-",
-						style: "command"				
+						style: "red"				
 					},
-					onSubmit: (contextId: string, userId: string) => TODO(contextId, userId)
+					// onSubmit: (userId: string) => TODO(userId)
 				}
 			]]
 		},
 		{
 			mode: "preset",
-			script: (contextId: string, userId: string) => TODOO(contextId, userId),
+			script: "LobbyPresetRoles",
 			interactions: [
 			[
 				{
+					id: "choose_role",
+					customIdKind: "game",
 					kind: "select",
 					build: {
 						placeholder: "Select role",
@@ -180,25 +181,32 @@ export const LobbyFlow: Flow =
 						minValues: 1,
 						maxValues: 1
 					},
-					onSubmit: (contextId: string, userId: string) => TODO(contextId, userId)
-				},
+					// onSubmit: (userId: string) => TODO(userId)
+				}
+			],
+			[
 				{
+					id: "add_role",
+					customIdKind: "game",
 					kind: "button",
 					build: {
 						label: "+",
-						style: "command"				
+						style: "green"				
 					},
-					onSubmit: (contextId: string, userId: string) => TODO(contextId, userId)
+					// onSubmit: (userId: string) => TODO(userId)
 				},
 				{
+					id: "rm_role",
+					customIdKind: "game",
 					kind: "button",
 					build: {
 						label: "-",
-						style: "command"				
+						style: "red"				
 					},
-					onSubmit: (contextId: string, userId: string) => TODO(contextId, userId)
+					// onSubmit: (userId: string) => TODO(userId)
 				}
-			]]
+			]
+			]
 		}
 	]}]
 }]
