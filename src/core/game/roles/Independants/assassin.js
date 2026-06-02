@@ -6,20 +6,20 @@ const
 
 module.exports.actionLegale = ( bot, guildId, indiceJ, joueurs, actionStr) =>
 {
-    const indiceJA = unJoueurCherche(actionStr, joueurs);
-    if (! (indiceJA === false) && !(indiceJA === indiceJ))
+	const indiceJA = unJoueurCherche(actionStr, joueurs);
+	if (! (indiceJA === false) && !(indiceJA === indiceJ))
 {
-        return true;
-    }
-    joueurs[indiceJ].channel.send("Action pas légale");
-    
-    return false;
+		return true;
+	}
+	joueurs[indiceJ].channel.send("Action pas légale");
+	
+	return false;
 
 }
 
 module.exports.action = (bot, guildId, indiceJ, joueurs) =>
 {
-    joueurs[indiceJ].aJoue = true;
+	joueurs[indiceJ].aJoue = true;
 
 } 
 

@@ -1,4 +1,4 @@
-import type { LgonId, LgonIdKind } from "../../../../../../types/LgonId.js";
+import type { LgonId, LgonIdKind } from "types/LgonId.js";
 
 export type LgonStatusKind =
 	"silenced" |

@@ -1,6 +1,6 @@
 import type { Game } from "../../Game.js";
-import { type LgonId, getLgonId } from "../../../../../../types/LgonId.js";
-import { logger } from "../../../../../../infra/Logger.js";
+import { type LgonId, getLgonId } from "types/LgonId.js";
+import { logger } from "infra/Logger.js";
 import { Player } from "./Player.js";
 import { LgonUser } from "../../../LgonUser/LgonUser.js";
 
@@ -42,11 +42,10 @@ export class PlayerRegistry
 		this.players.delete(user.id);
 		logger.event( { code: "LEFT", data: { userId: user.id, gameId: this.game.meta.id } } );
 
+		user.game = null;
+
 		if ( this.players.size === 0 )
-		{
-			logger.event( { code: "DESTROY_GAME", data: { gameId: this.game.meta.id, reason: "no more players" } } );
-			this.game.lgon.games.delete(this.game.meta.id);
-		}
+			this.game.gameStore.delete(this.game.meta.id, "no more players");
 	}
 	
 	getIds(): string[] { return (Array.from(this.players.keys(), key => getLgonId(key))); }

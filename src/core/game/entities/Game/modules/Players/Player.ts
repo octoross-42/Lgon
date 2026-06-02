@@ -1,7 +1,7 @@
 import type { NightRole } from "../../../LgonRole/NightRole.js";
 import type { LgonStatus } from "./LgonStatus.js";
 import type { RoleGenerator } from "../../../LgonRole/RoleGenerator.js";
-import type { LgonUser } from "../../../LgonUser.js";
+import type { LgonUser } from "../../../LgonUser/LgonUser.js";
 
 export class Player
 {
@@ -20,8 +20,6 @@ export class Player
 		this.user = user;
 		this.status = new Set<LgonStatus>();
 	}
-
-
 	
 	attributeRole(role: RoleGenerator): void
 	{

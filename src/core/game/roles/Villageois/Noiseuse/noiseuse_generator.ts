@@ -4,6 +4,7 @@ import type { Player } from "../../../entities/Game/modules/Players/Player.js";
 import { PREFIX } from "../../../../../constants.js";
 
 import { LgonRoleMeta } from "../../../entities/LgonRole/LgonRoleMeta.js";
+import { makeLgonId } from "types/LgonId.js";
 
 // class NoiseuseActionEmbed extends AwaitingInteraction
 // {
@@ -84,7 +85,7 @@ class Noiseuse extends NightRole
 
 export const roleGenerator: RoleGenerator = new RoleGenerator(
 	{
-		name: "noiseuse",
+		name: makeLgonId<"role">("role", "noiseuse"),
 		aliases: [],
 		category: "Villageois",
 		description: "La Noiseuse échange les rôles de 2 personnes sans qu'ils n'en prennent connaissance",

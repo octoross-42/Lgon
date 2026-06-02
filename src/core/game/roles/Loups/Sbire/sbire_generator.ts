@@ -2,6 +2,7 @@ import { NightRole } from "../../../entities/LgonRole/NightRole.js";
 import { RoleGenerator } from "../../../entities/LgonRole/RoleGenerator.js";
 import type { Player } from "../../../entities/Game/modules/Players/Player.js";
 import type { LgonRoleMeta } from "../../../entities/LgonRole/LgonRoleMeta.js";
+import { makeLgonId } from "types/LgonId.js";
 
 class Sbire extends NightRole
 {
@@ -13,7 +14,7 @@ class Sbire extends NightRole
 
 export const roleGenerator: RoleGenerator = new RoleGenerator(
 	{
-		name: "sbire",
+		name: makeLgonId<"role">("role", "sbire"),
 		aliases: [],
 		category: "Loup",
 		description: "Le Sbire n'est pas un Loup, mais les connait et en devient un s'il n'y a aucun Loup parmi les joueurs",

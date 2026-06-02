@@ -4,7 +4,9 @@ import { RoleGenerator } from "../../../entities/LgonRole/RoleGenerator.js";
 import type { Player } from "../../../entities/Game/modules/Players/Player.js";
 import type { LgonRoleMeta } from "../../../entities/LgonRole/LgonRoleMeta.js";
 
-import { CONSTANTES } from "../../../../../config/constantes.js";
+import { PREFIX } from "../../../../../constants.js";
+
+import { makeLgonId } from "types/LgonId.js";
 
 // class SoulardActionEmbed extends AwaitingInteraction
 // {
@@ -79,11 +81,11 @@ class Soulard extends NightRole
 
 export const roleGenerator: RoleGenerator = new RoleGenerator(
 	{
-		name: "soulard",
+		name: makeLgonId<"role">("role", "soulard"),
 		category: "Villageois",
 		description: "La Soulard échange son rôle avec un rôle au centre mais n'en prend pas connaissance",
 		cdv: "La Soulard est une villageoise, il doit tuer un Loup pour gagner",
-		usage: `\`${CONSTANTES.PREFIX} action \`gauche\` \`milieu\` ou \`droite\``,
+		usage: `\`${PREFIX} action \`gauche\` \`milieu\` ou \`droite\``,
 		aliases: ["soulard"],
 		action: false,
 		information: false,

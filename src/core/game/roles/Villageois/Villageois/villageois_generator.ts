@@ -2,6 +2,7 @@ import { NightRole } from "../../../entities/LgonRole/NightRole.js";
 import { RoleGenerator } from "../../../entities/LgonRole/RoleGenerator.js";
 import type { Player } from "../../../entities/Game/modules/Players/Player.js";
 import type { LgonRoleMeta } from "../../../entities/LgonRole/LgonRoleMeta.js";
+import { makeLgonId } from "types/LgonId.js";
 
 class Villageois extends NightRole
 {
@@ -12,7 +13,7 @@ class Villageois extends NightRole
 }
 export const roleGenerator: RoleGenerator = new RoleGenerator(
 	{
-		name: "villageois",
+		name: makeLgonId<"role">("role", "villageois"),
 		category: "Villageois",
 		description: "La Villageois existe...",
 		cdv: "Le Villageois est un villageois (étonnant non ?), il doit tuer un Loup pour gagner",

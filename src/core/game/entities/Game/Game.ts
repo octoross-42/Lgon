@@ -1,7 +1,8 @@
 import { GameMeta } from "./GameMeta.js";
 import { PlayerRegistry } from "./modules/Players/PlayerRegistry.js";
-import type { LgonContext } from "../../../../application/context/LgonContext.js";
-import type { LgonId } from "../../../../types/LgonId.js";
+import type { GameStore } from "application/context/modules/GameStore.js";
+import { PickedRoleRegistry } from "./modules/PickedRoleRegistry.js";
+import type { LgonUser } from "../LgonUser/LgonUser.js";
 
 export class Game
 {
@@ -9,19 +10,23 @@ export class Game
 	
 	phase: "setup" | "night" | "day" | "voting" | "ended";
 	public players: PlayerRegistry;
+	public pickedRoles: PickedRoleRegistry;
 	
-	
-	constructor(public readonly lgon: LgonContext, creatorId: LgonId<"user">)
+	constructor(public readonly gameStore: GameStore)
 	{
 		// TODO GERER LES OVERFLOW D'ids -> quand on reach 1 000 000
 
 		this.meta = new GameMeta();
-		
+		this.pickedRoles = new PickedRoleRegistry();
 		this.phase = "setup";
 		this.players = new PlayerRegistry(this);
 	}
 
-	
+	join(user: LgonUser)
+	{
+		this.players.join(user);
+	}
+
 	// async distributeRoles(bot: Client): Promise<void>
 	// {
 	// 	this.playersRoles = [];
@@ -31,7 +36,7 @@ export class Game
 	// 	let roleId: number = 0;
 	// 	let tmpPlayers: Player[] = Array.from(this.players.values());
 	// 	let tmpCenter: string[] = [ "left", "middle", "right"];
-	// 	this.center = new Collection<string, NightRole>();
+	// 	this.center = new Map<string, NightRole>();
 	// 	while (i < rolesOrder.length)
 	// 	{
 	// 		const role: string = rolesOrder[i].toLowerCase();

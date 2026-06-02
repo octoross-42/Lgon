@@ -1,4 +1,7 @@
-import { type LgonId, makeRandgonId } from "../../../../types/LgonId.js";
+import { L } from "infra/LOG_FORMAT.js";
+import { type LgonId, makeRandomId } from "../../../../types/LgonId.js";
+
+const ALPHA_BASE =  ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" ];
 
 export class GameMeta
 {
@@ -9,7 +12,7 @@ export class GameMeta
 	constructor()
 				// public readonly where: LgonId<"where">)
 	{
-		this.id = makeRandgonId("game", GameMeta.ids_count ++);
+		this.id = makeRandomId("game", GameMeta.ids_count ++, ALPHA_BASE);
 		this.creationTime = new Date();
 	}
 
