@@ -12,7 +12,7 @@ export class UserStore
 		this.users = new Map<LgonId<"user">, LgonUser>();
 
 		const lgonId: LgonId<"user"> = makeLgonId<"user">("user", "lgon");
-		this.lgonUser = new LgonUser(lgonId, this.logger);
+		this.lgonUser = new LgonUser(lgonId, "lgon", this.logger);
 	}
 
 	lgon(): Readonly<LgonUser>
@@ -20,14 +20,14 @@ export class UserStore
 		return (this.lgonUser);
 	}
 
-	new(userId: LgonId<"user">): LgonUser | undefined
+	new(userId: LgonId<"user">, name: string): LgonUser | undefined
 	{
 		if ( this.users.has(userId) )
 		{
 			this.logger.event( { code: "DESIGN_ERROR", data: { error: "cannot create user: id already exists" }} );
 			return (undefined);
 		}
-		const user = new LgonUser(userId, this.logger);
+		const user = new LgonUser(userId, name, this.logger);
 		this.users.set(userId, user);
 		return (user);
 	}

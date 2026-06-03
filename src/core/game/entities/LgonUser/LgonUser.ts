@@ -13,6 +13,7 @@ export class LgonUser
 	preferences: UserPreferences;
 
 	constructor(public readonly id: LgonId<"user">,
+				public name: string,
 				public readonly logger: Logger)
 	{
 		this.tellWarning = true;
