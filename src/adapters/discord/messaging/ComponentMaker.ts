@@ -47,23 +47,34 @@ export class ComponentMaker
 		return (id);
 	}
 
-	private	componentMaker(interaction: InteractionView, author: LgonUser): InteractionBuilder
+	private	componentMaker(interaction: InteractionView, author: LgonUser): InteractionBuilder | undefined
 	{
+		const customId: string = this.makeComponentId(interaction.model, author);
+		if (customId.length > 100)
+		{
+			this.logger.event({ code: "COMPONENTS_ERROR", data: { error_on: `component ${customId}`, reason: "customId lenght > 100" } });
+			return ;
+		}
+
 		if (interaction.model.kind === "button")
 			return new ButtonBuilder()
-				.setCustomId(this.makeComponentId(interaction.model, author))
-				.setLabel(interaction.model.build.label)
+				.setCustomId(customId) // 1-100
+				.setLabel(interaction.model.build.label.slice(0, 34)) // 34 without icon or emoji, 38 with
 				.setDisabled(!interaction.enabled)
 				.setStyle(DISCORD_BUTTON_STYLES[interaction.model.build.style]);
 		
+		const maxValues: number = (interaction.model.build.maxValues > 0) ? Math.min(interaction.model.build.maxValues, 25): interaction.model.build.options.length;
 		return (new StringSelectMenuBuilder()
-			.setCustomId(this.makeComponentId(interaction.model, author))
-			.setPlaceholder(interaction.model.build.placeholder)
-			.setMinValues(interaction.model.build.minValues)
-			.setMaxValues(interaction.model.build.maxValues)
+			.setCustomId(customId) // 1-100
+			.setPlaceholder(interaction.model.build.placeholder.slice(0, 150)) //150 max
+			.setMinValues(Math.min(Math.max(interaction.model.build.minValues, 0), 25)) // 0-25
+			.setMaxValues(maxValues) // 25
 			.setDisabled(!interaction.enabled)
-			.addOptions(interaction.model.build.options));
-}
+			.addOptions(interaction.model.build.options.slice(0, 25).map(option => { return { // 25 options max
+					label: option.label.slice(0, 100), // max 100
+					value: option.value.slice(0, 100), // max 100
+					description: option.description?.slice(0, 100) } }))); // max 100
+	}
 
 
 	public make(interactions: InteractionView[][], author: LgonUser): ActionRowBuilder<MessageActionRowComponentBuilder>[]
@@ -73,7 +84,7 @@ export class ComponentMaker
 		
 		const components = [];
 		let actionRow: ActionRowBuilder<MessageActionRowComponentBuilder>;
-		let component: MessageActionRowComponentBuilder;
+		let component: MessageActionRowComponentBuilder | undefined;
 
 		let nbrSelectByRow: number;
 		let nbrButtonByRow: number;
@@ -98,6 +109,11 @@ export class ComponentMaker
 				}
 
 				component = this.componentMaker(interactions[i][j], author);
+				if ( !component )
+				{
+					j ++;
+					continue;
+				}
 				actionRow.addComponents(component);
 				
 				if (interactions[i][j].model.kind === "select")
