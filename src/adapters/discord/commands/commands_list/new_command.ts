@@ -33,16 +33,12 @@ export class CreateGameCommand extends Command
 
 	run(lgon: LgonContext, message: Message, argv: string[]): Promise<void> | void
 	{
-		const viewId: LgonId<"view"> = this.msgsCache.save({
-			msgId: message.id,
-			channelId: message.channel.id
-		});
-
 		const msgTarget: MessagingTarget = {
 			kind: "reply",
-			viewId: viewId
+			msgId: message.id,
+			channelId: message.channel.id	
 		};
-		lgon.usecases.run("CreateGame", makeLgonId<"user">("user", message.author.id), msgTarget);
+		lgon.usecases.run("CreateGame", makeLgonId<"user">("user", message.author.id), msgTarget, message.author.avatar);
 	}
 
 

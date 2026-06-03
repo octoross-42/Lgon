@@ -1,7 +1,6 @@
 import type { LgonId } from "types/LgonId.js"
- import { ViewStore } from "messagingFlows/model/ViewStore.js";
 
-export type MsgTargetCtx =
+export type MessageRef =
 {
 	channelId: string,
 	msgId: string
@@ -9,44 +8,30 @@ export type MsgTargetCtx =
 
 export class DiscordMessagingCache
 {
-	private msgCtx: Map<LgonId<"view">, MsgTargetCtx>;
-	private channelIds: Map<LgonId<"view">, string>;
-
+	private msgRefs: Map<LgonId<"view">, MessageRef>;
+	
 	constructor()
 	{
-		this.msgCtx = new Map<LgonId<"view">, MsgTargetCtx>();
-		this.channelIds = new Map<LgonId<"view">, string>();
+		this.msgRefs = new Map<LgonId<"view">, MessageRef>();
 	}
 
-	get(viewId: LgonId<"view">): MsgTargetCtx | undefined
+	get(viewId: LgonId<"view">): MessageRef | undefined
 	{
-		return ( this.msgCtx.get(viewId) );
+		return ( this.msgRefs.get(viewId) );
 	}
 
 	getChannel(viewId: LgonId<"view">): string | undefined
 	{
-		return ( this.channelIds.get(viewId) );
+		return ( this.msgRefs.get(viewId)?.channelId );
 	}
 
-	add(viewId: LgonId<"view">, msgCtx: MsgTargetCtx)
+	add(viewId: LgonId<"view">, msgRefs: MessageRef)
 	{
-		this.msgCtx.set(viewId, msgCtx);
-	}
-
-	save(msgTargetCtx: MsgTargetCtx): LgonId<"view">
-	{
-		const viewId: LgonId<"view"> = ViewStore.makeViewId();
-		this.msgCtx.set(viewId, msgTargetCtx);
-		return (viewId);
+		this.msgRefs.set(viewId, msgRefs);
 	}
 
 	rm(viewId: LgonId<"view">)
 	{
-		this.msgCtx.delete(viewId);
-	}
-
-	rmChannel(viewId: LgonId<"view">)
-	{
-		this.channelIds.delete(viewId);
+		this.msgRefs.delete(viewId);
 	}
 }

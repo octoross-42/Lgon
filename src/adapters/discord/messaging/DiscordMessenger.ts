@@ -1,8 +1,8 @@
 import { MessagingPort, type MessagingTarget } from "application/ports/MessagingPort.js";
 import { type Channel, type Client, EmbedBuilder, type Guild, type SendableChannels, type MessageCreateOptions, type Message, type User, MessageFlags } from "discord.js";
-import type { MessageView } from "messagingFlows/model/View.js";
+import type { MessageView } from "application/messaging/model/View.js";
 import { ComponentMaker } from "./ComponentMaker.js";
-import { DiscordMessagingCache, MsgTargetCtx } from "../store/DiscordMessagingCache.js";
+import { DiscordMessagingCache, MessageRef } from "../store/DiscordMessagingCache.js";
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 import type { Logger } from "infra/Logger.js";
 
@@ -18,7 +18,7 @@ export class DiscordMessenger extends MessagingPort
 		this.componentMaker = new ComponentMaker(this.logger);
 	}
 
-	private async guildSend(msg: MessageCreateOptions, channelId: string): Promise<MsgTargetCtx | undefined>
+	private async guildSend(msg: MessageCreateOptions, channelId: string): Promise<MessageRef | undefined>
 	{
 		const channel: Channel | undefined = this.bot.channels.cache.get(channelId);
 		if ( !channel )
@@ -39,7 +39,7 @@ export class DiscordMessenger extends MessagingPort
 	}
 	
 
-	private async reply(msg: MessageCreateOptions, msgTargetCtx: MsgTargetCtx): Promise<MsgTargetCtx | undefined>
+	private async reply(msg: MessageCreateOptions, msgTargetCtx: MessageRef): Promise<MessageRef | undefined>
 	{
 		const channel: Channel | undefined = this.bot.channels.cache.get(msgTargetCtx.channelId);
 		if ( !channel )
@@ -75,7 +75,7 @@ export class DiscordMessenger extends MessagingPort
 			this.logger.event( { code: "NOT_SENDABLE", data: { channelId: msgTargetCtx.channelId } } );
 	}
 
-	private async dmSend(msg: MessageCreateOptions, userId: string): Promise<MsgTargetCtx | undefined>
+	private async dmSend(msg: MessageCreateOptions, userId: string): Promise<MessageRef | undefined>
 	{
 		const user: User | undefined = this.bot.users.cache.get(userId);
 		if ( !user )
@@ -119,37 +119,23 @@ export class DiscordMessenger extends MessagingPort
 		{
 			const msg: MessageCreateOptions = this.makeMsgPayload(view, author, epheremal);
 			
-			let sent: MsgTargetCtx | undefined;
+			let sent: MessageRef | undefined;
 			switch (msgTarget.kind)
 			{
 
 				case "send":
 				{
-					const channelId: string | undefined = this.msgs.getChannel(msgTarget.viewId);
-					if ( !channelId )
-					{
-						this.logger.event( { code: "NOT_FOUND", data: { what: "channel", whatId: msgTarget.viewId, ctx: "send:send" } } );
-						return ;
-					}
-
-					sent = await this.guildSend( msg, channelId);
+					sent = await this.guildSend( msg, msgTarget.channelId);
 					break;
 				}
 				case "reply":
-				{	
-					const msgTargetCtx: MsgTargetCtx | undefined = this.msgs.get(msgTarget.viewId);
-					if ( !msgTargetCtx )
-					{
-						this.logger.event( { code: "NOT_FOUND", data: { what: "msg", whatId: msgTarget.viewId, ctx: "send:reply" } } );
-						return ;
-					}
-
-					sent = await this.reply( msg, msgTargetCtx );
+				{
+					sent = await this.reply( msg, { msgId: msgTarget.msgId, channelId: msgTarget.channelId } );
 					break;
 				}
 				case "dm":
 				{
-					sent = await this.dmSend( msg, views[0].blockCtx.authorId );
+					sent = await this.dmSend( msg, msgTarget.userId );
 					break;	
 				}
 			}
