@@ -1,8 +1,9 @@
 import type { LgonContext } from "application/context/LgonContext.js";
 import type { Client, Interaction, User } from "discord.js";
-import { ButtonName, SelectName } from "messagingFlows/loadInteractions.js";
+import { ButtonName, SelectName } from "application/messaging/loadInteractions.js";
 import { LgonId, makeLgonId } from "types/LgonId.js";
 
+import { runWithTrace } from 'infra/trace.js';
 
 type InteractionArgs =
 {
@@ -19,7 +20,7 @@ function parseInteraction(str: string): InteractionArgs
 	});
 }
 
-export async function onEvent(lgon: LgonContext, bot: Client, interaction: Interaction, user: User): Promise<void>
+export async function onInteraction(lgon: LgonContext, bot: Client, interaction: Interaction, user: User): Promise<void>
 {
 	
 	if (interaction.isMessageComponent())
@@ -37,10 +38,7 @@ export async function onEvent(lgon: LgonContext, bot: Client, interaction: Inter
 			lgon.interactions.button(interactionName as ButtonName, userId, args);
 
 		else if (interaction.isStringSelectMenu())
-		{
-			console.log(interaction.values);
 			lgon.interactions.select(interactionName as SelectName, userId, args, interaction.values);
-		}
 	}
 	
 	else if (interaction.isChatInputCommand())
@@ -52,6 +50,11 @@ export async function onEvent(lgon: LgonContext, bot: Client, interaction: Inter
 		// 	return ;
 	}
 	// console.log(interaction);
+}
+
+export async function onEvent(lgon: LgonContext, bot: Client, interaction: Interaction, user: User): Promise<void>
+{	
+	await runWithTrace( async (): Promise<void> => onInteraction(lgon, bot, interaction, user) );
 }
 
 export const name = "interactionCreate";
