@@ -1,5 +1,6 @@
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 import type { MessageView } from "application/messaging/model/View.js";
+import type { LgonId } from "types/LgonId.js";
 
 export type MessagingTarget =
 {
@@ -14,6 +15,10 @@ export type MessagingTarget =
 {
 	kind: "dm",
 	userId: string
+} |
+{ 
+	kind: "view", // always reply, to resolve
+	viewId: LgonId<"view">
 }
 
 export abstract class MessagingPort

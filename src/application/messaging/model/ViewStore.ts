@@ -5,7 +5,7 @@ import type { Logger } from "infra/Logger.js";
 import { makeLgonId, type LgonId } from "types/LgonId.js";
 import type { MessagingTarget } from "application/ports/MessagingPort.js";
 import type { ScriptMaker, Script } from "./Script.js";
-import { loadScripts, type ScriptName } from "messagingFlows/loadScripts.js";
+import { loadScripts, type ScriptName } from "application/messaging/loadScripts.js";
 import type { GameStore } from "application/context/modules/GameStore.js";
 import type { UserStore } from "application/context/modules/UserStore.js";
 
@@ -115,7 +115,7 @@ export class ViewStore
 			const target: MessagingTarget =
 				(i === 0) ? ctx.originMsgTarget:
 				{
-					kind: "reply",
+					kind: "view",
 					viewId: views[i - 1].id
 				}; 
 				const view: MessageView = {

@@ -138,6 +138,17 @@ export class DiscordMessenger extends MessagingPort
 					sent = await this.dmSend( msg, msgTarget.userId );
 					break;	
 				}
+				case "view":
+				{
+					const realMsgTarget: MessageRef | undefined = this.msgs.get(msgTarget.viewId);
+					if ( !realMsgTarget )
+					{
+						this.logger.event( { code: "NOT_FOUND", data: { what: "message ref", whatId: msgTarget.viewId, ctx: "discord messenger send view" } } );
+						return ;
+					}
+					sent = await this.reply( msg, realMsgTarget );
+					break ;
+				}
 			}
 
 			if ( !sent )
