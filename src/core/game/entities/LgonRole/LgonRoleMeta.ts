@@ -2,7 +2,8 @@ import type { LgonId } from "types/LgonId.js";
 
 export type LgonRoleMeta =
 {
-	name: LgonId<"role">;
+	id: LgonId<"role">;
+	name: string,
 	category: "Loup" | "Villageois" | "Independant";
 	description: string;
 	cdv: string;

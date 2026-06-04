@@ -13,7 +13,8 @@ class Villageois extends NightRole
 }
 export const roleGenerator: RoleGenerator = new RoleGenerator(
 	{
-		name: makeLgonId<"role">("role", "villageois"),
+		id: makeLgonId<"role">("role", "villageois"),
+		name: "Villageois",
 		category: "Villageois",
 		description: "La Villageois existe...",
 		cdv: "Le Villageois est un villageois (étonnant non ?), il doit tuer un Loup pour gagner",

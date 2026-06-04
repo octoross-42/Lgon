@@ -1,10 +1,16 @@
-import type { Flow } from "../../model/Flow.js";
+import type { Flow, FlowDataGame } from "../../model/Flow.js";
+import { enableGameSetupInteraction } from "./interactions/enable.js";
+import { ChooseRoleOptions } from "./interactions/choose_role.js";
+import { LobbyControlsScript } from "./scripts/controls.js";
+import { LobbyPlayersScript } from "./scripts/players.js";
+import { LobbyPresetRolesScript } from "./scripts/preset_roles.js";
+import { LobbyRolesScript } from "./scripts/roles.js";
 
 // playersIds // TODO max 1024 caracteres -> envoyer plusieurs fields
 // 				.map(id => `- <@${id}>`)
 // 				.join("\n"),
 
-export const LobbyFlow: Flow = 
+export const LobbyFlow: Flow<FlowDataGame> = 
 [{
 	id: "Lobby-controls",
 	steps: [
@@ -13,42 +19,39 @@ export const LobbyFlow: Flow =
 		modes: [
 		{
 			mode: "basic",
-			script: "LobbyControls",
+			script: LobbyControlsScript,
 			interactions: [
 				[
 					{
 						id: "start_game",
-						customIdKind: "game",
 						kind: "button",
 						build: {
 							label: "Start",
-							style: "green"
+							style: "green",
+							enabled: enableGameSetupInteraction
 						},
-						// onSubmit: (userId: string) => TODO(userId)
 					},
 					{
 						id: "pause_game",
-						customIdKind: "game",
 						kind: "button",
 						build: {
 							label: "Pause",
-							style: "grey"
+							style: "grey",
+							enabled: enableGameSetupInteraction
 						},
-						// onSubmit: (userId: string) => TODO(userId)
 					},
 					{
 						id: "restart_game",
-						customIdKind: "game",
 						kind: "button",
 						build: {
 							label: "Restart",
-							style: "grey"				
+							style: "grey",
+							enabled: enableGameSetupInteraction			
 						},
-						// onSubmit: (userId: string) => TODO(userId)
 					},
 					// {
 					// 	id: "reset_game",
-					// 	customIdKind: "game",
+		
 					// 	kind: "button",
 					// 	build: {
 					// 		label: "Reset",
@@ -58,7 +61,7 @@ export const LobbyFlow: Flow =
 					// },
 					// {
 					// 	id: "delete_game",
-					// 	customIdKind: "game",
+		
 					// 	kind: "button",
 					// 	build: {
 					// 		label: "Delete",
@@ -80,28 +83,26 @@ export const LobbyFlow: Flow =
 		modes: [
 		{
 			mode: "basic",
-			script: "LobbyPlayers",
+			script: LobbyPlayersScript,
 			interactions: [ 
 			[
 				{
 					id: "join_game",
-					customIdKind: "game",
 					kind: "button",
 					build: {
 						label: "Join",
-						style: "green"				
+						style: "green",
+						enabled: enableGameSetupInteraction			
 					},
-					// onSubmit: (userId: string) => TODO(userId)
 				},
 				{
 					id: "leave_game",
-					customIdKind: "game",
 					kind: "button",
 					build: {
 						label: "Leave",
-						style: "grey"				
+						style: "grey",
+						enabled: enableGameSetupInteraction			
 					},
-					// onSubmit: (userId: string) => TODO(userId)
 				}
 			]]
 		}
@@ -115,44 +116,18 @@ export const LobbyFlow: Flow =
 		modes: [
 		{
 			mode: "manual",
-			script: "LobbyRoles",
+			script: LobbyRolesScript,
 			interactions: [
 			[
 				{
 					id: "choose_role",
-					customIdKind: "game",
 					kind: "select",
 					build: {
 						placeholder: "Select role",
-						options: [
-							{
-								label: "Loup-garou",
-								value: "loup",
-								description: "Se réveille la nuit et reconnait les autres loups garous"
-							},
-							{
-								label: "Loup alpha",
-								value: "alpha",
-								description: "Se réveille la nuit, reconnait les autres loups garous et choisit une personne dont il regarde la carte"
-							},
-							{
-								label: "Loup dormeur",
-								value: "dormeur",
-								description: "Est un loup qui dort lorsque les autres loups se reconnaissent (les autres loups le connaissent)"
-							},
-							{
-								label: "Villageois",
-								value: "villageois",
-								description: "\\:)"
-							},
-							{
-								label: "Voyante",
-								value: "voyante",
-								description: "A le pouvoir de voir la carte d'une personne ou 2 cartes au milieu"
-							}
-						],
+						options: ChooseRoleOptions,
 						minValues: 1,
-						maxValues: -1
+						maxValues: -1,
+						enabled: enableGameSetupInteraction
 					},
 					// onSubmit: (userId: string) => TODO(userId)
 				}
@@ -160,21 +135,21 @@ export const LobbyFlow: Flow =
 			[
 				{
 					id: "add_role",
-					customIdKind: "game",
 					kind: "button",
 					build: {
 						label: "+",
-						style: "green",			
+						style: "green",
+						enabled: enableGameSetupInteraction
 					},
 					// onSubmit: (userId: string) => TODO(userId)
 				},
 				{
 					id: "rm_role",
-					customIdKind: "game",
 					kind: "button",
 					build: {
 						label: "-",
-						style: "grey"				
+						style: "grey",
+						enabled: enableGameSetupInteraction			
 					},
 					// onSubmit: (userId: string) => TODO(userId)
 				}
@@ -182,24 +157,18 @@ export const LobbyFlow: Flow =
 		},
 		{
 			mode: "preset",
-			script: "LobbyPresetRoles",
+			script: LobbyPresetRolesScript,
 			interactions: [
 			[
 				{
 					id: "choose_role",
-					customIdKind: "game",
 					kind: "select",
 					build: {
 						placeholder: "Select role",
-						options: [
-							{
-								label: "Loup-garou",
-								value: "loup",
-								description: "TODO"
-							}
-						],
+						options: ChooseRoleOptions,
 						minValues: 1,
-						maxValues: 1
+						maxValues: 1,
+						enabled: enableGameSetupInteraction
 					},
 					// onSubmit: (userId: string) => TODO(userId)
 				}
@@ -207,21 +176,21 @@ export const LobbyFlow: Flow =
 			[
 				{
 					id: "add_role",
-					customIdKind: "game",
 					kind: "button",
 					build: {
 						label: "+",
-						style: "green"				
+						style: "green",
+						enabled: enableGameSetupInteraction
 					},
 					// onSubmit: (userId: string) => TODO(userId)
 				},
 				{
 					id: "rm_role",
-					customIdKind: "game",
 					kind: "button",
 					build: {
 						label: "-",
-						style: "grey"				
+						style: "grey",
+						enabled: enableGameSetupInteraction
 					},
 					// onSubmit: (userId: string) => TODO(userId)
 				}

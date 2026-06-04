@@ -1,30 +1,12 @@
-import type { MessageScript, Script, ScriptMaker } from "application/messaging/model/Script.js";
-import type { LgonId } from "types/LgonId.js";
+import type { Script } from "application/messaging/model/View.js";
 
-export class InternalErrorScriptMaker implements ScriptMaker
+export const InternalErrorScript: Script =
 {
-	constructor() {}
-
-	public script(authorId: LgonId<"user">): Script
-	{
-		return (new InternalErrorScript())
-	}
-}
-
-export class InternalErrorScript implements Script
-{
-	constructor() {}
-
-	make(): MessageScript
-	{
-		return ({
-			title: "Error \\:(",
-			fields: [
-				{
-					name: "",
-					value: "Internal error, please contact the dev"
-				}
-			]
-		});
-	}
+	title: "\\:(",
+	fields: [
+		{
+			name: "",
+			value: "Internal error, please contact the dev"
+		}
+	]
 }

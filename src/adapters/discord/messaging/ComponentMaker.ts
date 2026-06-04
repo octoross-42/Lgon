@@ -1,7 +1,7 @@
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 import { ActionRowBuilder, type MessageActionRowComponentBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, userMention } from "discord.js";
 import type { Logger } from "infra/Logger.js";
-import type { InteractionModel, LgonButtonStyle } from "application/messaging/model/Flow.js";
+import type { FlowContext, FlowData, InteractionModel, LgonButtonStyle, SelectOption } from "application/messaging/model/Flow.js";
 import type { InteractionView,  } from "application/messaging/model/View.js";
 import { LgonId } from "types/LgonId.js";
 
@@ -20,13 +20,13 @@ export class ComponentMaker
 {
 	constructor(private readonly logger: Logger) {}
 
-	private makeComponentId(interaction: InteractionModel, viewId: LgonId<"view">): string
+	private makeComponentId<T extends FlowData>(interaction: InteractionModel<T>, viewId: LgonId<"view">): string
 	{
 		let id: string = interaction.id + ":" + viewId;
 		return (id);
 	}
 
-	private	componentMaker(interaction: InteractionView, viewId: LgonId<"view">): InteractionBuilder | undefined
+	private	componentMaker<T extends FlowData>(interaction: InteractionView<T>, viewId: LgonId<"view">, ctx: FlowContext<T>): InteractionBuilder | undefined
 	{
 		const customId: string = this.makeComponentId(interaction.model, viewId);
 		if (customId.length > 100)
@@ -42,21 +42,22 @@ export class ComponentMaker
 				.setDisabled(!interaction.enabled)
 				.setStyle(DISCORD_BUTTON_STYLES[interaction.model.build.style]);
 		
-		const maxValues: number = (interaction.model.build.maxValues > 0) ? Math.min(interaction.model.build.maxValues, 25): interaction.model.build.options.length;
+		const options: SelectOption[] = interaction.model.build.options(ctx);
+		const maxValues: number = Math.min((interaction.model.build.maxValues > 0) ? interaction.model.build.maxValues: options.length);
 		return (new StringSelectMenuBuilder()
 			.setCustomId(customId) // 1-100
 			.setPlaceholder(interaction.model.build.placeholder.slice(0, 150)) //150 max
 			.setMinValues(Math.min(Math.max(interaction.model.build.minValues, 0), 25)) // 0-25
 			.setMaxValues(maxValues) // 25
 			.setDisabled(!interaction.enabled)
-			.addOptions(interaction.model.build.options.slice(0, 25).map(option => { return { // 25 options max
+			.addOptions(options.slice(0, 25).map(option => { return { // 25 options max
 					label: option.label.slice(0, 100), // max 100
 					value: option.value.slice(0, 100), // max 100
 					description: option.description?.slice(0, 100) } }))); // max 100
 	}
 
 
-	public make(interactions: InteractionView[][], viewId: LgonId<"view">): ActionRowBuilder<MessageActionRowComponentBuilder>[]
+	public make<T extends FlowData>(interactions: InteractionView<T>[][], viewId: LgonId<"view">, ctx: FlowContext<T>): ActionRowBuilder<MessageActionRowComponentBuilder>[]
 	{
 		if (interactions.length === 0)
 			return [];
@@ -87,7 +88,7 @@ export class ComponentMaker
 					return (components);
 				}
 
-				component = this.componentMaker(interactions[i][j], viewId);
+				component = this.componentMaker<T>(interactions[i][j], viewId, ctx);
 				if ( !component )
 				{
 					j ++;

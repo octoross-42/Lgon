@@ -22,7 +22,6 @@ function parseInteraction(str: string): InteractionArgs
 
 export async function onInteraction(lgon: LgonContext, bot: Client, interaction: Interaction, user: User): Promise<void>
 {
-	
 	if (interaction.isMessageComponent())
 	{
 		const { interactionName, args } = parseInteraction(interaction.customId);

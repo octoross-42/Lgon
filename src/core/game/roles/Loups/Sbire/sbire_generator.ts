@@ -14,7 +14,8 @@ class Sbire extends NightRole
 
 export const roleGenerator: RoleGenerator = new RoleGenerator(
 	{
-		name: makeLgonId<"role">("role", "sbire"),
+		id: makeLgonId<"role">("role", "sbire"),
+		name: "Sbire",
 		aliases: [],
 		category: "Loup",
 		description: "Le Sbire n'est pas un Loup, mais les connait et en devient un s'il n'y a aucun Loup parmi les joueurs",

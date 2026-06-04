@@ -12,6 +12,8 @@ import type { FlowRunner } from "application/messaging/model/FlowRunner.js";
 import type { MessagingTarget } from "application/ports/MessagingPort.js";
 import { NotifyFlow } from "application/messaging/flows/Notify/NotifyFlow.js";
 import { SwitchGameFlow } from "application/messaging/flows/Lobby/SwitchGameFlow.js";
+import { InternalErrorScript } from "application/messaging/flows/Notify/scripts/internal_error.js";
+import { CannotLeaveScript } from "application/messaging/flows/Notify/scripts/cannot_leave.js";
 
 export class CreateGameUsecase implements Usecase
 {
@@ -33,7 +35,7 @@ export class CreateGameUsecase implements Usecase
 			user = this.userStore.new(authorId, authorName);
 			if ( !user )
 			{
-				await this.flowRunner.run(NotifyFlow("INTERNAL_ERROR"), this.userStore.lgon(), originMsgTarget, undefined, true);
+				await this.flowRunner.run(NotifyFlow(InternalErrorScript), this.userStore.lgon(), originMsgTarget, undefined, true);
 				return ;
 			}
 			this.logger.event( { code: "CREATE", data: { whatId: user.id } } );
@@ -44,17 +46,17 @@ export class CreateGameUsecase implements Usecase
 		{
 			case "SUCCESS":
 			{
-				await this.flowRunner.run(LobbyFlow, user, originMsgTarget, { gameId: res.game.meta.id });		
+				await this.flowRunner.run(LobbyFlow, user, originMsgTarget, { gameId: res.game.meta.id, gameStore: this.gameStore, logger: this.logger } );		
 				break ;
 			}
 			case "CANNOT_LEAVE":
 			{
-				await this.flowRunner.run(NotifyFlow("CANNOT_LEAVE"), user, originMsgTarget, undefined, true);
+				await this.flowRunner.run(NotifyFlow(CannotLeaveScript), user, originMsgTarget, undefined, true);
 				break ;
 			}
 			case "SWITCH":
 			{
-				await this.flowRunner.run(SwitchGameFlow, user, originMsgTarget, { gameId: user.game!.meta.id }, true);
+				await this.flowRunner.run(SwitchGameFlow, user, originMsgTarget, { userId: user.id, userStore: this.userStore, gameStore: this.gameStore, logger: this.logger }, true);
 				break ;
 			}
 		}

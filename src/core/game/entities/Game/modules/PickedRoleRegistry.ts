@@ -30,7 +30,7 @@ export class PickedRoleRegistry
 		}
 
 		for (const roleName of roleNames)
-		{			
+		{
 			const roleGenerator: RoleGenerator | undefined = this.availables.get(roleName);
 			if ( !roleGenerator )
 			{
@@ -39,11 +39,11 @@ export class PickedRoleRegistry
 			}
 	
 			update = true;
-			let stock: RoleStock | undefined = this.roles.get(roleGenerator.meta.name);
+			let stock: RoleStock | undefined = this.roles.get(roleGenerator.meta.id);
 			if ( stock )
-				this.roles.set( roleGenerator.meta.name, { gen: roleGenerator, qty: quantity + stock.qty } );
+				this.roles.set( roleGenerator.meta.id, { gen: roleGenerator, qty: quantity + stock.qty } );
 			else
-				this.roles.set( roleGenerator.meta.name, { gen: roleGenerator, qty: quantity } );
+				this.roles.set( roleGenerator.meta.id, { gen: roleGenerator, qty: quantity } );
 		}
 	
 		return (update);
@@ -68,16 +68,16 @@ export class PickedRoleRegistry
 				continue ;
 			}
 	
-			let stock: RoleStock | undefined = this.roles.get(roleGenerator.meta.name);
+			let stock: RoleStock | undefined = this.roles.get(roleGenerator.meta.id);
 
 			if ( !stock )
 				continue ;
 
 			update = true;
 			if ( stock && (stock.qty - quantity > 0) )
-				this.roles.set( roleGenerator.meta.name, { gen: roleGenerator, qty: stock.qty - quantity } );
+				this.roles.set( roleGenerator.meta.id, { gen: roleGenerator, qty: stock.qty - quantity } );
 			else
-				this.roles.delete(roleGenerator.meta.name);
+				this.roles.delete(roleGenerator.meta.id);
 		}
 		return (update);
 	}

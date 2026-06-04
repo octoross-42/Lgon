@@ -1,12 +1,11 @@
 import { ViewStore } from "./ViewStore.js";
-import type { Flow } from "./Flow.js";
+import type { Flow, FlowData } from "./Flow.js";
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 import type { MessagingPort, MessagingTarget } from "application/ports/MessagingPort.js";
 import type { Logger } from "infra/Logger.js";
 import type { GameStore } from "application/context/modules/GameStore.js";
 import type { UserStore } from "application/context/modules/UserStore.js";
-import type { LgonId } from "types/LgonId.js";
-import type { MessageView, ViewData } from "./View.js";
+import type { View } from "./View.js";
 
 export class FlowRunner
 {
@@ -21,14 +20,19 @@ export class FlowRunner
 		this.viewStore = new ViewStore(gameStore, userStore,this.logger);
 	}
 
-	async run(flow: Flow, author: LgonUser, originMsgTarget: MessagingTarget, blockData: any, ephemeral: boolean = false): Promise<void>
+	async run<T extends FlowData>(flow: Flow<T>, author: LgonUser, originMsgTarget: MessagingTarget, flowData: T, ephemeral: boolean = false): Promise<void>
 	{
-		const views = this.viewStore.new(flow, author, originMsgTarget, blockData);
-		this.messenger.send(views, author, originMsgTarget, ephemeral);
+		const views = this.viewStore.new(flow, author, originMsgTarget, flowData);
+		this.messenger.send(views, originMsgTarget, ephemeral);
 	}
 
-	updateView(view: MessageView<ViewData>)
+	update<T extends FlowData>(view: View<T>)
 	{
 		this.messenger.update(view);
+	}
+
+	delete<T extends FlowData>(view: View<T>)
+	{
+		this.messenger.delete(view);
 	}
 }

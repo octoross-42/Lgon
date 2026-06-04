@@ -1,10 +1,11 @@
 import { MessagingPort, type MessagingTarget } from "application/ports/MessagingPort.js";
 import { type Channel, type Client, EmbedBuilder, type SendableChannels, type Message, type User, MessageFlags, BaseMessageOptions } from "discord.js";
-import type { MessageView, ViewData } from "application/messaging/model/View.js";
+import type { View } from "application/messaging/model/View.js";
 import { ComponentMaker } from "./ComponentMaker.js";
 import { DiscordMessagingCache, MessageRef } from "../store/DiscordMessagingCache.js";
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 import type { Logger } from "infra/Logger.js";
+import { FlowContext, FlowData } from "application/messaging/model/Flow.js";
 
 export class DiscordMessenger extends MessagingPort
 {
@@ -116,11 +117,11 @@ export class DiscordMessenger extends MessagingPort
 		}
 	}
 
-	private makeMsgPayload(view: MessageView<ViewData>, epheremal: boolean = false): BaseMessageOptions
+	private makeMsgPayload<T extends FlowData>(view: View<T>, epheremal: boolean = false): BaseMessageOptions
 	{
 		let embed: EmbedBuilder = new EmbedBuilder();
 	
-		const msgScript = view.script.make();
+		const msgScript = view.script(view.flowData);
 		embed.setColor("#10695b");
 		embed.setTitle(msgScript.title);
 		if (msgScript.description)
@@ -134,13 +135,13 @@ export class DiscordMessenger extends MessagingPort
 			embeds: [embed],
 			allowedMentions: { repliedUser: false },
 			// flags: (epheremal ? MessageFlags.Ephemeral as number: undefined), // TODO
-			components: this.componentMaker.make( view.interactions, view.id )
+			components: this.componentMaker.make( view.interactions, view.id, view.flowData )
 		});
 	}
 
 
 
-	async send(views: MessageView<ViewData>[], author: LgonUser, msgTarget: MessagingTarget, epheremal: boolean): Promise<void>
+	async send<T extends FlowData>(views: View<T>[], msgTarget: MessagingTarget, epheremal: boolean): Promise<void>
 	{	
 		for (const view of views)
 		{
@@ -187,7 +188,7 @@ export class DiscordMessenger extends MessagingPort
 		return ;
 	}
 
-	async update(view: MessageView<ViewData>): Promise<void>
+	async update<T extends FlowData>(view: View<T>): Promise<void>
 	{
 		const viewRef: MessageRef | undefined = this.msgs.get(view.id);
 		if ( !viewRef )
@@ -196,5 +197,38 @@ export class DiscordMessenger extends MessagingPort
 			return ;
 		}
 		this.edit(this.makeMsgPayload(view), viewRef);
+	}
+
+	async delete<T extends FlowData>(view: View<T>): Promise<void>
+	{
+		const viewRef: MessageRef | undefined = this.msgs.get(view.id);
+		if ( !viewRef )
+		{
+			this.logger.event( { code: "NOT_FOUND", data: { what: "view message ref", whatId: `${view.id}`, ctx: "discord messenger update" } } );
+			return ;
+		}
+
+		const channel: Channel | undefined = this.bot.channels.cache.get(viewRef.channelId);
+		if ( !channel )
+		{
+			this.logger.event( { code: "NOT_FOUND", data: { what: "discord channel", whatId: viewRef.channelId, ctx: "send:reply" } } );
+			return ;
+		}
+
+		if ( !channel?.isSendable() )
+		{
+			this.logger.event( { code: "NOT_SENDABLE", data: { channelId: viewRef.channelId } } );		
+			return ;
+		}
+		
+		const discordMsg: Message | undefined = channel.messages.cache.get(viewRef.msgId);
+
+		if ( !discordMsg )
+		{
+			this.logger.event( { code: "NOT_FOUND", data: { what: "discord msg", msgId: `msgId: ${viewRef.msgId}, channelId: ${viewRef.channelId}` } } );
+			return ;
+		}
+		
+		await discordMsg.delete();
 	}
 };

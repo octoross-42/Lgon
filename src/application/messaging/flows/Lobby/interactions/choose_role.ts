@@ -1,43 +1,13 @@
-import type { GameStore } from "application/context/modules/GameStore.js";
-import type { FlowRunner } from "application/messaging/model/FlowRunner.js";
-import { SelectHandler } from "application/messaging/model/InteractionHandler.js";
-import type { MessageView, SelectView, ViewDataGame } from "application/messaging/model/View.js";
-import type { ViewStore } from "application/messaging/model/ViewStore.js";
-import type { Game } from "core/game/entities/Game/Game.js";
-import type { Logger } from "infra/Logger.js";
-import type { LgonId } from "types/LgonId.js";
+import type { RoleDescription } from "application/context/modules/LgonRoleGeneratorRegistry.js";
+import type { FlowContext, FlowDataGame, SelectOption } from "application/messaging/model/Flow.js";
 
-export class ChooseRoleHandler extends SelectHandler
+export function ChooseRoleOptions(ctx: FlowContext<FlowDataGame>): SelectOption[]
 {
-	constructor(private readonly gameStore: GameStore,
-				viewStore: ViewStore,
-				flowRunner: FlowRunner,
-				logger: Logger) { super("update", viewStore, flowRunner, logger); }
-	
-	async run(authorId: LgonId<"user">, selected: string[], contextId: string): Promise<void>
-	{
-		const viewId = contextId as LgonId<"view">;
-		const view: MessageView<ViewDataGame> | undefined = this.viewStore.get<ViewDataGame>(viewId);
-		if ( !view )
-		{
-			this.logger.event( { code: "NOT_FOUND", data: { what: "view", whatId: viewId, ctx: `choose_role handler triggered by ${authorId}` } } );
-			return ;
-		}
+	let options: SelectOption[] = [];
 
-		const game: Game | undefined = this.gameStore.get(view.blockCtx.data.gameId);
-		if ( !game )
-		{
-			this.logger.event( { code: "NOT_FOUND", data: { what: "game", whatId: `${view.blockCtx.data.gameId}`, ctx: `choose_role handler triggered by ${authorId}` } } );
-			return ;
-		}
+	const descriptions: RoleDescription[] = ctx.data.gameStore.availableRoles.getDescriptions();
+	for (const description of descriptions)
+		options.push( { label: description.name, value: description.id, description: description.description } );
 
-		const select_interaction: SelectView | undefined = view.interactions.flat().find(interaction => (interaction.model.id === "choose_role") && (interaction.model.kind === "select")) as SelectView | undefined;
-		if ( !select_interaction )
-		{
-			this.logger.event( { code: "NOT_FOUND", data: { what: "interaction", whatId: "select_role", ctx: `choose_role handler triggered by ${authorId}` } } );
-			return ;
-		}
-
-		select_interaction.selected = selected;
-	}
+	return (options);
 }

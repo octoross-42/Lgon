@@ -19,7 +19,7 @@ import { makeLgonId } from "types/LgonId.js";
 // 		this.player = player;
 // 		this.role = player.role!;
 // 		this.embed.setTitle("Action")
-// 			.setDescription(`You can preshot your action as a ${player.role!.generator.printName}\nYour action will only be done on your turn`)
+// 			.setDescription(`You can preshot your action as a ${player.role!.generator.name}\nYour action will only be done on your turn`)
 // 			.addFields({name: "Change 2 players cards", value: "The 2 players have to be different, and you can select yourself\nYou also can't see the cards of the players you exchange cards of 🫶"});
 	
 // 		const selectPlayer1Menu = new StringSelectMenuBuilder()
@@ -85,7 +85,8 @@ class Noiseuse extends NightRole
 
 export const roleGenerator: RoleGenerator = new RoleGenerator(
 	{
-		name: makeLgonId<"role">("role", "noiseuse"),
+		id: makeLgonId<"role">("role", "noiseuse"),
+		name: "Noiseuse",
 		aliases: [],
 		category: "Villageois",
 		description: "La Noiseuse échange les rôles de 2 personnes sans qu'ils n'en prennent connaissance",

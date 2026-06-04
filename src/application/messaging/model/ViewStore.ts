@@ -1,11 +1,9 @@
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
-import type { Flow, MessageBlock, MessageDefinition, ModeDefinition } from "./Flow.js";
-import type { MessageView, MsgBlockCtx, ButtonView, SelectView, ViewData } from "./View.js";
+import type { Flow, MessageBlock, MessageDefinition, ModeDefinition, FlowData, FlowContext, FlowDataGame } from "./Flow.js";
+import type { View, ButtonView, SelectView} from "./View.js";
 import type { Logger } from "infra/Logger.js";
 import { makeLgonId, type LgonId } from "types/LgonId.js";
 import type { MessagingTarget } from "application/ports/MessagingPort.js";
-import type { ScriptMaker, Script } from "./Script.js";
-import { loadScripts, type ScriptName } from "application/messaging/loadScripts.js";
 import type { GameStore } from "application/context/modules/GameStore.js";
 import type { UserStore } from "application/context/modules/UserStore.js";
 
@@ -13,7 +11,7 @@ type ViewSendChange =
 {
 	kind: "send" | "edit",
 	msgId: string, // soit on reply soit on edit
-	view: MessageView<ViewData>
+	view: View<FlowData>
 }
 
 type ViewDeleteChange =
@@ -26,16 +24,14 @@ export type ViewChange = ViewSendChange | ViewDeleteChange;
 
 export class ViewStore
 {
-	private views: Map<string, MessageView<ViewData>>;
+	private views: Map<string, View<any>>;
 	static n: number = 0;
 	private min: number;
-	private scripts: Record<ScriptName, ScriptMaker>
 
 	constructor(gameStore: GameStore, userStore: UserStore, private readonly logger: Logger)
 	{
-		this.views = new Map<string, MessageView<ViewData>>();
+		this.views = new Map<string, View<FlowData>>();
 		this.min = 0;
-		this.scripts = loadScripts(gameStore, userStore, logger);
 	}
 
 	static makeViewId(): LgonId<"view">
@@ -45,7 +41,7 @@ export class ViewStore
 		return (id);
 	}
 
-	private otherModes(modes: ModeDefinition[], mode: string)
+	private otherModes<T extends FlowData>(modes: ModeDefinition<T>[], mode: string)
 	{
 		let otherModes: string[] = [];
 		let i: number = 0;
@@ -58,58 +54,47 @@ export class ViewStore
 		return (otherModes);
 	}
 
-	private getScript(scriptName: ScriptName, authorId: LgonId<"user">): Script
-	{
-		return (this.scripts[scriptName].script(authorId));
-	}
 
-	compactView<T extends ViewData>(msgBlock: MessageBlock, ctx: MsgBlockCtx<T>): MessageView<T>
+	compactView<T extends FlowData>(msgBlock: MessageBlock<T>, ctx: FlowContext<T>): View<T>
 	{
-		const step: MessageDefinition = msgBlock.steps[0];
+		const step: MessageDefinition<T> = msgBlock.steps[0];
 
-		const mode: ModeDefinition | undefined = step.modes.find(mode => mode.mode === step.defaultMode);
+		const mode: ModeDefinition<T> | undefined = step.modes.find(mode => mode.mode === step.defaultMode);
 		if ( !mode )
 			throw Error(""); // TODO
 
-		const script: Script | undefined = this.getScript(mode.script, ctx.authorId);
-		if ( !script )
-			throw Error(""); // TODO
 
-		const view: MessageView<T> = {
+		const view: View<T> = {
 			id: ViewStore.makeViewId(),
-			script: script,
+			script: mode.script,
 			interactions: mode.interactions.map( row => row.map(interaction => {
 					if (interaction.kind === 'button')
-					return { model: interaction, enabled: true } as ButtonView
+					return { model: interaction, enabled: true } as ButtonView<T>
 				else
-					return { model: interaction, enabled: true, selected: [] } as SelectView
+					return { model: interaction, enabled: true, selected: [] } as SelectView<T>
 				}) ),
 			otherModes: this.otherModes(step.modes, step.defaultMode),
 			currentMode: step.defaultMode,
 			step: 0,
 			target: ctx.originMsgTarget,
 
-			blockCtx: ctx
+			flowData: ctx
 		};
 
 		this.views.set(view.id, view);
 		return (view);
 	}
 
-	longViews<T extends ViewData>(msgBlock: MessageBlock, ctx: MsgBlockCtx<T>): MessageView<T>[]
+	longViews<T extends FlowData>(msgBlock: MessageBlock<T>, ctx: FlowContext<T>): View<T>[]
 	{
-		let views: MessageView<T>[] = [];
+		let views: View<T>[] = [];
 
 		let i: number = 0;
 		while (i < msgBlock.steps.length)
 		{
-			const step: MessageDefinition = msgBlock.steps[i];
-			const mode: ModeDefinition | undefined = step.modes.find(mode => mode.mode === step.defaultMode);
+			const step: MessageDefinition<T> = msgBlock.steps[i];
+			const mode: ModeDefinition<T> | undefined = step.modes.find(mode => mode.mode === step.defaultMode);
 			if ( !mode )
-				throw Error(""); // TODO
-
-			const script: Script | undefined = this.getScript(mode.script, ctx.authorId);
-			if ( !script )
 				throw Error(""); // TODO
 
 			const target: MessagingTarget =
@@ -118,21 +103,21 @@ export class ViewStore
 					kind: "view",
 					viewId: views[i - 1].id
 				}; 
-				const view: MessageView<T> = {
+				const view: View<T> = {
 					id: ViewStore.makeViewId(),
-					script: script,
+					script: mode.script,
 					interactions: mode.interactions.map( row => row.map(interaction => {
 						if (interaction.kind === 'button')
-							return { model: interaction, enabled: true } as ButtonView
+							return { model: interaction, enabled: true } as ButtonView<T>
 						else
-							return { model: interaction, enabled: true, selected: [] } as SelectView
+							return { model: interaction, enabled: true, selected: [] } as SelectView<T>
 					}) ),
 					otherModes: this.otherModes(step.modes, step.defaultMode),
 					currentMode: step.defaultMode,
 					step: 0,
 					target: target,
 					
-					blockCtx: ctx
+					flowData: ctx
 				};
 
 				this.views.set(view.id, view);
@@ -143,33 +128,33 @@ export class ViewStore
 		return (views);
 	}
 
-	new<T extends ViewData>(flow: Flow, author: LgonUser, originMsgTarget: MessagingTarget, blockData: any): MessageView<T>[]
+	new<T extends FlowData>(flow: Flow<T>, author: LgonUser, originMsgTarget: MessagingTarget, flowData: T): View<T>[]
 	{
-		let views: MessageView<T>[] = [];
+		let views: View<T>[] = [];
 
 		for (const msgBlock of flow)
 		{
 			const stepMode: "compact" | "long" = author.preferences.stepMode;
-			const blockCtx: MsgBlockCtx<T> =
+			const flowCtx: FlowContext<T> =
 			{
 				authorId: author.id,
 				stepMode: stepMode,
 				step: 0,
 				originMsgTarget: originMsgTarget,
-				data: blockData
+				data: flowData
 			}
 
 			if (stepMode === "compact")
-				views.push( this.compactView<T>( msgBlock, blockCtx ) );
+				views.push( this.compactView<T>( msgBlock, flowCtx ) );
 			else // "long"
-				views.concat( this.longViews<T>( msgBlock, blockCtx ) );
+				views.concat( this.longViews<T>( msgBlock, flowCtx ) );
 
 		}
 		return (views);
 	}
 
-	public get<T extends ViewData>(viewId: LgonId<"view">): MessageView<T> | undefined
+	public get<T extends FlowData>(viewId: LgonId<"view">): View<T> | undefined
 	{
-		return ( this.views.get(viewId) as MessageView<T>);
+		return ( this.views.get(viewId) as View<T>);
 	}
 };

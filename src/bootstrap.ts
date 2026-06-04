@@ -59,6 +59,7 @@ export async function bootstrap(): Promise<void>
 	const bot: Client = await initDiscordClient( new DiscordMessagingCache(), logger );
 
 	const roles: LgonRoleGeneratorRegistry = await loadRoles();
+	console.log(roles);
 
 	const userStore: UserStore = new UserStore(logger);
 	const gameStore: GameStore = new GameStore(roles, logger);

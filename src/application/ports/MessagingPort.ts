@@ -1,6 +1,6 @@
-import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
-import type { MessageView, ViewData } from "application/messaging/model/View.js";
+import type { View } from "application/messaging/model/View.js";
 import type { LgonId } from "types/LgonId.js";
+import { FlowContext, FlowData } from "application/messaging/model/Flow.js";
 
 export type MessagingTarget =
 {
@@ -25,6 +25,7 @@ export abstract class MessagingPort
 {
 	constructor() {}
 
-	abstract send(views: MessageView<ViewData>[], author: LgonUser, msgTarget: MessagingTarget, ephemeral: boolean): Promise<void>;
-	abstract update(view: MessageView<ViewData>): Promise<void>;
+	abstract send<T extends FlowData>(views: View<T>[], msgTarget: MessagingTarget, ephemeral: boolean): Promise<void>;
+	abstract update<T extends FlowData>(view: View<T>): Promise<void>;
+	abstract delete<T extends FlowData>(view: View<T>): Promise<void>;
 };

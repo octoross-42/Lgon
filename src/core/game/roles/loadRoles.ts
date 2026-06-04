@@ -14,10 +14,10 @@ type RoleFileContent =
 
 function loadRole(roles: Map<LgonId<"role">, RoleGenerator>, generator: RoleGenerator): void
 {
-	console.log(`\t${generator.meta.name}`);
-	roles.set(makeLgonId<"role">("role", generator.meta.name), generator);
-	for (const alias of generator.meta.aliases)
-		roles.set(makeLgonId<"role">("role", alias), generator); // TODO check duplicate
+	console.log(`\t${generator.meta.id}`);
+	roles.set(generator.meta.id, generator);
+	// for (const alias of generator.meta.aliases)
+	// 	roles.set(makeLgonId<"role">("role", alias), generator); // TODO check duplicate
 
 }
 

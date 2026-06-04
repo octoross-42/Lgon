@@ -1,31 +1,33 @@
-import type { Flow } from "application/messaging/model/Flow.js";
+import type { Flow, FlowContext, FlowDataSwitchGame } from "application/messaging/model/Flow.js";
+import { SwitchGameScript } from "./scripts/switchGame.js";
+import { enableSwitchToNewGameInteraction } from "./interactions/enable.js";
 
-export const SwitchGameFlow: Flow =
+export const SwitchGameFlow: Flow<FlowDataSwitchGame> =
 [{
 	id: "SwitchGame",
 	steps: [{
 		defaultMode: "basic",
 		modes: [{
 			mode: "basic",
-			script: "SwitchGame",
+			script: SwitchGameScript,
 			interactions: [[
 			{
 				id: "switch_game",
 				kind: "button",
 				build: {
 					label: "Switch",
-					style: "green"
-				},
-				customIdKind: "user"
+					style: "green",
+					enabled: enableSwitchToNewGameInteraction
+				}
 			},
 			{
 				id: "cancel_msg",
 				kind: "button",
 				build: {
 					label: "Don't",
-					style: "red"
-				},
-				customIdKind: "user"
+					style: "red",
+					enabled: (ctx: FlowContext<FlowDataSwitchGame>) => true
+				}
 			}]]
 		}]
 	}]

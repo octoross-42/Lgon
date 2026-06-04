@@ -15,7 +15,8 @@ class LoupGarou extends NightRole
 
 export const roleGenerator: RoleGenerator = new RoleGenerator(
 	{
-		name: makeLgonId<"role">("role", "loup-garou"),
+		id: makeLgonId<"role">("role", "loup-garou"),
+		name: "Loup-Garou",
 		category: "Loup",
 		description: "Le Loup-garou se réveille dans la nuit pour prendre connaissance de sa meute ou s'il est seul regarde une carte au centre (et devient un type action)",
 		cdv: "Aucun Loup ne doit mourir",

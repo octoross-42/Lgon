@@ -21,7 +21,7 @@ import { makeLgonId } from "types/LgonId.js";
 // 		this.player = player;
 // 		this.role = player.role!;
 // 		this.embed.setTitle("Action")
-// 			.setDescription(`You can preshot your action as a ${player.role!.generator.printName}\nYour action will only be done on your turn`)
+// 			.setDescription(`You can preshot your action as a ${player.role!.generator.name}\nYour action will only be done on your turn`)
 // 			.addFields({name: "Select one center card", value: "As you're drunk, you mistakly exchange your card at the bar, one of the center, choose one, not optional, and you won't know which card it is"});
 	
 // 		const selectPlayer1Menu = new StringSelectMenuBuilder()
@@ -81,7 +81,8 @@ class Soulard extends NightRole
 
 export const roleGenerator: RoleGenerator = new RoleGenerator(
 	{
-		name: makeLgonId<"role">("role", "soulard"),
+		id: makeLgonId<"role">("role", "soulard"),
+		name: "Soulard",
 		category: "Villageois",
 		description: "La Soulard échange son rôle avec un rôle au centre mais n'en prend pas connaissance",
 		cdv: "La Soulard est une villageoise, il doit tuer un Loup pour gagner",

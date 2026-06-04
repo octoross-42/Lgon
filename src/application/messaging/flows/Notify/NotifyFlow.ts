@@ -1,14 +1,14 @@
-import { ERR_STATUS } from "application/usecases/STATUS.js"
-import type { Flow } from "application/messaging/model/Flow.js";
+import type { Flow, FlowContext } from "application/messaging/model/Flow.js";
+import type { Script } from "application/messaging/model/View.js";
 
-export const NotifyFlow = (status: ERR_STATUS): Flow =>
+export const NotifyFlow = (script: Script): Flow<undefined> =>
 {
 	return ([{
 		id: "Notifier",
 		steps: [{
 			modes: [{
 				mode: "basic",
-				script: status,
+				script: (ctx: FlowContext<undefined>) => script,
 				interactions: [[]]
 			}],
 			defaultMode: "basic"

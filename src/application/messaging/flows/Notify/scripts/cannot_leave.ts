@@ -1,30 +1,12 @@
-import type { MessageScript, Script, ScriptMaker } from "application/messaging/model/Script.js";
-import type { LgonId } from "types/LgonId.js";
+import type { Script } from "application/messaging/model/View.js";
 
-export class CannotLeaveScriptMaker implements ScriptMaker
+export const CannotLeaveScript: Script =
 {
-	constructor() {}
-
-	public script(authorId: LgonId<"user">): Script
-	{
-		return (new CannotLeaveScript())
-	}
-}
-
-export class CannotLeaveScript implements Script
-{
-	constructor() {}
-
-	make(): MessageScript
-	{
-		return ({
-			title: "\\:(",
-			fields: [
-				{
-					name: "",
-					value: "You cannot leave your current game"
-				}
-			]
-		});
-	}
+	title: "\\:(",
+	fields: [
+		{
+			name: "",
+			value: "You cannot leave your current game"
+		}
+	]
 }
