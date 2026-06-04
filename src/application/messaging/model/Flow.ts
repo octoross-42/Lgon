@@ -61,14 +61,16 @@ export type ButtonInteractionModel<T extends FlowData> =
 {
 	kind: "button",
 	build: ButtonBuild<T>,
-	id: ButtonName
+	interactionId: ButtonName,
+	id: string
 }
 
 export type SelectInteractionModel<T extends FlowData> =
 {
 	kind: "select",
 	build: SelectBuild<T>,
-	id: SelectName,
+	interactionId: SelectName,
+	id: string
 }
 
 export type InteractionModel<T extends FlowData> = ButtonInteractionModel<T> | SelectInteractionModel<T>;

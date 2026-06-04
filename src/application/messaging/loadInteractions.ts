@@ -12,7 +12,7 @@ export type ButtonName = "start_game" | "pause_game" | "restart_game" |
 							"switch_game" | "join_game" | "leave_game" |
 							"add_role" | "rm_role" |
 							"cancel_msg";
-export type SelectName = "choose_role";
+export type SelectName = "basic_select";
 
 export function loadInteractions(viewStore: ViewStore,gameStore: GameStore, userStore: UserStore, flowRunner: FlowRunner, logger: Logger): InteractionRegistry 
 {
@@ -28,7 +28,7 @@ export function loadInteractions(viewStore: ViewStore,gameStore: GameStore, user
 		"cancel_msg": new CancelMsgHandler(viewStore, flowRunner, logger)
 	},
 	{
-		"choose_role": new BasicSelectHandler(viewStore, flowRunner, logger)
+		"basic_select": new BasicSelectHandler(viewStore, flowRunner, logger)
 	},
 	logger);
 }

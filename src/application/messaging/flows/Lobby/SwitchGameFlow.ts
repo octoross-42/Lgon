@@ -12,7 +12,8 @@ export const SwitchGameFlow: Flow<FlowDataSwitchGame> =
 			script: SwitchGameScript,
 			interactions: [[
 			{
-				id: "switch_game",
+				interactionId: "switch_game", 
+				id: "switch",
 				kind: "button",
 				build: {
 					label: "Switch",
@@ -21,7 +22,8 @@ export const SwitchGameFlow: Flow<FlowDataSwitchGame> =
 				}
 			},
 			{
-				id: "cancel_msg",
+				id: "cancel",
+				interactionId: "cancel_msg",
 				kind: "button",
 				build: {
 					label: "Don't",

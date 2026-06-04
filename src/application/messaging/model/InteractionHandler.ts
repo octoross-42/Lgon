@@ -2,6 +2,7 @@ import type { LgonId } from "types/LgonId.js";
 import type { ViewStore } from "./ViewStore.js";
 import type { Logger } from "infra/Logger.js";
 import { FlowRunner } from "./FlowRunner.js";
+import type { SelectName } from "../loadInteractions.js";
 
 export type InteractionCtx =
 {
@@ -36,5 +37,5 @@ export abstract class SelectHandler extends InteractionHandler
 {
 	constructor(deferKind: "update" | "reply", viewStore: ViewStore, flowRunner: FlowRunner, logger: Logger) { super(deferKind, "select", viewStore, flowRunner, logger); }
 
-	abstract run(authorId: LgonId<"user">, selected: string[], contextId: string): Promise<void> | void;
+	abstract run(authorId: LgonId<"user">, selected: string[], selectId: SelectName, contextId: string): Promise<void> | void;
 }

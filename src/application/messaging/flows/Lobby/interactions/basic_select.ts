@@ -1,3 +1,4 @@
+import type { SelectName } from "application/messaging/loadInteractions.js";
 import type { FlowDataGame } from "application/messaging/model/Flow.js";
 import type { FlowRunner } from "application/messaging/model/FlowRunner.js";
 import { SelectHandler } from "application/messaging/model/InteractionHandler.js";
@@ -12,7 +13,7 @@ export class BasicSelectHandler extends SelectHandler
 				flowRunner: FlowRunner,
 				logger: Logger) { super("update", viewStore, flowRunner, logger); }
 	
-	async run(authorId: LgonId<"user">, selected: string[], contextId: string): Promise<void>
+	async run(authorId: LgonId<"user">, selected: string[], selectId: SelectName, contextId: string): Promise<void>
 	{
 		const viewId = contextId as LgonId<"view">;
 		const view: View<FlowDataGame> | undefined = this.viewStore.get<FlowDataGame>(viewId);
@@ -22,7 +23,7 @@ export class BasicSelectHandler extends SelectHandler
 			return ;
 		}
 
-		const select_interaction: SelectView<FlowDataGame> | undefined = view.interactions.flat().find(interaction => (interaction.model.id === "choose_role") && (interaction.model.kind === "select")) as SelectView<FlowDataGame> | undefined;
+		const select_interaction: SelectView<FlowDataGame> | undefined = view.interactions.flat().find(interaction => ( (interaction.model.id === selectId) && (interaction.model.interactionId === "basic_select") && (interaction.model.kind === "select"))) as SelectView<FlowDataGame> | undefined;
 		if ( !select_interaction )
 		{
 			this.logger.event( { code: "NOT_FOUND", data: { what: "interaction", whatId: "select_role", ctx: `choose_role handler triggered by ${authorId}` } } );

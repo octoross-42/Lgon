@@ -28,6 +28,6 @@ export class InteractionRegistry
 	async select(interactionName: SelectName, authorId: LgonId<"user">, selected: string[], contextId: string): Promise<void>
 	{
 		this.logger.event( { code: "INTERACTION", data: { userId: authorId, interaction: interactionName } } );
-		await this.selects[interactionName].run(authorId, selected, contextId);
+		await this.selects[interactionName].run(authorId, selected, interactionName, contextId);
 	}
 }
