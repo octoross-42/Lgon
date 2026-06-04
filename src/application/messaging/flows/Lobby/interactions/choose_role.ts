@@ -24,8 +24,6 @@ export class ChooseRoleHandler extends SelectHandler
 			return ;
 		}
 
-		console.log("choose_role", view);
-
 		const game: Game | undefined = this.gameStore.get(view.blockCtx.data.gameId);
 		if ( !game )
 		{
@@ -33,7 +31,7 @@ export class ChooseRoleHandler extends SelectHandler
 			return ;
 		}
 
-		const select_interaction: SelectView | undefined = view.interactions.flat().find(interaction => (interaction.model.id === "select_role") && (interaction.model.kind === "select")) as SelectView | undefined;
+		const select_interaction: SelectView | undefined = view.interactions.flat().find(interaction => (interaction.model.id === "choose_role") && (interaction.model.kind === "select")) as SelectView | undefined;
 		if ( !select_interaction )
 		{
 			this.logger.event( { code: "NOT_FOUND", data: { what: "interaction", whatId: "select_role", ctx: `choose_role handler triggered by ${authorId}` } } );

@@ -1,9 +1,5 @@
 import { getTraceId } from "./trace.js";
-
-const LOG_LEVELS = ["debug", "info", "warning", "error", "silent"]; 
-export type LogLevel = typeof LOG_LEVELS[number];
-
-export const defaultLogLvl = "info";
+import { type LogLevel, type LogEvent, EVENTS_DESCRIPTIONS, defaultLogLvl, LOG_LEVELS } from "./LOG_EVENTS.js";
 
 import { L_GREY, L_LBLUE, L_RED, L_ORANGE, L_RESET, L_ITALIC, L, L_LGREY, L_BLACK, L_YELLOW, L_BLUE } from "./LOG_FORMAT.js"
 
@@ -11,11 +7,9 @@ const colors: Record<LogLevel, string> =
 {
 	debug: `${L(L_GREY)}`,
 	info: `${L(L_BLUE)}`,
-	warn: `${L(L_YELLOW)}`,
+	warning: `${L(L_YELLOW)}`,
 	error: `${L(L_RED)}`,
 };
-
-import { type LogEvent, EVENTS_DESCRIPTIONS } from "./LOG_EVENTS.js";
 
 // {
 // 	lvl: "info" | "warning" | "error" | "debug";

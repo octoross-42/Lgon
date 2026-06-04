@@ -1,3 +1,8 @@
+export const LOG_LEVELS = ["debug", "info", "warning", "error"]; 
+export type LogLevel = "debug" | "info" | "warning" | "error";
+
+export const defaultLogLvl = "info";
+
 export type LogEvent =
 {
 	code: EventCode;
@@ -18,7 +23,7 @@ export type EventCode = "MESSAGE" | "COMMAND_RUN" | "COMMAND_FAIL" | "USECASE" |
 
 export type EventDescription =
 {
-	lvl: "info" | "warning" | "error" | "debug";
+	lvl: LogLevel;
 	audience: "system";
 	log: (data ? : Record<string, unknown>) => string;
 };

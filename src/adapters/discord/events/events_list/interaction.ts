@@ -31,7 +31,7 @@ export async function onInteraction(lgon: LgonContext, bot: Client, interaction:
 			return ;
 
 		interaction.deferUpdate();
-		interaction.deferReply( { ephemeral: true} );
+		// interaction.deferReply( { ephemeral: true} );
 
 		const userId: LgonId<"user"> = makeLgonId<"user">("user", interaction.user.id);
 

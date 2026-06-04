@@ -1,4 +1,5 @@
-import { defaultLogLvl, type Logger, type LogLevel } from "infra/Logger.js";
+import { defaultLogLvl, type LogLevel } from "infra/LOG_EVENTS.js";
+import type { Logger } from "infra/Logger.js";
 import type { LgonId } from "types/LgonId.js";
 import type { Game } from "../Game/Game.js";
 import { UserPreferences } from "./UserPreferences.js";

@@ -30,7 +30,7 @@ export class AddRoleHandler extends ButtonHandler
 			return ;
 		}
 
-		const select_interaction: SelectView | undefined = view.interactions.flat().find(interaction => (interaction.model.id === "select_role") && (interaction.model.kind === "select")) as SelectView | undefined;
+		const select_interaction: SelectView | undefined = view.interactions.flat().find(interaction => (interaction.model.id === "choose_role") && (interaction.model.kind === "select")) as SelectView | undefined;
 		if ( !select_interaction )
 		{
 			this.logger.event( { code: "NOT_FOUND", data: { what: "interaction", whatId: "select_role", ctx: `add_role handler triggered by ${authorId}` } } );
