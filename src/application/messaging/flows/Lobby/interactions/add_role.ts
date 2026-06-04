@@ -1,7 +1,7 @@
 import type { GameStore } from "application/context/modules/GameStore.js";
 import type { FlowRunner } from "application/messaging/model/FlowRunner.js";
 import { ButtonHandler } from "application/messaging/model/InteractionHandler.js";
-import type { MessageView, SelectView } from "application/messaging/model/View.js";
+import type { MessageView, SelectView, ViewDataGame } from "application/messaging/model/View.js";
 import type { ViewStore } from "application/messaging/model/ViewStore.js";
 import type { Game } from "core/game/entities/Game/Game.js";
 import type { Logger } from "infra/Logger.js";
@@ -16,7 +16,7 @@ export class AddRoleHandler extends ButtonHandler
 	
 	async run(authorId: LgonId<"user">, viewId: string): Promise<void>
 	{
-		const view: MessageView | undefined = this.viewStore.get(viewId as LgonId<"view">);
+		const view: MessageView<ViewDataGame> | undefined = this.viewStore.get(viewId as LgonId<"view">);
 		if ( !view )
 		{
 			this.logger.event( { code: "NOT_FOUND", data: { what: "view", whatId: viewId, ctx: `add_role handler triggered by ${authorId}` } } );

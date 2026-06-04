@@ -1,6 +1,6 @@
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 import type { Flow, MessageBlock, MessageDefinition, ModeDefinition } from "./Flow.js";
-import type { MessageView, MsgBlockCtx, ButtonView, SelectView } from "./View.js";
+import type { MessageView, MsgBlockCtx, ButtonView, SelectView, ViewData } from "./View.js";
 import type { Logger } from "infra/Logger.js";
 import { makeLgonId, type LgonId } from "types/LgonId.js";
 import type { MessagingTarget } from "application/ports/MessagingPort.js";
@@ -13,7 +13,7 @@ type ViewSendChange =
 {
 	kind: "send" | "edit",
 	msgId: string, // soit on reply soit on edit
-	view: MessageView
+	view: MessageView<ViewData>
 }
 
 type ViewDeleteChange =
@@ -26,14 +26,14 @@ export type ViewChange = ViewSendChange | ViewDeleteChange;
 
 export class ViewStore
 {
-	private views: Map<string, MessageView>;
+	private views: Map<string, MessageView<ViewData>>;
 	static n: number = 0;
 	private min: number;
 	private scripts: Record<ScriptName, ScriptMaker>
 
 	constructor(gameStore: GameStore, userStore: UserStore, private readonly logger: Logger)
 	{
-		this.views = new Map<string, MessageView>();
+		this.views = new Map<string, MessageView<ViewData>>();
 		this.min = 0;
 		this.scripts = loadScripts(gameStore, userStore, logger);
 	}
@@ -63,7 +63,7 @@ export class ViewStore
 		return (this.scripts[scriptName].script(authorId));
 	}
 
-	compactView(msgBlock: MessageBlock, ctx: MsgBlockCtx): MessageView
+	compactView<T extends ViewData>(msgBlock: MessageBlock, ctx: MsgBlockCtx<T>): MessageView<T>
 	{
 		const step: MessageDefinition = msgBlock.steps[0];
 
@@ -75,7 +75,7 @@ export class ViewStore
 		if ( !script )
 			throw Error(""); // TODO
 
-		const view: MessageView = {
+		const view: MessageView<T> = {
 			id: ViewStore.makeViewId(),
 			script: script,
 			interactions: mode.interactions.map( row => row.map(interaction => {
@@ -96,9 +96,9 @@ export class ViewStore
 		return (view);
 	}
 
-	longViews(msgBlock: MessageBlock, ctx: MsgBlockCtx): MessageView[]
+	longViews<T extends ViewData>(msgBlock: MessageBlock, ctx: MsgBlockCtx<T>): MessageView<T>[]
 	{
-		let views: MessageView[] = [];
+		let views: MessageView<T>[] = [];
 
 		let i: number = 0;
 		while (i < msgBlock.steps.length)
@@ -118,7 +118,7 @@ export class ViewStore
 					kind: "view",
 					viewId: views[i - 1].id
 				}; 
-				const view: MessageView = {
+				const view: MessageView<T> = {
 					id: ViewStore.makeViewId(),
 					script: script,
 					interactions: mode.interactions.map( row => row.map(interaction => {
@@ -140,37 +140,36 @@ export class ViewStore
 
 			i ++;
 		}
-
 		return (views);
-
 	}
 
-	new(flow: Flow, author: LgonUser, originMsgTarget: MessagingTarget, blockData: any): MessageView[]
+	new<T extends ViewData>(flow: Flow, author: LgonUser, originMsgTarget: MessagingTarget, blockData: any): MessageView<T>[]
 	{
-		let views: MessageView[] = [];
+		let views: MessageView<T>[] = [];
 
 		for (const msgBlock of flow)
 		{
 			const stepMode: "compact" | "long" = author.preferences.stepMode;
-			const blockCtx: MsgBlockCtx =
+			const blockCtx: MsgBlockCtx<T> =
 			{
 				authorId: author.id,
 				stepMode: stepMode,
 				step: 0,
-				originMsgTarget: originMsgTarget
+				originMsgTarget: originMsgTarget,
+				data: blockData
 			}
 
 			if (stepMode === "compact")
-				views.push( this.compactView( msgBlock, blockCtx ) );
+				views.push( this.compactView<T>( msgBlock, blockCtx ) );
 			else // "long"
-				views.concat( this.longViews( msgBlock, blockCtx ) );
+				views.concat( this.longViews<T>( msgBlock, blockCtx ) );
 
 		}
 		return (views);
 	}
 
-	public get(viewId: LgonId<"view">): MessageView | undefined
+	public get<T extends ViewData>(viewId: LgonId<"view">): MessageView<T> | undefined
 	{
-		return ( this.views.get(viewId));
+		return ( this.views.get(viewId) as MessageView<T>);
 	}
 };

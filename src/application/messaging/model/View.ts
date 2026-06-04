@@ -18,7 +18,28 @@ export type SelectView =
 
 export type InteractionView = SelectView | ButtonView;
 
-export type MessageView =
+export type ViewDataUser =
+{
+	userId: LgonId<"user">
+}
+
+export type ViewDataGame =
+{
+	gameId: LgonId<"game">
+}
+
+export type ViewData = ViewDataGame | ViewDataUser;
+
+export type MsgBlockCtx<ViewData> =
+{
+	authorId: LgonId<"user">,
+	stepMode: "compact" | "long",
+	step: number,
+	originMsgTarget: MessagingTarget,
+	data: ViewData
+}
+
+export type MessageView<ViewData> =
 {
 	id: LgonId<"view">,
 	script: Script,
@@ -28,14 +49,5 @@ export type MessageView =
 	step: number,
 	target: MessagingTarget,
 
-	blockCtx: MsgBlockCtx
-}
-
-export type MsgBlockCtx =
-{
-	authorId: LgonId<"user">,
-	stepMode: "compact" | "long",
-	step: number,
-	originMsgTarget: MessagingTarget,
-	data?: any
+	blockCtx: MsgBlockCtx<ViewData>
 }

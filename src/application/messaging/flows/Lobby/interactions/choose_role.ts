@@ -1,7 +1,7 @@
 import type { GameStore } from "application/context/modules/GameStore.js";
 import type { FlowRunner } from "application/messaging/model/FlowRunner.js";
 import { SelectHandler } from "application/messaging/model/InteractionHandler.js";
-import type { MessageView, SelectView } from "application/messaging/model/View.js";
+import type { MessageView, SelectView, ViewDataGame } from "application/messaging/model/View.js";
 import type { ViewStore } from "application/messaging/model/ViewStore.js";
 import type { Game } from "core/game/entities/Game/Game.js";
 import type { Logger } from "infra/Logger.js";
@@ -17,12 +17,14 @@ export class ChooseRoleHandler extends SelectHandler
 	async run(authorId: LgonId<"user">, selected: string[], contextId: string): Promise<void>
 	{
 		const viewId = contextId as LgonId<"view">;
-		const view: MessageView | undefined = this.viewStore.get(viewId);
+		const view: MessageView<ViewDataGame> | undefined = this.viewStore.get<ViewDataGame>(viewId);
 		if ( !view )
 		{
 			this.logger.event( { code: "NOT_FOUND", data: { what: "view", whatId: viewId, ctx: `choose_role handler triggered by ${authorId}` } } );
 			return ;
 		}
+
+		console.log("choose_role", view);
 
 		const game: Game | undefined = this.gameStore.get(view.blockCtx.data.gameId);
 		if ( !game )

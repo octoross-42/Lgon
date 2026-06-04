@@ -6,7 +6,7 @@ import type { Logger } from "infra/Logger.js";
 import type { GameStore } from "application/context/modules/GameStore.js";
 import type { UserStore } from "application/context/modules/UserStore.js";
 import type { LgonId } from "types/LgonId.js";
-import type { MessageView } from "./View.js";
+import type { MessageView, ViewData } from "./View.js";
 
 export class FlowRunner
 {
@@ -27,7 +27,7 @@ export class FlowRunner
 		this.messenger.send(views, author, originMsgTarget, ephemeral);
 	}
 
-	updateView(view: MessageView)
+	updateView(view: MessageView<ViewData>)
 	{
 		this.messenger.update(view);
 	}

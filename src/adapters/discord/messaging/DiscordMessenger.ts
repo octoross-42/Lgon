@@ -1,6 +1,6 @@
 import { MessagingPort, type MessagingTarget } from "application/ports/MessagingPort.js";
 import { type Channel, type Client, EmbedBuilder, type SendableChannels, type Message, type User, MessageFlags, BaseMessageOptions } from "discord.js";
-import type { MessageView } from "application/messaging/model/View.js";
+import type { MessageView, ViewData } from "application/messaging/model/View.js";
 import { ComponentMaker } from "./ComponentMaker.js";
 import { DiscordMessagingCache, MessageRef } from "../store/DiscordMessagingCache.js";
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
@@ -116,7 +116,7 @@ export class DiscordMessenger extends MessagingPort
 		}
 	}
 
-	private makeMsgPayload(view: MessageView, epheremal: boolean = false): BaseMessageOptions
+	private makeMsgPayload(view: MessageView<ViewData>, epheremal: boolean = false): BaseMessageOptions
 	{
 		let embed: EmbedBuilder = new EmbedBuilder();
 	
@@ -140,7 +140,7 @@ export class DiscordMessenger extends MessagingPort
 
 
 
-	async send(views: MessageView[], author: LgonUser, msgTarget: MessagingTarget, epheremal: boolean): Promise<void>
+	async send(views: MessageView<ViewData>[], author: LgonUser, msgTarget: MessagingTarget, epheremal: boolean): Promise<void>
 	{	
 		for (const view of views)
 		{
@@ -187,7 +187,7 @@ export class DiscordMessenger extends MessagingPort
 		return ;
 	}
 
-	async update(view: MessageView): Promise<void>
+	async update(view: MessageView<ViewData>): Promise<void>
 	{
 		const viewRef: MessageRef | undefined = this.msgs.get(view.id);
 		if ( !viewRef )
