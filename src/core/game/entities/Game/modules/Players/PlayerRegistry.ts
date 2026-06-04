@@ -44,8 +44,8 @@ export class PlayerRegistry
 
 		user.game = null;
 
-		if ( this.players.size === 0 )
-			this.game.gameStore.delete(this.game.meta.id, "no more players");
+		// if ( this.players.size === 0 )
+		// 	this.game.gameStore.delete(this.game.meta.id, "no more players"); TODO see what we do
 	}
 	
 	getIds(): string[] { return (Array.from(this.players.keys(), key => getLgonId(key))); }

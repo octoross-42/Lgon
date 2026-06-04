@@ -1,5 +1,5 @@
 import { MessagingPort, type MessagingTarget } from "application/ports/MessagingPort.js";
-import { type Channel, type Client, EmbedBuilder, type Guild, type SendableChannels, type MessageCreateOptions, type Message, type User, MessageFlags } from "discord.js";
+import { type Channel, type Client, EmbedBuilder, type SendableChannels, type Message, type User, MessageFlags, BaseMessageOptions } from "discord.js";
 import type { MessageView } from "application/messaging/model/View.js";
 import { ComponentMaker } from "./ComponentMaker.js";
 import { DiscordMessagingCache, MessageRef } from "../store/DiscordMessagingCache.js";
@@ -18,7 +18,32 @@ export class DiscordMessenger extends MessagingPort
 		this.componentMaker = new ComponentMaker(this.logger);
 	}
 
-	private async guildSend(msg: MessageCreateOptions, channelId: string): Promise<MessageRef | undefined>
+	private async edit(msg: BaseMessageOptions, msgRef: MessageRef): Promise<void>
+	{
+		const channel: Channel | undefined = this.bot.channels.cache.get(msgRef.channelId);
+		if ( !channel )
+		{
+			this.logger.event( { code: "NOT_FOUND", data: { what: "discord channel", whatId: msgRef.channelId, ctx: "discord messenger edit" } } );
+			return ;
+		}
+
+		if ( !channel?.isSendable() )
+		{
+			this.logger.event( { code: "NOT_SENDABLE", data: { channelId: msgRef.channelId } } );
+			return ;
+		}
+		
+		const msgDiscord: Message | undefined = channel.messages.cache.get(msgRef.msgId);
+
+		if ( !msgDiscord )
+		{
+			this.logger.event( { code: "NOT_FOUND", data: { what: "discord message", whatId: `msgId: ${msgRef.msgId}, channelId: ${msgRef.channelId}`, ctx: "discord messenger edit" } } );
+			return ;
+		}
+		await msgDiscord.edit(msg);
+	}
+
+	private async guildSend(msg: BaseMessageOptions, channelId: string): Promise<MessageRef | undefined>
 	{
 		const channel: Channel | undefined = this.bot.channels.cache.get(channelId);
 		if ( !channel )
@@ -39,7 +64,7 @@ export class DiscordMessenger extends MessagingPort
 	}
 	
 
-	private async reply(msg: MessageCreateOptions, msgTargetCtx: MessageRef): Promise<MessageRef | undefined>
+	private async reply(msg: BaseMessageOptions, msgTargetCtx: MessageRef): Promise<MessageRef | undefined>
 	{
 		const channel: Channel | undefined = this.bot.channels.cache.get(msgTargetCtx.channelId);
 		if ( !channel )
@@ -75,7 +100,7 @@ export class DiscordMessenger extends MessagingPort
 			this.logger.event( { code: "NOT_SENDABLE", data: { channelId: msgTargetCtx.channelId } } );
 	}
 
-	private async dmSend(msg: MessageCreateOptions, userId: string): Promise<MessageRef | undefined>
+	private async dmSend(msg: BaseMessageOptions, userId: string): Promise<MessageRef | undefined>
 	{
 		const user: User | undefined = this.bot.users.cache.get(userId);
 		if ( !user )
@@ -91,7 +116,7 @@ export class DiscordMessenger extends MessagingPort
 		}
 	}
 
-	private makeMsgPayload(view: MessageView, author: LgonUser, epheremal: boolean): MessageCreateOptions
+	private makeMsgPayload(view: MessageView, epheremal: boolean = false): BaseMessageOptions
 	{
 		let embed: EmbedBuilder = new EmbedBuilder();
 	
@@ -108,16 +133,18 @@ export class DiscordMessenger extends MessagingPort
 		return ({
 			embeds: [embed],
 			allowedMentions: { repliedUser: false },
-			flags: (epheremal ? MessageFlags.Ephemeral as number: undefined) ,
+			// flags: (epheremal ? MessageFlags.Ephemeral as number: undefined), // TODO
 			components: this.componentMaker.make( view.interactions, view.id )
 		});
 	}
+
+
 
 	async send(views: MessageView[], author: LgonUser, msgTarget: MessagingTarget, epheremal: boolean): Promise<void>
 	{	
 		for (const view of views)
 		{
-			const msg: MessageCreateOptions = this.makeMsgPayload(view, author, epheremal);
+			const msg: BaseMessageOptions = this.makeMsgPayload(view, epheremal);
 			
 			let sent: MessageRef | undefined;
 			switch (msgTarget.kind)
@@ -162,7 +189,12 @@ export class DiscordMessenger extends MessagingPort
 
 	async update(view: MessageView): Promise<void>
 	{
-		
-		
+		const viewRef: MessageRef | undefined = this.msgs.get(view.id);
+		if ( !viewRef )
+		{
+			this.logger.event( { code: "NOT_FOUND", data: { what: "view message ref", whatId: `${view.id}`, ctx: "discord messenger update" } } );
+			return ;
+		}
+		this.edit(this.makeMsgPayload(view), viewRef);
 	}
 };
