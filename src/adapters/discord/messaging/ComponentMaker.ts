@@ -2,7 +2,7 @@ import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 import { ActionRowBuilder, type MessageActionRowComponentBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, userMention } from "discord.js";
 import type { Logger } from "infra/Logger.js";
 import type { FlowContext, FlowData, InteractionModel, LgonButtonStyle, SelectOption } from "application/messaging/model/Flow.js";
-import type { InteractionView,  } from "application/messaging/model/View.js";
+import type { InteractionView, SelectView,  } from "application/messaging/model/View.js";
 import { LgonId } from "types/LgonId.js";
 
 export type InteractionBuilder = ButtonBuilder | StringSelectMenuBuilder;
@@ -42,18 +42,40 @@ export class ComponentMaker
 				.setDisabled(!interaction.enabled)
 				.setStyle(DISCORD_BUTTON_STYLES[interaction.model.build.style]);
 		
+		
+		const selected: string[] = (interaction as SelectView<T>).selected;
 		const options: SelectOption[] = interaction.model.build.options(ctx);
 		const maxValues: number = Math.min((interaction.model.build.maxValues > 0) ? interaction.model.build.maxValues: options.length);
-		return (new StringSelectMenuBuilder()
-			.setCustomId(customId) // 1-100
-			.setPlaceholder(interaction.model.build.placeholder.slice(0, 150)) //150 max
-			.setMinValues(Math.min(Math.max(interaction.model.build.minValues, 0), 25)) // 0-25
-			.setMaxValues(maxValues) // 25
-			.setDisabled(!interaction.enabled)
-			.addOptions(options.slice(0, 25).map(option => { return { // 25 options max
-					label: option.label.slice(0, 100), // max 100
-					value: option.value.slice(0, 100), // max 100
-					description: option.description?.slice(0, 100) } }))); // max 100
+
+		if ( selected.length === 0 )
+			return (new StringSelectMenuBuilder()
+				.setCustomId(customId) // 1-100
+				.setPlaceholder(interaction.model.build.placeholder.slice(0, 150)) //150 max
+				.setMinValues(Math.min(Math.max(interaction.model.build.minValues, 0), 25)) // 0-25
+				.setMaxValues(maxValues) // 25
+				.setDisabled(!interaction.enabled)
+				.addOptions(options.slice(0, 25).map(option => { return { // 25 options max
+						label: option.label.slice(0, 100), // max 100
+						value: option.value.slice(0, 100), // max 100
+						default: option.default,
+						description: option.description?.slice(0, 100) } }))); // max 100
+
+		else
+		{
+			return (new StringSelectMenuBuilder()
+				.setCustomId(customId) // 1-100
+				.setPlaceholder(interaction.model.build.placeholder.slice(0, 150)) //150 max
+				.setMinValues(Math.min(Math.max(interaction.model.build.minValues, 0), 25)) // 0-25
+				.setMaxValues(maxValues) // 25
+				.setDisabled(!interaction.enabled)
+				.addOptions(options.slice(0, 25).map(option => {
+					const optionValue = option.value.slice(0, 100);
+					return { // 25 options max
+						label: option.label.slice(0, 100), // max 100
+						value: optionValue, // max 100
+						default: (selected.includes(optionValue)),
+						description: option.description?.slice(0, 100) } }))); // max 100
+		}
 	}
 
 

@@ -44,7 +44,7 @@ export type ButtonBuild<T extends FlowData> =
 	enabled: (ctx: FlowContext<T>) => boolean
 };
 
-export type SelectOption = { label: string; value: string; description?: string };
+export type SelectOption = { label: string; value: string; description?: string, default?: boolean };
 
 export type SelectBuild<T extends FlowData> =
 {
