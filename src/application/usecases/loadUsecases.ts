@@ -5,7 +5,7 @@ import { CreateGameUsecase } from 'application/usecases/lobby/CreateGame.usecase
 import { StartGameUsecase } from 'application/usecases/lobby/StartGame.usecase.js';
 import type { GameStore } from 'application/context/modules/GameStore.js';
 import type { UserStore } from 'application/context/modules/UserStore.js';
-import type { FlowRunner } from 'messagingFlows/model/FlowRunner.js';
+import type { FlowRunner } from 'application/messaging/model/FlowRunner.js';
 
 export function loadUsescases(gameStore: GameStore, userStore: UserStore, flowRunner: FlowRunner, logger: Logger): UsecasesRegistry
 {

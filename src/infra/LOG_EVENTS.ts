@@ -10,7 +10,7 @@ export type LogEvent =
 	date: Date;
 }
 
-export type EventCode = "MESSAGE" | "COMMAND_RUN" | "COMMAND_FAIL" | "USECASE" | "INTERACTIONREPLY" |
+export type EventCode = "MESSAGE" | "COMMAND_RUN" | "COMMAND_FAIL" | "USECASE" | "INTERACTION" |
 				"SEND_CHANNEL_INSTEAD" | "NOT_SENDABLE" | "COMPONENTS_ERROR" |
 				"NOT_FOUND" | "DESIGN_ERROR" |
 				"CREATE" | "DELETE" | "CANNOT_CREATE" |
@@ -70,7 +70,7 @@ export const EVENTS_DESCRIPTIONS: Record<EventCode, EventDescription> =
 		audience: "system",
 		log: d => `${d?.userId} did: '${d?.command}'`
 	},
-	INTERACTIONREPLY: {
+	INTERACTION: {
 		lvl: "info",
 		audience: "system",
 		log: d => `${d?.userId} triggered: '${d?.interaction}'`

@@ -9,9 +9,9 @@ import { UserStore } from "./modules/UserStore.js";
 import { loadUsescases } from "application/usecases/loadUsecases.js";
 import { LgonRoleGeneratorRegistry } from "./modules/LgonRoleGeneratorRegistry.js";
 import { loadRoles } from "core/game/roles/loadRoles.js";
-import type { FlowRunner } from "messagingFlows/model/FlowRunner.js";
+import type { FlowRunner } from "application/messaging/model/FlowRunner.js";
 import { InteractionRegistry } from "./modules/InteractionRegistry.js";
-import { loadInteractions } from "messagingFlows/loadInteractions.js";
+import { loadInteractions } from "application/messaging/loadInteractions.js";
 
 export class LgonContext
 {	
@@ -19,21 +19,15 @@ export class LgonContext
 	public readonly interactions: InteractionRegistry
 	// public readonly onPropertyUpdate: Map<LgonProperty, (prop: LgonProperty) => void>;
 
-	private constructor(public readonly gameStore: GameStore,
-						public readonly userStore: UserStore,
-						public readonly roleRegistry: LgonRoleGeneratorRegistry,
-						public readonly flowRunner: FlowRunner,
-						public readonly logger: Logger)
+	constructor(public roles: LgonRoleGeneratorRegistry,
+				public readonly gameStore: GameStore,
+				public readonly userStore: UserStore,
+				public readonly flowRunner: FlowRunner,
+				public readonly logger: Logger)
 	{
 		this.usecases = loadUsescases(this.gameStore, this.userStore, this.flowRunner, this.logger);
-		this.interactions = loadInteractions(this.gameStore, this.userStore, this.flowRunner, this.logger);
+		this.interactions = loadInteractions(flowRunner.viewStore, this.gameStore, this.userStore, this.flowRunner, this.logger);
 		// this.onPropertyUpdate = new Map<LgonProperty, (prop: LgonProperty) => void>;
-	}
-
-	static async create(gameStore: GameStore, userStore: UserStore, flowRunner: FlowRunner, logger: Logger): Promise<LgonContext>
-	{
-		const roleRegistry: LgonRoleGeneratorRegistry = await loadRoles();
-		return ( new LgonContext(gameStore, userStore, roleRegistry, flowRunner, logger) );
 	}
 
 	getStepMode(userId: LgonId<"user">): "compact" | "long"

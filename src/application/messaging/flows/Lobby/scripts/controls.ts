@@ -1,5 +1,5 @@
 import type { UserStore } from "application/context/modules/UserStore.js";
-import { Script, ScriptMaker, type MessageScript } from "messagingFlows/model/Script.js";
+import { Script, ScriptMaker, type MessageScript } from "application/messaging/model/Script.js";
 import { makeLgonId, type LgonId } from "types/LgonId.js";
 
 export class LobbyControlsScriptMaker implements ScriptMaker

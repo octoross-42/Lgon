@@ -26,5 +26,5 @@ export abstract class MessagingPort
 	constructor() {}
 
 	abstract send(views: MessageView[], author: LgonUser, msgTarget: MessagingTarget, ephemeral: boolean): Promise<void>;
-	abstract update(): Promise<void>;
+	abstract update(view: MessageView): Promise<void>;
 };

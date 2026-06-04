@@ -36,5 +36,6 @@ export type MsgBlockCtx =
 	authorId: LgonId<"user">,
 	stepMode: "compact" | "long",
 	step: number,
-	originMsgTarget: MessagingTarget
+	originMsgTarget: MessagingTarget,
+	data?: any
 }

@@ -1,17 +1,17 @@
 import type { LgonId } from "types/LgonId.js";
 import { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 
-import { LobbyFlow } from "messagingFlows/flows/Lobby/LobbyFlow.js";
+import { LobbyFlow } from "application/messaging/flows/Lobby/LobbyFlow.js";
 import { Usecase } from "application/context/modules/UsecasesRegistry.js";
 
 import type { Logger } from "infra/Logger.js";
 
 import type { UserStore } from "application/context/modules/UserStore.js";
 import type { GameStore } from "application/context/modules/GameStore.js";
-import type { FlowRunner } from "messagingFlows/model/FlowRunner.js";
+import type { FlowRunner } from "application/messaging/model/FlowRunner.js";
 import type { MessagingTarget } from "application/ports/MessagingPort.js";
-import { NotifyFlow } from "messagingFlows/flows/Notify/NotifyFlow.js";
-import { SwitchGameFlow } from "messagingFlows/flows/Lobby/SwitchGameFlow.js";
+import { NotifyFlow } from "application/messaging/flows/Notify/NotifyFlow.js";
+import { SwitchGameFlow } from "application/messaging/flows/Lobby/SwitchGameFlow.js";
 
 export class CreateGameUsecase implements Usecase
 {
@@ -22,7 +22,7 @@ export class CreateGameUsecase implements Usecase
 	) {}
 
 
-	async run(authorId: LgonId<"user">, originMsgTarget: MessagingTarget): Promise<void>
+	async run(authorId: LgonId<"user">, originMsgTarget: MessagingTarget, authorName: string): Promise<void>
 	{
 
 		let gameId: LgonId<"game"> | null = null;
@@ -30,32 +30,31 @@ export class CreateGameUsecase implements Usecase
 		let user: LgonUser | undefined = this.userStore.get(authorId);
 		if ( !user )
 		{
-			user = this.userStore.new(authorId);
+			user = this.userStore.new(authorId, authorName);
 			if ( !user )
 			{
-				await this.flowRunner.run(NotifyFlow("INTERNAL_ERROR"), this.userStore.lgon(), originMsgTarget, true);
+				await this.flowRunner.run(NotifyFlow("INTERNAL_ERROR"), this.userStore.lgon(), originMsgTarget, undefined, true);
 				return ;
 			}
 			this.logger.event( { code: "CREATE", data: { whatId: user.id } } );
-			console.log("??");
 		}
 		
-
-		switch ( this.gameStore.new(user) )
+		const res = this.gameStore.new(user);
+		switch ( res.status )
 		{
 			case "SUCCESS":
 			{
-				await this.flowRunner.run(LobbyFlow, user, originMsgTarget);		
+				await this.flowRunner.run(LobbyFlow, user, originMsgTarget, { gameId: res.game.meta.id });		
 				break ;
 			}
 			case "CANNOT_LEAVE":
 			{
-				await this.flowRunner.run(NotifyFlow("CANNOT_LEAVE"), user, originMsgTarget, true);
+				await this.flowRunner.run(NotifyFlow("CANNOT_LEAVE"), user, originMsgTarget, undefined, true);
 				break ;
 			}
 			case "SWITCH":
 			{
-				await this.flowRunner.run(SwitchGameFlow, user, originMsgTarget, true);
+				await this.flowRunner.run(SwitchGameFlow, user, originMsgTarget, { gameId: user.game!.meta.id }, true);
 				break ;
 			}
 		}

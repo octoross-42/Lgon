@@ -1,8 +1,9 @@
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 import { ActionRowBuilder, type MessageActionRowComponentBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, userMention } from "discord.js";
 import type { Logger } from "infra/Logger.js";
-import type { InteractionModel, LgonButtonStyle } from "messagingFlows/model/Flow.js";
-import type { InteractionView,  } from "messagingFlows/model/View.js";
+import type { InteractionModel, LgonButtonStyle } from "application/messaging/model/Flow.js";
+import type { InteractionView,  } from "application/messaging/model/View.js";
+import { LgonId } from "types/LgonId.js";
 
 export type InteractionBuilder = ButtonBuilder | StringSelectMenuBuilder;
 
@@ -19,37 +20,15 @@ export class ComponentMaker
 {
 	constructor(private readonly logger: Logger) {}
 
-	private makeComponentId(interaction: InteractionModel, author: LgonUser): string
+	private makeComponentId(interaction: InteractionModel, viewId: LgonId<"view">): string
 	{
-		let id: string = interaction.id + ":";
-		switch (interaction.customIdKind)
-		{
-			case ( "game" ):
-			{
-				if ( author.game )
-					id = id.concat( author.game.meta.id );
-				else
-					id = id.concat( "error" );
-				break;
-			}
-			case ( "user" ):
-			{
-				id = id.concat( author.id );
-				break;
-			}
-			default:
-			{
-				console.log(interaction.customIdKind);
-				id = id.concat( "error" );
-				break;
-			}
-		}
+		let id: string = interaction.id + ":" + viewId;
 		return (id);
 	}
 
-	private	componentMaker(interaction: InteractionView, author: LgonUser): InteractionBuilder | undefined
+	private	componentMaker(interaction: InteractionView, viewId: LgonId<"view">): InteractionBuilder | undefined
 	{
-		const customId: string = this.makeComponentId(interaction.model, author);
+		const customId: string = this.makeComponentId(interaction.model, viewId);
 		if (customId.length > 100)
 		{
 			this.logger.event({ code: "COMPONENTS_ERROR", data: { error_on: `component ${customId}`, reason: "customId lenght > 100" } });
@@ -77,7 +56,7 @@ export class ComponentMaker
 	}
 
 
-	public make(interactions: InteractionView[][], author: LgonUser): ActionRowBuilder<MessageActionRowComponentBuilder>[]
+	public make(interactions: InteractionView[][], viewId: LgonId<"view">): ActionRowBuilder<MessageActionRowComponentBuilder>[]
 	{
 		if (interactions.length === 0)
 			return [];
@@ -108,7 +87,7 @@ export class ComponentMaker
 					return (components);
 				}
 
-				component = this.componentMaker(interactions[i][j], author);
+				component = this.componentMaker(interactions[i][j], viewId);
 				if ( !component )
 				{
 					j ++;

@@ -1,16 +1,17 @@
-import type { LgonId } from "types/LgonId.ts";
+import type { LgonId, LgonIdKind } from "types/LgonId.ts";
 import { Game } from "core/game/entities/Game/Game.js";
 import { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 import type { UserStore } from "./UserStore.js";
 import type { Logger } from "infra/Logger.js";
 
 import { CREATE_GAME_STATUS } from "application/usecases/STATUS.js";
+import type { LgonRoleGeneratorRegistry } from "./LgonRoleGeneratorRegistry.js";
 
 export class GameStore
 {
 	private readonly games: Map<LgonId<"game">, Game>;
 
-	constructor(private readonly users: UserStore,
+	constructor(public availableRoles: LgonRoleGeneratorRegistry,
 				public readonly logger: Logger)
 	{
 		this.games = new Map<LgonId<"game">, Game>();
@@ -21,7 +22,7 @@ export class GameStore
 		return ( this.games.get(gameId) );
 	}
 
-	new(user: LgonUser): CREATE_GAME_STATUS
+	new(user: LgonUser): { status: "SUCCESS", game: Game } | { status: Exclude<CREATE_GAME_STATUS, "SUCCESS"> }
 	{
 		let status: CREATE_GAME_STATUS = user.createGameStatus();
 		if ( status != "SUCCESS" )
@@ -32,15 +33,15 @@ export class GameStore
 				status = "SUCCESS";
 			}
 			else
-				return ( status );
+				return ( { status: status } );
 		}
 
-		const newGame: Game = new Game(this);
+		const newGame: Game = new Game(this.availableRoles, this.logger);
 		this.games.set(newGame.meta.id, newGame);
 		newGame.join(user);
 		user.game = newGame;
 		
-		return ( status );
+		return ( { status: "SUCCESS", game: newGame } );
 	}
 
 	delete(gameId: LgonId<"game">, reason: string)

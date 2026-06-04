@@ -1,8 +1,10 @@
 import { GameMeta } from "./GameMeta.js";
 import { PlayerRegistry } from "./modules/Players/PlayerRegistry.js";
-import type { GameStore } from "application/context/modules/GameStore.js";
 import { PickedRoleRegistry } from "./modules/PickedRoleRegistry.js";
 import type { LgonUser } from "../LgonUser/LgonUser.js";
+import type { Logger } from "infra/Logger.js";
+import type { LgonRoleGeneratorRegistry } from "application/context/modules/LgonRoleGeneratorRegistry.js";
+import { LgonId, makeLgonId } from "types/LgonId.js";
 
 export class Game
 {
@@ -12,12 +14,13 @@ export class Game
 	public players: PlayerRegistry;
 	public pickedRoles: PickedRoleRegistry;
 	
-	constructor(public readonly gameStore: GameStore)
+	constructor(availableRoles: LgonRoleGeneratorRegistry,
+				public readonly logger: Logger)
 	{
 		// TODO GERER LES OVERFLOW D'ids -> quand on reach 1 000 000
 
 		this.meta = new GameMeta();
-		this.pickedRoles = new PickedRoleRegistry();
+		this.pickedRoles = new PickedRoleRegistry(availableRoles, this.logger);
 		this.phase = "setup";
 		this.players = new PlayerRegistry(this);
 	}
@@ -25,6 +28,11 @@ export class Game
 	join(user: LgonUser)
 	{
 		this.players.join(user);
+	}
+
+	public add_roles(rolesNames: LgonId<"role">[], count: number): boolean
+	{
+		return (this.pickedRoles.add(rolesNames, count));
 	}
 
 	// async distributeRoles(bot: Client): Promise<void>

@@ -145,7 +145,7 @@ export class ViewStore
 
 	}
 
-	new(flow: Flow, author: LgonUser, originMsgTarget: MessagingTarget): MessageView[]
+	new(flow: Flow, author: LgonUser, originMsgTarget: MessagingTarget, blockData: any): MessageView[]
 	{
 		let views: MessageView[] = [];
 
@@ -167,5 +167,10 @@ export class ViewStore
 
 		}
 		return (views);
+	}
+
+	public get(viewId: LgonId<"view">): MessageView | undefined
+	{
+		return ( this.views.get(viewId));
 	}
 };

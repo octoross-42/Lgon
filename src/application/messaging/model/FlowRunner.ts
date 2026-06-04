@@ -5,10 +5,13 @@ import type { MessagingPort, MessagingTarget } from "application/ports/Messaging
 import type { Logger } from "infra/Logger.js";
 import type { GameStore } from "application/context/modules/GameStore.js";
 import type { UserStore } from "application/context/modules/UserStore.js";
+import type { LgonId } from "types/LgonId.js";
+import type { MessageView } from "./View.js";
 
 export class FlowRunner
 {
-	private readonly viewStore: ViewStore;
+	public readonly viewStore: ViewStore;
+	// private readonly updateOn: Map<LgonId<"">, LgonId<"view">[]>
 
 	constructor(private readonly messenger: MessagingPort,
 				gameStore: GameStore,
@@ -18,10 +21,14 @@ export class FlowRunner
 		this.viewStore = new ViewStore(gameStore, userStore,this.logger);
 	}
 
-	async run(flow: Flow, author: LgonUser, originMsgTarget: MessagingTarget, ephemeral: boolean = false): Promise<void>
+	async run(flow: Flow, author: LgonUser, originMsgTarget: MessagingTarget, blockData: any, ephemeral: boolean = false): Promise<void>
 	{
-		const views = this.viewStore.new(flow, author, originMsgTarget);
-
+		const views = this.viewStore.new(flow, author, originMsgTarget, blockData);
 		this.messenger.send(views, author, originMsgTarget, ephemeral);
+	}
+
+	updateView(view: MessageView)
+	{
+		this.messenger.update(view);
 	}
 }

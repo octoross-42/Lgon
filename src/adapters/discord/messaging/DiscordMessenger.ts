@@ -109,7 +109,7 @@ export class DiscordMessenger extends MessagingPort
 			embeds: [embed],
 			allowedMentions: { repliedUser: false },
 			flags: (epheremal ? MessageFlags.Ephemeral as number: undefined) ,
-			components: this.componentMaker.make( view.interactions, author )
+			components: this.componentMaker.make( view.interactions, view.id )
 		});
 	}
 
@@ -160,8 +160,9 @@ export class DiscordMessenger extends MessagingPort
 		return ;
 	}
 
-	async update(): Promise<void>
+	async update(view: MessageView): Promise<void>
 	{
-		console.log("we update tkt yipee");
+		
+		
 	}
 };

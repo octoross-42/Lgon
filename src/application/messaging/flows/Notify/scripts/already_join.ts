@@ -1,4 +1,4 @@
-import type { MessageScript, Script, ScriptMaker } from "messagingFlows/model/Script.js";
+import type { MessageScript, Script, ScriptMaker } from "application/messaging/model/Script.js";
 import type { LgonId } from "types/LgonId.js";
 
 export class AlreadyJoinedScriptMaker implements ScriptMaker

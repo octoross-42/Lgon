@@ -4,7 +4,7 @@ import type { Game } from "core/game/entities/Game/Game.js";
 import type { RoleStock } from "core/game/entities/Game/modules/PickedRoleRegistry.js";
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 import type { Logger } from "infra/Logger.js";
-import { Script, ScriptMaker, type MessageScript } from "messagingFlows/model/Script.js";
+import { Script, ScriptMaker, type MessageScript } from "application/messaging/model/Script.js";
 import { makeLgonId, type LgonId } from "types/LgonId.js";
 
 export class LobbyPresetRolesScriptMaker implements ScriptMaker

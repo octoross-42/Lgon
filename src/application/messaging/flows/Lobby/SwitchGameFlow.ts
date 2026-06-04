@@ -1,4 +1,4 @@
-import type { Flow } from "messagingFlows/model/Flow.js";
+import type { Flow } from "application/messaging/model/Flow.js";
 
 export const SwitchGameFlow: Flow =
 [{

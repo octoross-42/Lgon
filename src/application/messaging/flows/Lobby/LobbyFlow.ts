@@ -99,7 +99,7 @@ export const LobbyFlow: Flow =
 					kind: "button",
 					build: {
 						label: "Leave",
-						style: "red"				
+						style: "grey"				
 					},
 					// onSubmit: (userId: string) => TODO(userId)
 				}
@@ -128,11 +128,31 @@ export const LobbyFlow: Flow =
 							{
 								label: "Loup-garou",
 								value: "loup",
-								description: "TODO"
+								description: "Se réveille la nuit et reconnait les autres loups garous"
+							},
+							{
+								label: "Loup alpha",
+								value: "alpha",
+								description: "Se réveille la nuit, reconnait les autres loups garous et choisit une personne dont il regarde la carte"
+							},
+							{
+								label: "Loup dormeur",
+								value: "dormeur",
+								description: "Est un loup qui dort lorsque les autres loups se reconnaissent (les autres loups le connaissent)"
+							},
+							{
+								label: "Villageois",
+								value: "villageois",
+								description: "\\:)"
+							},
+							{
+								label: "Voyante",
+								value: "voyante",
+								description: "A le pouvoir de voir la carte d'une personne ou 2 cartes au milieu"
 							}
 						],
 						minValues: 1,
-						maxValues: 1
+						maxValues: -1
 					},
 					// onSubmit: (userId: string) => TODO(userId)
 				}
@@ -154,7 +174,7 @@ export const LobbyFlow: Flow =
 					kind: "button",
 					build: {
 						label: "-",
-						style: "red"				
+						style: "grey"				
 					},
 					// onSubmit: (userId: string) => TODO(userId)
 				}
@@ -201,7 +221,7 @@ export const LobbyFlow: Flow =
 					kind: "button",
 					build: {
 						label: "-",
-						style: "red"				
+						style: "grey"				
 					},
 					// onSubmit: (userId: string) => TODO(userId)
 				}

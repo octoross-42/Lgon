@@ -5,7 +5,7 @@ import { Usecase, type UsecasesRegistry } from "application/context/modules/Usec
 import type { UserStore } from "application/context/modules/UserStore.js";
 import type { Logger } from "infra/Logger.js";
 import type { GameStore } from "application/context/modules/GameStore.js";
-import type { FlowRunner } from "messagingFlows/model/FlowRunner.js";
+import type { FlowRunner } from "application/messaging/model/FlowRunner.js";
 
 export class StartGameUsecase implements Usecase
 {

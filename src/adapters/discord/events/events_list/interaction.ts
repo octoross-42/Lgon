@@ -31,6 +31,7 @@ export async function onInteraction(lgon: LgonContext, bot: Client, interaction:
 			return ;
 
 		interaction.deferUpdate();
+		interaction.deferReply( { ephemeral: true} );
 
 		const userId: LgonId<"user"> = makeLgonId<"user">("user", interaction.user.id);
 
@@ -38,7 +39,7 @@ export async function onInteraction(lgon: LgonContext, bot: Client, interaction:
 			lgon.interactions.button(interactionName as ButtonName, userId, args);
 
 		else if (interaction.isStringSelectMenu())
-			lgon.interactions.select(interactionName as SelectName, userId, args, interaction.values);
+			lgon.interactions.select(interactionName as SelectName, userId, interaction.values, args);
 	}
 	
 	else if (interaction.isChatInputCommand())
