@@ -25,9 +25,9 @@ export class InteractionRegistry
 		await this.buttons[interactionName].run(authorId, contextId);
 	}
 
-	async select(interactionName: SelectName, authorId: LgonId<"user">, selected: string[], contextId: string): Promise<void>
+	async select(interactionName: SelectName, interactionId: string, authorId: LgonId<"user">, selected: string[], viewId: LgonId<"view">): Promise<void>
 	{
 		this.logger.event( { code: "INTERACTION", data: { userId: authorId, interaction: interactionName } } );
-		await this.selects[interactionName].run(authorId, selected, interactionName, contextId);
+		await this.selects[interactionName].run(authorId, selected, interactionId, viewId);
 	}
 }

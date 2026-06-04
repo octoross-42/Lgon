@@ -31,14 +31,29 @@ export class AddRoleHandler extends ButtonHandler
 			return ;
 		}
 
-		const select_interaction: SelectView<FlowDataGame> | undefined = view.interactions.flat().find(interaction => (interaction.model.id === "choose_role") && (interaction.model.kind === "select")) as SelectView<FlowDataGame> | undefined;
-		if ( !select_interaction )
+		const select_roles: SelectView<FlowDataGame> | undefined = view.interactions.flat().find(interaction => (interaction.model.id === "choose_role") && (interaction.model.kind === "select")) as SelectView<FlowDataGame> | undefined;
+		if ( !select_roles )
 		{
-			this.logger.event( { code: "NOT_FOUND", data: { what: "interaction", whatId: "select_role", ctx: `add_role handler triggered by ${authorId}` } } );
+			this.logger.event( { code: "NOT_FOUND", data: { what: "select interaction", whatId: "select_role", ctx: `add_role handler triggered by ${authorId}` } } );
 			return ;
 		}
+		
+		let count: number = 1;
+		const select_count: SelectView<FlowDataGame> | undefined = view.interactions.flat().find(interaction => (interaction.model.id === "role_count") && (interaction.model.kind === "select")) as SelectView<FlowDataGame> | undefined;
+		if ( !select_count )
+			this.logger.event( { code: "NOT_FOUND", data: { what: "select interaction", whatId: "role_count", ctx: `add_role handler triggered by ${authorId}` } } );	
 
-		if ( !game.add_roles(select_interaction.selected as LgonId<"role">[], 1) )
+		else if ( select_count.selected.length > 1 )
+			this.logger.event( { code: "DESIGN_ERROR", data: { error: "Select number component has multiple selections" } } );	
+
+		else if ( select_count.selected.length === 1 )
+		{
+			count = Number(select_count.selected[0]);
+			if (Number.isNaN(count) || (count < 1))
+				count = 1;
+		}
+
+		if ( !game.add_roles(select_roles.selected as LgonId<"role">[], count) )
 			return ;
 
 		this.flowRunner.update(view);

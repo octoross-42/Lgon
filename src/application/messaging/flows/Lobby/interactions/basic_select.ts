@@ -13,9 +13,8 @@ export class BasicSelectHandler extends SelectHandler
 				flowRunner: FlowRunner,
 				logger: Logger) { super("update", viewStore, flowRunner, logger); }
 	
-	async run(authorId: LgonId<"user">, selected: string[], selectId: SelectName, contextId: string): Promise<void>
+	async run(authorId: LgonId<"user">, selected: string[], selectId: string, viewId: LgonId<"view">): Promise<void>
 	{
-		const viewId = contextId as LgonId<"view">;
 		const view: View<FlowDataGame> | undefined = this.viewStore.get<FlowDataGame>(viewId);
 		if ( !view )
 		{

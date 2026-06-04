@@ -22,7 +22,7 @@ export class ComponentMaker
 
 	private makeComponentId<T extends FlowData>(interaction: InteractionModel<T>, viewId: LgonId<"view">): string
 	{
-		let id: string = interaction.id + ":" + viewId;
+		let id: string = interaction.interactionId + ":" + interaction.id + ":" + viewId;
 		return (id);
 	}
 

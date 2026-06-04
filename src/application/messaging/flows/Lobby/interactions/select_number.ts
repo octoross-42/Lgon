@@ -7,7 +7,10 @@ export function SelectNumberOptions(ctx: FlowContext<FlowDataGame>): SelectOptio
 
 	let i: number = 1;
 	while (i < 100)
-		options.push( { label: i.toString(), value: i.toString(), description: "" } );
+	{
+		options.push( { label: i.toString(), value: i.toString() } );
+		i ++;
+	}
 
 	return (options);
 }

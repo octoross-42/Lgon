@@ -8,7 +8,8 @@ import { runWithTrace } from 'infra/trace.js';
 type InteractionArgs =
 {
 	interactionName: string,
-	args: string
+	interactionId: string,
+	viewId: string
 };
 
 function parseInteraction(str: string): InteractionArgs
@@ -16,7 +17,8 @@ function parseInteraction(str: string): InteractionArgs
 	const splitted = str.split(":");
 	return ({
 		interactionName: splitted[0],
-		args: splitted.slice(1).join(":")
+		interactionId: splitted[1],
+		viewId: splitted.slice(2).join(":")
 	});
 }
 
@@ -24,7 +26,7 @@ export async function onInteraction(lgon: LgonContext, bot: Client, interaction:
 {
 	if (interaction.isMessageComponent())
 	{
-		const { interactionName, args } = parseInteraction(interaction.customId);
+		const { interactionName, interactionId, viewId } = parseInteraction(interaction.customId);
 
 		if ( !lgon.interactions.has(interactionName) )
 			return ;
@@ -35,10 +37,10 @@ export async function onInteraction(lgon: LgonContext, bot: Client, interaction:
 		const userId: LgonId<"user"> = makeLgonId<"user">("user", interaction.user.id);
 
 		if (interaction.isButton())
-			lgon.interactions.button(interactionName as ButtonName, userId, args);
+			lgon.interactions.button(interactionName as ButtonName, userId, viewId);
 
 		else if (interaction.isStringSelectMenu())
-			lgon.interactions.select(interactionName as SelectName, userId, interaction.values, args);
+			lgon.interactions.select(interactionName as SelectName, interactionId, userId, interaction.values, viewId as LgonId<"view">);
 	}
 	
 	else if (interaction.isChatInputCommand())

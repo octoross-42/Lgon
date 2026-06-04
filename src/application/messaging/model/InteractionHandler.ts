@@ -37,5 +37,5 @@ export abstract class SelectHandler extends InteractionHandler
 {
 	constructor(deferKind: "update" | "reply", viewStore: ViewStore, flowRunner: FlowRunner, logger: Logger) { super(deferKind, "select", viewStore, flowRunner, logger); }
 
-	abstract run(authorId: LgonId<"user">, selected: string[], selectId: SelectName, contextId: string): Promise<void> | void;
+	abstract run(authorId: LgonId<"user">, selected: string[], selectId: string, viewId: LgonId<"view">): Promise<void> | void;
 }
