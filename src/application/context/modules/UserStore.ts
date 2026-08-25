@@ -27,6 +27,8 @@ export class UserStore
 			this.logger.event( { code: "DESIGN_ERROR", data: { error: "cannot create user: id already exists" }} );
 			return (undefined);
 		}
+		
+		this.logger.event( { code: "CREATE", data: { whatId: userId } } );
 		const user = new LgonUser(userId, name, this.logger);
 		this.users.set(userId, user);
 		return (user);
@@ -37,7 +39,16 @@ export class UserStore
 		return ( this.users.get(userId) );
 	}
 
-	
+	getOrCreate(userId: LgonId<"user">, name: string): LgonUser
+	{
+		if ( this.users.has(userId) )
+			return ( this.users.get(userId)! );
+		
+		this.logger.event( { code: "CREATE", data: { whatId: userId } } );
+		const user = new LgonUser(userId, name, this.logger);
+		this.users.set(userId, user);
+		return ( user );
+	}
 
 	joinGame()
 	{}

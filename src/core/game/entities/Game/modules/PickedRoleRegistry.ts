@@ -55,7 +55,7 @@ export class PickedRoleRegistry
 
 		if (quantity < 1)
 		{
-			this.logger.event( { code: "DESIGN_ERROR", data: { error: "add roles count < 1" } } );
+			this.logger.event( { code: "DESIGN_ERROR", data: { error: "rm roles count < 1" } } );
 			throw Error(""); // TODO wtf ?
 		}
 
@@ -64,7 +64,7 @@ export class PickedRoleRegistry
 			const roleGenerator: RoleGenerator | undefined = this.availables.get(roleName);
 			if ( !roleGenerator )
 			{
-				this.logger.event( { code: "DESIGN_ERROR", data: { error: `Tried to add ${roleName} but wasn't found` } } );
+				this.logger.event( { code: "DESIGN_ERROR", data: { error: `Tried to rm ${roleName} but wasn't found` } } );
 				continue ;
 			}
 	

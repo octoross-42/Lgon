@@ -2,7 +2,7 @@ import type { LgonId } from "types/LgonId.js";
 import type { ViewStore } from "./ViewStore.js";
 import type { Logger } from "infra/Logger.js";
 import { FlowRunner } from "./FlowRunner.js";
-import type { SelectName } from "../loadInteractions.js";
+import type { SelectId } from "../loadInteractions.js";
 
 export type InteractionCtx =
 {

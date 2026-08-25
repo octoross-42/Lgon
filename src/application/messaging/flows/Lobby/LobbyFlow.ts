@@ -1,4 +1,4 @@
-import type { Flow, FlowDataGame } from "../../model/Flow.js";
+import type { Flow, GameDataFlow } from "../../model/Flow.js";
 import { enableGameSetupInteraction } from "./interactions/enable.js";
 import { ChooseRoleOptions } from "./interactions/choose_role.js";
 import { LobbyControlsScript } from "./scripts/controls.js";
@@ -11,7 +11,7 @@ import { SelectNumberOptions } from "./interactions/select_number.js";
 // 				.map(id => `- <@${id}>`)
 // 				.join("\n"),
 
-export const LobbyFlow: Flow<FlowDataGame> = 
+export const LobbyFlow: Flow<GameDataFlow> = 
 [{
 	id: "Lobby-controls",
 	steps: [
@@ -24,8 +24,7 @@ export const LobbyFlow: Flow<FlowDataGame> =
 			interactions: [
 				[
 					{
-						interactionId: "start_game",
-						id: "start",
+						id: "start_game",
 						kind: "button",
 						build: {
 							label: "Start",
@@ -34,8 +33,7 @@ export const LobbyFlow: Flow<FlowDataGame> =
 						},
 					},
 					{
-						interactionId: "pause_game",
-						id: "pause",
+						id: "pause_game",
 						kind: "button",
 						build: {
 							label: "Pause",
@@ -44,8 +42,7 @@ export const LobbyFlow: Flow<FlowDataGame> =
 						},
 					},
 					{
-						interactionId: "restart_game",
-						id: "restart",
+						id: "restart_game",
 						kind: "button",
 						build: {
 							label: "Restart",
@@ -91,8 +88,7 @@ export const LobbyFlow: Flow<FlowDataGame> =
 			interactions: [ 
 			[
 				{
-					interactionId: "join_game",
-					id: "join",
+					id: "join_game",
 					kind: "button",
 					build: {
 						label: "Join",
@@ -101,8 +97,7 @@ export const LobbyFlow: Flow<FlowDataGame> =
 					},
 				},
 				{
-					interactionId: "leave_game",
-					id: "leave",
+					id: "leave_game",
 					kind: "button",
 					build: {
 						label: "Leave",
@@ -126,8 +121,8 @@ export const LobbyFlow: Flow<FlowDataGame> =
 			interactions: [
 			[
 				{
-					interactionId: "basic_select",
-					id: "choose_role",
+					id: "basic_select",
+					name: "choose_role",
 					kind: "select",
 					build: {
 						placeholder: "Select role",
@@ -140,8 +135,8 @@ export const LobbyFlow: Flow<FlowDataGame> =
 			],
 			[
 				{
-					interactionId: "basic_select",
-					id: "role_count",
+					id: "basic_select",
+					name: "role_count",
 					kind: "select",
 					build: {
 						placeholder: "Select role count",
@@ -154,7 +149,6 @@ export const LobbyFlow: Flow<FlowDataGame> =
 			],
 			[
 				{
-					interactionId: "add_role",
 					id: "add_role",
 					kind: "button",
 					build: {
@@ -162,10 +156,8 @@ export const LobbyFlow: Flow<FlowDataGame> =
 						style: "green",
 						enabled: enableGameSetupInteraction
 					},
-					// onSubmit: (userId: string) => TODO(userId)
 				},
 				{
-					interactionId: "rm_role",
 					id: "rm_role",
 					kind: "button",
 					build: {
@@ -173,7 +165,6 @@ export const LobbyFlow: Flow<FlowDataGame> =
 						style: "grey",
 						enabled: enableGameSetupInteraction			
 					},
-					// onSubmit: (userId: string) => TODO(userId)
 				}
 			]]
 		},
@@ -183,8 +174,8 @@ export const LobbyFlow: Flow<FlowDataGame> =
 			interactions: [
 			[
 				{
-					interactionId: "basic_select",
-					id: "choose_role",
+					id: "basic_select",
+					name: "choose_role",
 					kind: "select",
 					build: {
 						placeholder: "Select role",
@@ -193,12 +184,10 @@ export const LobbyFlow: Flow<FlowDataGame> =
 						maxValues: 1,
 						enabled: enableGameSetupInteraction
 					},
-					// onSubmit: (userId: string) => TODO(userId)
 				}
 			],
 			[
 				{
-					interactionId: "add_role",
 					id: "add_role",
 					kind: "button",
 					build: {
@@ -206,10 +195,8 @@ export const LobbyFlow: Flow<FlowDataGame> =
 						style: "green",
 						enabled: enableGameSetupInteraction
 					},
-					// onSubmit: (userId: string) => TODO(userId)
 				},
 				{
-					interactionId: "rm_role",
 					id: "rm_role",
 					kind: "button",
 					build: {
@@ -217,10 +204,8 @@ export const LobbyFlow: Flow<FlowDataGame> =
 						style: "grey",
 						enabled: enableGameSetupInteraction
 					},
-					// onSubmit: (userId: string) => TODO(userId)
 				}
-			]
-			]
+			]]
 		}
 	]}]
 }]

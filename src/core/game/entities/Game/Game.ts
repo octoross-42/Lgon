@@ -25,7 +25,7 @@ export class Game
 		this.players = new PlayerRegistry(this);
 	}
 
-	join(user: LgonUser)
+	public join(user: LgonUser)
 	{
 		this.players.join(user);
 	}
@@ -33,6 +33,11 @@ export class Game
 	public add_roles(rolesNames: LgonId<"role">[], count: number): boolean
 	{
 		return (this.pickedRoles.add(rolesNames, count));
+	}
+
+	public rm_roles(rolesNames: LgonId<"role">[], count: number): boolean
+	{
+		return (this.pickedRoles.rm(rolesNames, count));
 	}
 
 	// async distributeRoles(bot: Client): Promise<void>

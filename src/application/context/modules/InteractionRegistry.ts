@@ -1,6 +1,6 @@
 import type { Logger } from "infra/Logger.js";
-import type { ButtonName, SelectName } from "application/messaging/loadInteractions.js";
-import type { ButtonHandler, InteractionHandler, SelectHandler } from "application/messaging/model/InteractionHandler.js";
+import type { ButtonId, SelectId } from "application/messaging/loadInteractions.js";
+import type { ButtonHandler, SelectHandler } from "application/messaging/model/InteractionHandler.js";
 import { LgonId } from "types/LgonId.js";
 
 export interface Usecase
@@ -10,24 +10,24 @@ export interface Usecase
 
 export class InteractionRegistry
 {
-	constructor(private readonly buttons: Record<ButtonName, ButtonHandler>,
-				private readonly selects: Record<SelectName, SelectHandler>,
+	constructor(private readonly buttons: Record<ButtonId, ButtonHandler>,
+				private readonly selects: Record<SelectId, SelectHandler>,
 				private readonly logger: Logger) {}
 
-	has(interactionName: string): boolean
+	has(interactionId: string): boolean
 	{
-		return ( interactionName in this.buttons || interactionName in this.selects );
+		return ( interactionId in this.buttons || interactionId in this.selects );
 	}
 
-	async button(interactionName: ButtonName, authorId: LgonId<"user">, contextId: string): Promise<void>
+	async button(interactionId: ButtonId, authorId: LgonId<"user">, contextId: string): Promise<void>
 	{
-		this.logger.event( { code: "INTERACTION", data: { userId: authorId, interaction: interactionName } } );
-		await this.buttons[interactionName].run(authorId, contextId);
+		this.logger.event( { code: "BUTTON", data: { userId: authorId, interactionId: interactionId } } );
+		await this.buttons[interactionId].run(authorId, contextId);
 	}
 
-	async select(interactionName: SelectName, interactionId: string, authorId: LgonId<"user">, selected: string[], viewId: LgonId<"view">): Promise<void>
+	async select(interactionId: SelectId, interactionName: string, authorId: LgonId<"user">, selected: string[], viewId: LgonId<"view">): Promise<void>
 	{
-		this.logger.event( { code: "INTERACTION", data: { userId: authorId, interaction: interactionName } } );
-		await this.selects[interactionName].run(authorId, selected, interactionId, viewId);
+		this.logger.event( { code: "SELECT", data: { userId: authorId, interactionId: interactionId, interactionName: interactionName } } );
+		await this.selects[interactionId].run(authorId, selected, interactionName, viewId);
 	}
 }

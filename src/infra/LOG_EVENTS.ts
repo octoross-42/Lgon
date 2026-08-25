@@ -15,7 +15,7 @@ export type LogEvent =
 	date: Date;
 }
 
-export type EventCode = "MESSAGE" | "COMMAND_RUN" | "COMMAND_FAIL" | "USECASE" | "INTERACTION" |
+export type EventCode = "MESSAGE" | "COMMAND_RUN" | "COMMAND_FAIL" | "USECASE" | "BUTTON" | "SELECT" |
 				"SEND_CHANNEL_INSTEAD" | "NOT_SENDABLE" | "COMPONENTS_ERROR" |
 				"NOT_FOUND" | "DESIGN_ERROR" |
 				"CREATE" | "DELETE" | "CANNOT_CREATE" |
@@ -33,7 +33,7 @@ export const EVENTS_DESCRIPTIONS: Record<EventCode, EventDescription> =
 	DESIGN_ERROR: {
 		lvl: "error",
 		audience: "system",
-		log: d => `System design error: ${d?.error}'`
+		log: d => `System design error: '${d?.error}'`
 	},
 	MESSAGE: {
 		lvl: "debug",
@@ -75,10 +75,15 @@ export const EVENTS_DESCRIPTIONS: Record<EventCode, EventDescription> =
 		audience: "system",
 		log: d => `${d?.userId} did: '${d?.command}'`
 	},
-	INTERACTION: {
+	SELECT: {
 		lvl: "info",
 		audience: "system",
-		log: d => `${d?.userId} triggered: '${d?.interaction}'`
+		log: d => `${d?.userId} triggered select: '${d?.interactionId}' ('${d?.interactionName}')`
+	},
+	BUTTON: {
+		lvl: "info",
+		audience: "system",
+		log: d => `${d?.userId} triggered button: '${d?.interactionId}'`
 	},
 	JOINED: {
 		lvl: "info",

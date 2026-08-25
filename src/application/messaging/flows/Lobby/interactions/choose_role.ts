@@ -1,7 +1,7 @@
 import type { RoleDescription } from "application/context/modules/LgonRoleGeneratorRegistry.js";
-import type { FlowContext, FlowDataGame, SelectOption } from "application/messaging/model/Flow.js";
+import type { FlowContext, GameDataFlow, SelectOption } from "application/messaging/model/Flow.js";
 
-export function ChooseRoleOptions(ctx: FlowContext<FlowDataGame>): SelectOption[]
+export function ChooseRoleOptions(ctx: FlowContext<GameDataFlow>): SelectOption[]
 {
 	let options: SelectOption[] = [];
 

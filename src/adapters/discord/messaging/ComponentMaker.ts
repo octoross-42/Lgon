@@ -1,7 +1,7 @@
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 import { ActionRowBuilder, type MessageActionRowComponentBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, userMention } from "discord.js";
 import type { Logger } from "infra/Logger.js";
-import type { FlowContext, FlowData, InteractionModel, LgonButtonStyle, SelectOption } from "application/messaging/model/Flow.js";
+import type { FlowContext, DataFlow, InteractionModel, LgonButtonStyle, SelectOption } from "application/messaging/model/Flow.js";
 import type { InteractionView, SelectView,  } from "application/messaging/model/View.js";
 import { LgonId } from "types/LgonId.js";
 
@@ -20,13 +20,13 @@ export class ComponentMaker
 {
 	constructor(private readonly logger: Logger) {}
 
-	private makeComponentId<T extends FlowData>(interaction: InteractionModel<T>, viewId: LgonId<"view">): string
+	private makeComponentId<T extends DataFlow>(interaction: InteractionModel<T>, viewId: LgonId<"view">): string
 	{
-		let id: string = interaction.interactionId + ":" + interaction.id + ":" + viewId;
+		let id: string = interaction.id + ":" + (interaction.kind == "button" ? interaction.id : interaction.name) + ":" + viewId;
 		return (id);
 	}
 
-	private	componentMaker<T extends FlowData>(interaction: InteractionView<T>, viewId: LgonId<"view">, ctx: FlowContext<T>): InteractionBuilder | undefined
+	private	componentMaker<T extends DataFlow>(interaction: InteractionView<T>, viewId: LgonId<"view">, ctx: FlowContext<T>): InteractionBuilder | undefined
 	{
 		const customId: string = this.makeComponentId(interaction.model, viewId);
 		if (customId.length > 100)
@@ -79,7 +79,7 @@ export class ComponentMaker
 	}
 
 
-	public make<T extends FlowData>(interactions: InteractionView<T>[][], viewId: LgonId<"view">, ctx: FlowContext<T>): ActionRowBuilder<MessageActionRowComponentBuilder>[]
+	public make<T extends DataFlow>(interactions: InteractionView<T>[][], viewId: LgonId<"view">, ctx: FlowContext<T>): ActionRowBuilder<MessageActionRowComponentBuilder>[]
 	{
 		if (interactions.length === 0)
 			return [];

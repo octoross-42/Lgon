@@ -1,9 +1,9 @@
 import type { Script } from "application/messaging/model/View.js";
-import type { FlowContext, FlowDataSwitchGame } from "application/messaging/model/Flow.js";
+import type { FlowContext, SwitchGameDataFlow } from "application/messaging/model/Flow.js";
 import type { Game } from "core/game/entities/Game/Game.js";
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 
-export function SwitchGameScript(ctx: FlowContext<FlowDataSwitchGame>): Script
+export function SwitchGameScript(ctx: FlowContext<SwitchGameDataFlow>): Script
 {	
 	const user: LgonUser | undefined = ctx.data.userStore.get(ctx.data.userId);
 	if ( !user )

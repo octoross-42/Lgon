@@ -1,5 +1,5 @@
 import type { GameStore } from "application/context/modules/GameStore.js";
-import type { FlowContext, FlowDataGame } from "application/messaging/model/Flow.js";
+import type { FlowContext, GameDataFlow } from "application/messaging/model/Flow.js";
 import type { FlowRunner } from "application/messaging/model/FlowRunner.js";
 import { ButtonHandler } from "application/messaging/model/InteractionHandler.js";
 import type { View, SelectView } from "application/messaging/model/View.js";
@@ -16,7 +16,7 @@ export class CancelMsgHandler extends ButtonHandler
 	
 	async run(authorId: LgonId<"user">, viewId: string): Promise<void>
 	{
-		const view: View<FlowDataGame> | undefined = this.viewStore.get(viewId as LgonId<"view">);
+		const view: View<GameDataFlow> | undefined = this.viewStore.get(viewId as LgonId<"view">);
 		if ( !view )
 		{
 			this.logger.event( { code: "NOT_FOUND", data: { what: "view", whatId: viewId, ctx: `add_role handler triggered by ${authorId}` } } );

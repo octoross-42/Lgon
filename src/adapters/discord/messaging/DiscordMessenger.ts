@@ -5,7 +5,7 @@ import { ComponentMaker } from "./ComponentMaker.js";
 import { DiscordMessagingCache, MessageRef } from "../store/DiscordMessagingCache.js";
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 import type { Logger } from "infra/Logger.js";
-import { FlowContext, FlowData } from "application/messaging/model/Flow.js";
+import { FlowContext, DataFlow } from "application/messaging/model/Flow.js";
 
 export class DiscordMessenger extends MessagingPort
 {
@@ -117,7 +117,7 @@ export class DiscordMessenger extends MessagingPort
 		}
 	}
 
-	private makeMsgPayload<T extends FlowData>(view: View<T>, epheremal: boolean = false): BaseMessageOptions
+	private makeMsgPayload<T extends DataFlow>(view: View<T>, epheremal: boolean = false): BaseMessageOptions
 	{
 		let embed: EmbedBuilder = new EmbedBuilder();
 	
@@ -131,6 +131,8 @@ export class DiscordMessenger extends MessagingPort
 		
 		embed.addFields(msgScript.fields);
 
+		console.log("components: ", this.componentMaker.make( view.interactions, view.id, view.flowData ));
+
 		return ({
 			embeds: [embed],
 			allowedMentions: { repliedUser: false },
@@ -141,7 +143,7 @@ export class DiscordMessenger extends MessagingPort
 
 
 
-	async send<T extends FlowData>(views: View<T>[], msgTarget: MessagingTarget, epheremal: boolean): Promise<void>
+	async send<T extends DataFlow>(views: View<T>[], msgTarget: MessagingTarget, epheremal: boolean): Promise<void>
 	{	
 		for (const view of views)
 		{
@@ -188,7 +190,7 @@ export class DiscordMessenger extends MessagingPort
 		return ;
 	}
 
-	async update<T extends FlowData>(view: View<T>): Promise<void>
+	async update<T extends DataFlow>(view: View<T>): Promise<void>
 	{
 		const viewRef: MessageRef | undefined = this.msgs.get(view.id);
 		if ( !viewRef )
@@ -199,7 +201,7 @@ export class DiscordMessenger extends MessagingPort
 		this.edit(this.makeMsgPayload(view), viewRef);
 	}
 
-	async delete<T extends FlowData>(view: View<T>): Promise<void>
+	async delete<T extends DataFlow>(view: View<T>): Promise<void>
 	{
 		const viewRef: MessageRef | undefined = this.msgs.get(view.id);
 		if ( !viewRef )

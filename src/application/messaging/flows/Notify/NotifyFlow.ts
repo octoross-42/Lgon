@@ -9,7 +9,7 @@ export const NotifyFlow = (script: Script): Flow<undefined> =>
 			modes: [{
 				mode: "basic",
 				script: (ctx: FlowContext<undefined>) => script,
-				interactions: [[]]
+				interactions: []
 			}],
 			defaultMode: "basic"
 		}]

@@ -1,23 +1,30 @@
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
-import type { Flow, MessageBlock, MessageDefinition, ModeDefinition, FlowData, FlowContext, FlowDataGame } from "./Flow.js";
+import type { Flow, MessageBlock, MessageDefinition, ModeDefinition, DataFlow, FlowContext, GameDataFlow } from "./Flow.js";
 import type { View, ButtonView, SelectView} from "./View.js";
 import type { Logger } from "infra/Logger.js";
 import { makeLgonId, type LgonId } from "types/LgonId.js";
 import type { MessagingTarget } from "application/ports/MessagingPort.js";
 import type { GameStore } from "application/context/modules/GameStore.js";
 import type { UserStore } from "application/context/modules/UserStore.js";
+import type { StepMode } from "core/game/entities/LgonUser/UserPreferences.js";
 
 type ViewSendChange =
 {
 	kind: "send" | "edit",
 	msgId: string, // soit on reply soit on edit
-	view: View<FlowData>
+	view: View<DataFlow>
 }
 
 type ViewDeleteChange =
 {
 	kind: "delete",
 	msgId: string,
+}
+
+export type UserViewCtx =
+{
+	stepMode: StepMode,
+	userId: LgonId<"user">
 }
 
 export type ViewChange = ViewSendChange | ViewDeleteChange;
@@ -30,7 +37,7 @@ export class ViewStore
 
 	constructor(gameStore: GameStore, userStore: UserStore, private readonly logger: Logger)
 	{
-		this.views = new Map<string, View<FlowData>>();
+		this.views = new Map<string, View<DataFlow>>();
 		this.min = 0;
 	}
 
@@ -41,7 +48,7 @@ export class ViewStore
 		return (id);
 	}
 
-	private otherModes<T extends FlowData>(modes: ModeDefinition<T>[], mode: string)
+	private otherModes<T extends DataFlow>(modes: ModeDefinition<T>[], mode: string)
 	{
 		let otherModes: string[] = [];
 		let i: number = 0;
@@ -55,7 +62,7 @@ export class ViewStore
 	}
 
 
-	compactView<T extends FlowData>(msgBlock: MessageBlock<T>, ctx: FlowContext<T>): View<T>
+	compactView<T extends DataFlow>(msgBlock: MessageBlock<T>, ctx: FlowContext<T>): View<T>
 	{
 		const step: MessageDefinition<T> = msgBlock.steps[0];
 
@@ -85,7 +92,7 @@ export class ViewStore
 		return (view);
 	}
 
-	longViews<T extends FlowData>(msgBlock: MessageBlock<T>, ctx: FlowContext<T>): View<T>[]
+	longViews<T extends DataFlow>(msgBlock: MessageBlock<T>, ctx: FlowContext<T>): View<T>[]
 	{
 		let views: View<T>[] = [];
 
@@ -128,16 +135,16 @@ export class ViewStore
 		return (views);
 	}
 
-	new<T extends FlowData>(flow: Flow<T>, author: LgonUser, originMsgTarget: MessagingTarget, flowData: T): View<T>[]
+	new<T extends DataFlow>(flow: Flow<T>, authorViewCtx: UserViewCtx, originMsgTarget: MessagingTarget, flowData: T): View<T>[]
 	{
 		let views: View<T>[] = [];
 
 		for (const msgBlock of flow)
 		{
-			const stepMode: "compact" | "long" = author.preferences.stepMode;
+			const stepMode: StepMode = authorViewCtx.stepMode;
 			const flowCtx: FlowContext<T> =
 			{
-				authorId: author.id,
+				authorId: authorViewCtx.userId,
 				stepMode: stepMode,
 				step: 0,
 				originMsgTarget: originMsgTarget,
@@ -153,7 +160,7 @@ export class ViewStore
 		return (views);
 	}
 
-	public get<T extends FlowData>(viewId: LgonId<"view">): View<T> | undefined
+	public get<T extends DataFlow>(viewId: LgonId<"view">): View<T> | undefined
 	{
 		return ( this.views.get(viewId) as View<T>);
 	}

@@ -14,6 +14,8 @@ import { NotifyFlow } from "application/messaging/flows/Notify/NotifyFlow.js";
 import { SwitchGameFlow } from "application/messaging/flows/Lobby/SwitchGameFlow.js";
 import { InternalErrorScript } from "application/messaging/flows/Notify/scripts/internal_error.js";
 import { CannotLeaveScript } from "application/messaging/flows/Notify/scripts/cannot_leave.js";
+import type { UserViewCtx } from "application/messaging/model/ViewStore.js";
+import { defaultStepMode } from "core/game/entities/LgonUser/UserPreferences.js";
 
 export class CreateGameUsecase implements Usecase
 {
@@ -29,34 +31,29 @@ export class CreateGameUsecase implements Usecase
 
 		let gameId: LgonId<"game"> | null = null;
 
-		let user: LgonUser | undefined = this.userStore.get(authorId);
-		if ( !user )
-		{
-			user = this.userStore.new(authorId, authorName);
-			if ( !user )
-			{
-				await this.flowRunner.run(NotifyFlow(InternalErrorScript), this.userStore.lgon(), originMsgTarget, undefined, true);
-				return ;
-			}
-			this.logger.event( { code: "CREATE", data: { whatId: user.id } } );
+		let user: LgonUser = this.userStore.getOrCreate(authorId, authorName);
+
+		const res = this.gameStore.new(user);
+		const userViewCtx: UserViewCtx = {
+			userId: user.id,
+			stepMode: defaultStepMode
 		}
 		
-		const res = this.gameStore.new(user);
 		switch ( res.status )
 		{
 			case "SUCCESS":
 			{
-				await this.flowRunner.run(LobbyFlow, user, originMsgTarget, { gameId: res.game.meta.id, gameStore: this.gameStore, logger: this.logger } );		
+				await this.flowRunner.run(LobbyFlow, userViewCtx, originMsgTarget, { gameId: res.game.meta.id, gameStore: this.gameStore, logger: this.logger } );		
 				break ;
 			}
 			case "CANNOT_LEAVE":
 			{
-				await this.flowRunner.run(NotifyFlow(CannotLeaveScript), user, originMsgTarget, undefined, true);
+				await this.flowRunner.run(NotifyFlow(CannotLeaveScript), userViewCtx, originMsgTarget, undefined, true);
 				break ;
 			}
 			case "SWITCH":
 			{
-				await this.flowRunner.run(SwitchGameFlow, user, originMsgTarget, { userId: user.id, userStore: this.userStore, gameStore: this.gameStore, logger: this.logger }, true);
+				await this.flowRunner.run(SwitchGameFlow, userViewCtx, originMsgTarget, { userId: user.id, userStore: this.userStore, gameStore: this.gameStore, logger: this.logger }, true);
 				break ;
 			}
 		}

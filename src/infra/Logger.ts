@@ -88,7 +88,7 @@ export class Logger
 		const traceIdStr: string | undefined = getTraceId();
 
 		if (traceIdStr)
-			return (`${L(L_RESET)}${" ".repeat(145 - len)}${L(L_ITALIC, L_GREY)}🠒 id: ${traceIdStr}${L(L_RESET)}}`);
+			return (`${L(L_RESET)}${" ".repeat(Math.max(145 - len, 1))}${L(L_ITALIC, L_GREY)}🠒 id: ${traceIdStr}${L(L_RESET)}`);
 		return ("");
 	}
 

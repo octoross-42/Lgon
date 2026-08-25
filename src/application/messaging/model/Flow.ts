@@ -1,4 +1,4 @@
-import type { ButtonName, SelectName } from "../loadInteractions.js";
+import type { ButtonId, SelectId } from "../loadInteractions.js";
 import type { Script } from "./View.js";
 
 import type { GameStore } from "application/context/modules/GameStore.js";
@@ -6,15 +6,16 @@ import type { Logger } from "infra/Logger.js";
 import type { UserStore } from "application/context/modules/UserStore.js";
 import type { LgonId } from "types/LgonId.js";
 import type { MessagingTarget } from "application/ports/MessagingPort.js";
+import type { StepMode } from "core/game/entities/LgonUser/UserPreferences.js";
 
-export type FlowDataGame =
+export type GameDataFlow =
 {
 	gameId: LgonId<"game">,
 	gameStore: GameStore,
 	logger: Logger
 }
 
-export type FlowDataSwitchGame =
+export type SwitchGameDataFlow =
 {
 	userId: LgonId<"user">,
 	userStore: UserStore,
@@ -22,22 +23,22 @@ export type FlowDataSwitchGame =
 	logger: Logger
 }
 
-export type FlowData = FlowDataGame | FlowDataSwitchGame | undefined;
+export type DataFlow = GameDataFlow | SwitchGameDataFlow | undefined;
 
-export type FlowContext<FlowData> =
+export type FlowContext<DataFlow> =
 {
 	authorId: LgonId<"user">,
-	stepMode: "compact" | "long",
+	stepMode: StepMode,
 	step: number,
 	originMsgTarget: MessagingTarget,
-	data: FlowData
+	data: DataFlow
 }
 
 
 export type InteractionKind = "button" | "select";
 export type LgonButtonStyle = "blue" | "red" | "green" | "grey" | "link";
 
-export type ButtonBuild<T extends FlowData> =
+export type ButtonBuild<T extends DataFlow> =
 {
 	label: string,
 	style: LgonButtonStyle,
@@ -46,7 +47,7 @@ export type ButtonBuild<T extends FlowData> =
 
 export type SelectOption = { label: string; value: string; description?: string, default?: boolean };
 
-export type SelectBuild<T extends FlowData> =
+export type SelectBuild<T extends DataFlow> =
 {
 	placeholder: string,
 	options: (ctx: FlowContext<T>) => SelectOption[],
@@ -57,41 +58,40 @@ export type SelectBuild<T extends FlowData> =
 
 export type InteractionIdKind = "game" | "user";
 
-export type ButtonInteractionModel<T extends FlowData> =
+export type ButtonInteractionModel<T extends DataFlow> =
 {
 	kind: "button",
 	build: ButtonBuild<T>,
-	interactionId: ButtonName,
-	id: string
+	id: ButtonId
 }
 
-export type SelectInteractionModel<T extends FlowData> =
+export type SelectInteractionModel<T extends DataFlow> =
 {
 	kind: "select",
 	build: SelectBuild<T>,
-	interactionId: SelectName,
-	id: string
+	id: SelectId,
+	name: string
 }
 
-export type InteractionModel<T extends FlowData> = ButtonInteractionModel<T> | SelectInteractionModel<T>;
+export type InteractionModel<T extends DataFlow> = ButtonInteractionModel<T> | SelectInteractionModel<T>;
 
-export type ModeDefinition<T extends FlowData> =
+export type ModeDefinition<T extends DataFlow> =
 {
 	mode: string,
 	script: (ctx: FlowContext<T>) => Script,
 	interactions: InteractionModel<T>[][]
 }
 
-export type MessageDefinition<T extends FlowData> =
+export type MessageDefinition<T extends DataFlow> =
 {
 	modes: ModeDefinition<T>[];
 	defaultMode: string;
 };
 
-export type MessageBlock<T extends FlowData> =
+export type MessageBlock<T extends DataFlow> =
 {
 	id: string;
 	steps: MessageDefinition<T>[];
 }
 
-export type Flow<T extends FlowData> = MessageBlock<T>[];
+export type Flow<T extends DataFlow> = MessageBlock<T>[];

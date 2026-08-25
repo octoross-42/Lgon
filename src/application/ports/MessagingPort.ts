@@ -1,6 +1,6 @@
 import type { View } from "application/messaging/model/View.js";
 import type { LgonId } from "types/LgonId.js";
-import { FlowContext, FlowData } from "application/messaging/model/Flow.js";
+import { FlowContext, DataFlow } from "application/messaging/model/Flow.js";
 
 export type MessagingTarget =
 {
@@ -25,7 +25,7 @@ export abstract class MessagingPort
 {
 	constructor() {}
 
-	abstract send<T extends FlowData>(views: View<T>[], msgTarget: MessagingTarget, ephemeral: boolean): Promise<void>;
-	abstract update<T extends FlowData>(view: View<T>): Promise<void>;
-	abstract delete<T extends FlowData>(view: View<T>): Promise<void>;
+	abstract send<T extends DataFlow>(views: View<T>[], msgTarget: MessagingTarget, ephemeral: boolean): Promise<void>;
+	abstract update<T extends DataFlow>(view: View<T>): Promise<void>;
+	abstract delete<T extends DataFlow>(view: View<T>): Promise<void>;
 };

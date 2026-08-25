@@ -1,8 +1,8 @@
-import type { FlowContext, FlowDataGame, FlowDataSwitchGame } from "application/messaging/model/Flow.js";
+import type { FlowContext, GameDataFlow, SwitchGameDataFlow } from "application/messaging/model/Flow.js";
 import type { Game } from "core/game/entities/Game/Game.js";
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 
-export function enableGameSetupInteraction(ctx: FlowContext<FlowDataGame>)
+export function enableGameSetupInteraction(ctx: FlowContext<GameDataFlow>)
 {
 	const game: Game | undefined = ctx.data.gameStore.get(ctx.data.gameId);
 	if ( !game )
@@ -10,7 +10,7 @@ export function enableGameSetupInteraction(ctx: FlowContext<FlowDataGame>)
 	return (game.phase === "setup");
 }
 
-export function enableLeaveGameInteraction(ctx: FlowContext<FlowDataGame>)
+export function enableLeaveGameInteraction(ctx: FlowContext<GameDataFlow>)
 {
 	const game: Game | undefined = ctx.data.gameStore.get(ctx.data.gameId);
 	if ( !game )
@@ -18,7 +18,7 @@ export function enableLeaveGameInteraction(ctx: FlowContext<FlowDataGame>)
 	return (game.phase === "setup");
 }
 
-export function enableSwitchToNewGameInteraction(ctx: FlowContext<FlowDataSwitchGame>)
+export function enableSwitchToNewGameInteraction(ctx: FlowContext<SwitchGameDataFlow>)
 {
 	const user: LgonUser | undefined = ctx.data.userStore.get(ctx.data.userId);
 	if ( !user )

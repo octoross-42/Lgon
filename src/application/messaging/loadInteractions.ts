@@ -5,20 +5,21 @@ import { InteractionRegistry } from "application/context/modules/InteractionRegi
 import type { FlowRunner } from "./model/FlowRunner.js";
 import type { ViewStore } from "./model/ViewStore.js";
 import { AddRoleHandler } from "./flows/Lobby/interactions/add_role.js";
+import { RmRoleHandler } from "./flows/Lobby/interactions/rm_role.js";
 import { BasicSelectHandler } from "./flows/Lobby/interactions/basic_select.js";
 import { CancelMsgHandler } from "./flows/Lobby/interactions/cancel_msg.js";
 
-export type ButtonName = "start_game" | "pause_game" | "restart_game" |
+export type ButtonId = "start_game" | "pause_game" | "restart_game" |
 							"switch_game" | "join_game" | "leave_game" |
 							"add_role" | "rm_role" |
 							"cancel_msg";
-export type SelectName = "basic_select";
+export type SelectId = "basic_select";
 
 export function loadInteractions(viewStore: ViewStore,gameStore: GameStore, userStore: UserStore, flowRunner: FlowRunner, logger: Logger): InteractionRegistry 
 {
 	return new InteractionRegistry({
 		"add_role": new AddRoleHandler(gameStore, viewStore, flowRunner, logger),
-		"rm_role": new AddRoleHandler(gameStore, viewStore, flowRunner, logger),
+		"rm_role": new RmRoleHandler(gameStore, viewStore, flowRunner, logger),
 		"join_game": new AddRoleHandler(gameStore, viewStore, flowRunner, logger),
 		"leave_game": new AddRoleHandler(gameStore, viewStore, flowRunner, logger),
 		"pause_game": new AddRoleHandler(gameStore, viewStore, flowRunner, logger),

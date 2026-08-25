@@ -1,8 +1,8 @@
 import type { Game } from "core/game/entities/Game/Game.js";
 import type { Script } from "application/messaging/model/View.js";
-import type { FlowContext, FlowDataGame } from "application/messaging/model/Flow.js";
+import type { FlowContext, GameDataFlow } from "application/messaging/model/Flow.js";
 
-export function LobbyPlayersScript(ctx: FlowContext<FlowDataGame>): Script
+export function LobbyPlayersScript(ctx: FlowContext<GameDataFlow>): Script
 {
 	const game: Game | undefined = ctx.data.gameStore.get(ctx.data.gameId);
 	if ( !game )

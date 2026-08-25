@@ -13,6 +13,8 @@ import type { FlowRunner } from "application/messaging/model/FlowRunner.js";
 import { InteractionRegistry } from "./modules/InteractionRegistry.js";
 import { loadInteractions } from "application/messaging/loadInteractions.js";
 
+import type { StepMode } from "core/game/entities/LgonUser/UserPreferences.js";
+
 export class LgonContext
 {	
 	public readonly usecases: UsecasesRegistry;
@@ -30,7 +32,7 @@ export class LgonContext
 		// this.onPropertyUpdate = new Map<LgonProperty, (prop: LgonProperty) => void>;
 	}
 
-	getStepMode(userId: LgonId<"user">): "compact" | "long"
+	getStepMode(userId: LgonId<"user">): StepMode
 	{
 		const user: LgonUser | undefined = this.userStore.get(userId);
 		if ( !user )

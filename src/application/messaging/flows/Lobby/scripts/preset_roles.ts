@@ -1,9 +1,9 @@
 import type { Game } from "core/game/entities/Game/Game.js";
 import type { RoleStock } from "core/game/entities/Game/modules/PickedRoleRegistry.js";
 import type { Script } from "application/messaging/model/View.js";
-import type { FlowContext, FlowDataGame } from "application/messaging/model/Flow.js";
+import type { FlowContext, GameDataFlow } from "application/messaging/model/Flow.js";
 
-export function LobbyPresetRolesScript(ctx: FlowContext<FlowDataGame>): Script
+export function LobbyPresetRolesScript(ctx: FlowContext<GameDataFlow>): Script
 {
 	const game: Game | undefined = ctx.data.gameStore.get(ctx.data.gameId);
 	if ( !game )
