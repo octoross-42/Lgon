@@ -25,7 +25,7 @@ export abstract class MessagingPort
 {
 	constructor() {}
 
-	abstract send<T extends DataFlow>(views: View<T>[], msgTarget: MessagingTarget, ephemeral: boolean): Promise<void>;
+	abstract send<T extends DataFlow>(views: View<T>[], msgTarget: MessagingTarget): Promise<void>;
 	abstract update<T extends DataFlow>(view: View<T>): Promise<void>;
 	abstract delete<T extends DataFlow>(view: View<T>): Promise<void>;
 };

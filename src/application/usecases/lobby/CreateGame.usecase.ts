@@ -48,12 +48,12 @@ export class CreateGameUsecase implements Usecase
 			}
 			case "CANNOT_LEAVE":
 			{
-				await this.flowRunner.run(NotifyFlow(CannotLeaveScript), userViewCtx, originMsgTarget, undefined, true);
+				await this.flowRunner.run(NotifyFlow(CannotLeaveScript), userViewCtx, originMsgTarget, undefined);
 				break ;
 			}
 			case "SWITCH":
 			{
-				await this.flowRunner.run(SwitchGameFlow, userViewCtx, originMsgTarget, { userId: user.id, userStore: this.userStore, gameStore: this.gameStore, logger: this.logger }, true);
+				await this.flowRunner.run(SwitchGameFlow, userViewCtx, originMsgTarget, { userId: user.id, userStore: this.userStore, gameStore: this.gameStore, logger: this.logger });
 				break ;
 			}
 		}

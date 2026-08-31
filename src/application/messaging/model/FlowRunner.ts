@@ -12,18 +12,18 @@ export class FlowRunner
 	public readonly viewStore: ViewStore;
 	// private readonly updateOn: Map<LgonId<"">, LgonId<"view">[]>
 
-	constructor(private readonly messenger: MessagingPort,
+	constructor(readonly messenger: MessagingPort,
 				gameStore: GameStore,
 				userStore: UserStore,
-				private readonly logger: Logger)
+				readonly logger: Logger)
 	{
 		this.viewStore = new ViewStore(gameStore, userStore,this.logger);
 	}
 
-	async run<T extends DataFlow>(flow: Flow<T>, authorViewCtx: UserViewCtx, originMsgTarget: MessagingTarget, flowData: T, ephemeral: boolean = false): Promise<void>
+	async run<T extends DataFlow>(flow: Flow<T>, authorViewCtx: UserViewCtx, originMsgTarget: MessagingTarget, flowData: T): Promise<void>
 	{
 		const views = this.viewStore.new(flow, authorViewCtx, originMsgTarget, flowData);
-		this.messenger.send(views, originMsgTarget, ephemeral);
+		this.messenger.send(views, originMsgTarget);
 	}
 
 	update<T extends DataFlow>(view: View<T>)

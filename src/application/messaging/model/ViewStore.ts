@@ -1,6 +1,6 @@
 import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 import type { Flow, MessageBlock, MessageDefinition, ModeDefinition, DataFlow, FlowContext, GameDataFlow } from "./Flow.js";
-import type { View, ButtonView, SelectView} from "./View.js";
+import type { View, ButtonView, SelectView, Script} from "./View.js";
 import type { Logger } from "infra/Logger.js";
 import { makeLgonId, type LgonId } from "types/LgonId.js";
 import type { MessagingTarget } from "application/ports/MessagingPort.js";
@@ -60,7 +60,6 @@ export class ViewStore
 		}
 		return (otherModes);
 	}
-
 
 	compactView<T extends DataFlow>(msgBlock: MessageBlock<T>, ctx: FlowContext<T>): View<T>
 	{

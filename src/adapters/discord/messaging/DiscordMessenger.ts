@@ -1,11 +1,26 @@
 import { MessagingPort, type MessagingTarget } from "application/ports/MessagingPort.js";
 import { type Channel, type Client, EmbedBuilder, type SendableChannels, type Message, type User, MessageFlags, BaseMessageOptions } from "discord.js";
-import type { View } from "application/messaging/model/View.js";
+import type { Script, View } from "application/messaging/model/View.js";
 import { ComponentMaker } from "./ComponentMaker.js";
 import { DiscordMessagingCache, MessageRef } from "../store/DiscordMessagingCache.js";
-import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
 import type { Logger } from "infra/Logger.js";
-import { FlowContext, DataFlow } from "application/messaging/model/Flow.js";
+import { DataFlow } from "application/messaging/model/Flow.js";
+
+export function	makeDiscordEmbed<T extends DataFlow>(script: Script): EmbedBuilder
+{
+	let embed: EmbedBuilder = new EmbedBuilder();
+	
+	embed.setColor("#10695b");
+	embed.setTitle(script.title);
+	if (script.description)
+		embed.setDescription(script.description);
+	// embed.setImage("rsc/werewolf.jpg"); // TODO
+	
+	
+	embed.addFields(script.fields);
+
+	return (embed);
+}
 
 export class DiscordMessenger extends MessagingPort
 {
@@ -119,21 +134,9 @@ export class DiscordMessenger extends MessagingPort
 		}
 	}
 
-	private makeMsgPayload<T extends DataFlow>(view: View<T>, epheremal: boolean = false): BaseMessageOptions
+	private makeMsgPayload<T extends DataFlow>(view: View<T>): BaseMessageOptions
 	{
-		let embed: EmbedBuilder = new EmbedBuilder();
-	
-		const msgScript = view.script(view.flowData);
-		embed.setColor("#10695b");
-		embed.setTitle(msgScript.title);
-		if (msgScript.description)
-			embed.setDescription(msgScript.description);
-		// embed.setImage("rsc/werewolf.jpg"); // TODO
-		
-		
-		embed.addFields(msgScript.fields);
-
-		console.log("components: ", this.componentMaker.make( view.interactions, view.id, view.flowData ));
+		let embed: EmbedBuilder = makeDiscordEmbed(view.script(view.flowData));
 
 		return ({
 			embeds: [embed],
@@ -144,11 +147,11 @@ export class DiscordMessenger extends MessagingPort
 
 
 
-	async send<T extends DataFlow>(views: View<T>[], msgTarget: MessagingTarget, epheremal: boolean): Promise<void>
+	async send<T extends DataFlow>(views: View<T>[], msgTarget: MessagingTarget): Promise<void>
 	{	
 		for (const view of views)
 		{
-			const msg: BaseMessageOptions = this.makeMsgPayload(view, epheremal);
+			const msg: BaseMessageOptions = this.makeMsgPayload(view);
 			
 			let sent: MessageRef | undefined;
 			switch (msgTarget.kind)

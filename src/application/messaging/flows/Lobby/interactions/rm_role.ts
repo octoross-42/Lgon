@@ -28,9 +28,6 @@ export class RmRoleHandler extends ButtonHandler
 		if ( !view )
 		{
 			this.logger.event( { code: "DESIGN_ERROR", data: { error: `In add_role handler triggered by ${authorId}, view "${viewId}" was not found` } } );
-			
-			// TODO la view existe pas, channel error dédié ?
-			// this.flowRunner.run(InternalErrorScript, { userId: authorId, stepMode: defaultStepMode }, { kind: "reply", msgId: string, channelId: string } );
 			return (InteractionCodes.VIEW_NOT_FOUND);
 		}
 
@@ -38,9 +35,6 @@ export class RmRoleHandler extends ButtonHandler
 		if ( !game )
 		{
 			this.logger.event( { code: "NOT_FOUND", data: { what: "game", whatId: `${view.flowData.data.gameId}`, ctx: `add_role handler triggered by ${authorId}` } } );
-			
-			// TODO change script
-			// this.flowRunner.run(NotifyFlow(InternalErrorScript), { userId: authorId, stepMode: defaultStepMode }, { kind: "view", viewId: viewId as LgonId<"view">}, undefined, true );
 			return (InteractionCodes.GAME_NOT_FOUND);
 		}
 
@@ -48,7 +42,6 @@ export class RmRoleHandler extends ButtonHandler
 		if ( !select_roles )
 		{
 			this.logger.event( { code: "DESIGN_ERROR", data: { error: `In add_role handler triggered by ${authorId}, select interaction "select role" needed to add role was not found in the view` } } );
-			this.flowRunner.run(NotifyFlow(InternalErrorScript), { userId: authorId, stepMode: defaultStepMode }, { kind: "view", viewId: viewId as LgonId<"view">}, undefined, true );
 			return (InteractionCodes.DISCORD_COMPONENT_NOT_FOUND);
 		}
 		
@@ -57,14 +50,12 @@ export class RmRoleHandler extends ButtonHandler
 		if ( !select_count )
 		{
 			this.logger.event( { code: "DESIGN_ERROR", data: { error: `In add_role handler triggered by ${authorId}, select interaction "select role count" needed to add role was not found in the view` } } );	
-			this.flowRunner.run(NotifyFlow(InternalErrorScript), { userId: authorId, stepMode: defaultStepMode }, { kind: "view", viewId: viewId as LgonId<"view">}, undefined, true );
 			code = InteractionCodes.DISCORD_COMPONENT_DESIGN_ERROR;
 		}
 
 		else if ( select_count.selected.length > 1 )
 		{
 			this.logger.event( { code: "DESIGN_ERROR", data: { error: "Select number component has multiple selections" } } );
-			this.flowRunner.run(NotifyFlow(InternalErrorScript), { userId: authorId, stepMode: defaultStepMode }, { kind: "view", viewId: viewId as LgonId<"view">}, undefined, true );
 			return (InteractionCodes.DISCORD_COMPONENT_DESIGN_ERROR);
 		}
 
@@ -76,7 +67,6 @@ export class RmRoleHandler extends ButtonHandler
 				count = 1;
 
 				this.logger.event( { code: "DESIGN_ERROR", data: { error: "Number selected is nan or < 1" } } );
-				this.flowRunner.run(NotifyFlow(InternalErrorScript), { userId: authorId, stepMode: defaultStepMode }, { kind: "view", viewId: viewId as LgonId<"view">}, undefined, true );
 				code = InteractionCodes.DISCORD_COMPONENT_DESIGN_ERROR;
 			}
 		}
