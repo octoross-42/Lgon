@@ -1,12 +1,11 @@
-import type { GameStore } from "application/context/modules/GameStore.js";
-import type { FlowContext, GameDataFlow } from "application/messaging/model/Flow.js";
+import type { GameDataFlow } from "application/messaging/model/Flow.js";
 import type { FlowRunner } from "application/messaging/model/FlowRunner.js";
 import { ButtonHandler } from "application/messaging/model/InteractionHandler.js";
-import type { View, SelectView } from "application/messaging/model/View.js";
+import type { View } from "application/messaging/model/View.js";
 import type { ViewStore } from "application/messaging/model/ViewStore.js";
-import type { Game } from "core/game/entities/Game/Game.js";
 import type { Logger } from "infra/Logger.js";
 import type { LgonId } from "types/LgonId.js";
+import { type InteractionCode, InteractionCodes } from "application/errors/InteractionError.js";
 
 export class CancelMsgHandler extends ButtonHandler
 {
@@ -14,15 +13,17 @@ export class CancelMsgHandler extends ButtonHandler
 				flowRunner: FlowRunner,
 				logger: Logger) { super("update", viewStore, flowRunner, logger); }
 	
-	async run(authorId: LgonId<"user">, viewId: string): Promise<void>
+	async run(authorId: LgonId<"user">, viewId: string): Promise<InteractionCode>
 	{
 		const view: View<GameDataFlow> | undefined = this.viewStore.get(viewId as LgonId<"view">);
 		if ( !view )
 		{
 			this.logger.event( { code: "NOT_FOUND", data: { what: "view", whatId: viewId, ctx: `add_role handler triggered by ${authorId}` } } );
-			return ;
+			return (InteractionCodes.VIEW_NOT_FOUND);
 		}
 
-		this.flowRunner.delete(view)
+		this.flowRunner.delete(view);
+
+		return (InteractionCodes.OK);
 	}
 }

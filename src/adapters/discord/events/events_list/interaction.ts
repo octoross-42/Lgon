@@ -1,6 +1,7 @@
 import type { LgonContext } from "application/context/LgonContext.js";
 import type { Client, Interaction, User } from "discord.js";
 import { ButtonId, SelectId } from "application/messaging/loadInteractions.js";
+import { type InteractionCode, InteractionCodes } from "application/errors/InteractionError.js";
 import { LgonId, makeLgonId } from "types/LgonId.js";
 
 import { runWithTrace } from 'infra/trace.js';
@@ -31,16 +32,21 @@ export async function onInteraction(lgon: LgonContext, bot: Client, interaction:
 		if ( !lgon.interactions.has(id) )
 			return ;
 
-		interaction.deferUpdate();
-		// interaction.deferReply( { ephemeral: true} );
+		interaction.deferReply( { ephemeral: true} );
 
 		const userId: LgonId<"user"> = makeLgonId<"user">("user", interaction.user.id);
+		let errorCode: InteractionCode = InteractionCodes.OK;
 
 		if (interaction.isButton())
-			lgon.interactions.button(id as ButtonId, userId, viewId);
+			errorCode = await lgon.interactions.button(id as ButtonId, userId, viewId);
 
 		else if (interaction.isStringSelectMenu())
-			lgon.interactions.select(id as SelectId, name, userId, interaction.values, viewId as LgonId<"view">);
+			errorCode = await lgon.interactions.select(id as SelectId, name, userId, interaction.values, viewId as LgonId<"view">);
+		
+		if (errorCode < 0)
+			interaction.deleteReply();
+		else
+			interaction.reply("pour le moment oui");
 	}
 	
 	else if (interaction.isChatInputCommand())

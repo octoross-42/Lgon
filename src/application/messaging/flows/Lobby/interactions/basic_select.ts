@@ -6,6 +6,7 @@ import type { ViewStore } from "application/messaging/model/ViewStore.js"
 import type { Logger } from "infra/Logger.js";
 import type { LgonId } from "types/LgonId.js";
 import type { SelectInteractionModel } from "application/messaging/model/Flow.js";
+import { type InteractionCode, InteractionCodes } from "application/errors/InteractionError.js";
 
 export class BasicSelectHandler extends SelectHandler
 {
@@ -13,23 +14,24 @@ export class BasicSelectHandler extends SelectHandler
 				flowRunner: FlowRunner,
 				logger: Logger) { super("update", viewStore, flowRunner, logger); }
 	
-	async run(authorId: LgonId<"user">, selected: string[], selectName: string, viewId: LgonId<"view">): Promise<void>
+	async run(authorId: LgonId<"user">, selected: string[], selectName: string, viewId: LgonId<"view">): Promise<InteractionCode>
 	{
 		const view: View<GameDataFlow> | undefined = this.viewStore.get<GameDataFlow>(viewId);
 		if ( !view )
 		{
 			this.logger.event( { code: "DESIGN_ERROR", data: { error: `In basic select handler triggered by ${authorId}, view of "${selectName}" was not found` } } );
-			return ;
+			return (InteractionCodes.DISCORD_COMPONENT_DESIGN_ERROR);
 		}
 
 		const select_interaction: SelectView<GameDataFlow> | undefined = view.interactions.flat().find(interaction => ( ((interaction.model as SelectInteractionModel<GameDataFlow>).name === selectName) && (interaction.model.id === "basic_select") && (interaction.model.kind === "select"))) as SelectView<GameDataFlow> | undefined;
 		if ( !select_interaction )
 		{
 			this.logger.event( { code: "DESIGN_ERROR", data: { error: `In basic select handler triggered by ${authorId}, select interaction "${selectName}" was not found in the view` } } );
-			return ;
+			return (InteractionCodes.DISCORD_COMPONENT_DESIGN_ERROR);
 		}
 
 		select_interaction.selected = selected;
+		return (InteractionCodes.OK);
 	}
 }
 

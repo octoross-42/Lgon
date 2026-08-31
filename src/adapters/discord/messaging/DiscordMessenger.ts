@@ -74,6 +74,7 @@ export class DiscordMessenger extends MessagingPort
 			return ;
 		}
 
+		
 		if (channel?.isSendable())
 		{
 			const replyTo: Message | undefined = channel.messages.cache.get(msgTargetCtx.msgId);
@@ -90,6 +91,7 @@ export class DiscordMessenger extends MessagingPort
 			}
 			else
 			{
+				// if (msgTargetCtx.)
 				const sent = await replyTo.reply(msg);
 				return ({
 					channelId: sent.channel.id,
@@ -136,7 +138,6 @@ export class DiscordMessenger extends MessagingPort
 		return ({
 			embeds: [embed],
 			allowedMentions: { repliedUser: false },
-			// flags: (epheremal ? MessageFlags.Ephemeral as number: undefined), // TODO
 			components: this.componentMaker.make( view.interactions, view.id, view.flowData )
 		});
 	}
