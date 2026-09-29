@@ -1,12 +1,13 @@
 export const VIEW_NOT_FOUND = 1;
 
-export const InteractionCodes = {
+export const INTERACTION_CODES = {
 	OK: -1,
 	GAME_NOT_FOUND: 0,
 	ROLE_NOT_FOUND: 1,
 	VIEW_NOT_FOUND: 100,
 	DISCORD_COMPONENT_NOT_FOUND: 200,
 	DISCORD_COMPONENT_DESIGN_ERROR: 201,
+	NO_ROLE_SELECTED: 300,
 } as const;
 
-export type InteractionCode = typeof InteractionCodes[keyof typeof InteractionCodes];
+export type InteractionCode = typeof INTERACTION_CODES[keyof typeof INTERACTION_CODES];

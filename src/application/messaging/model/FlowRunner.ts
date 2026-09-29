@@ -1,18 +1,19 @@
 import { type UserViewCtx, ViewStore } from "./ViewStore.js";
 import type { Flow, DataFlow } from "./Flow.js";
-import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
-import type { MessagingPort, MessagingTarget } from "application/ports/MessagingPort.js";
+import type { DirectiveKind, MessageDirective, MessagingDirective, MessagingTarget } from "application/ports/MessagingDirective.js";
+import type { AdapterKind, MessagingPort } from "application/ports/MessagingPort.js";
 import type { Logger } from "infra/Logger.js";
 import type { GameStore } from "application/context/modules/GameStore.js";
 import type { UserStore } from "application/context/modules/UserStore.js";
 import type { View } from "./View.js";
+import type { LgonId } from "types/LgonId.js";
 
 export class FlowRunner
 {
 	public readonly viewStore: ViewStore;
 	// private readonly updateOn: Map<LgonId<"">, LgonId<"view">[]>
 
-	constructor(readonly messenger: MessagingPort,
+	constructor(readonly messengers: Record<AdapterKind, MessagingPort>,
 				gameStore: GameStore,
 				userStore: UserStore,
 				readonly logger: Logger)
@@ -20,19 +21,20 @@ export class FlowRunner
 		this.viewStore = new ViewStore(gameStore, userStore,this.logger);
 	}
 
-	async run<T extends DataFlow>(flow: Flow<T>, authorViewCtx: UserViewCtx, originMsgTarget: MessagingTarget, flowData: T): Promise<void>
+	public	register(kind: AdapterKind, id: LgonId<"adapter">, rsc: any)
 	{
-		const views = this.viewStore.new(flow, authorViewCtx, originMsgTarget, flowData);
-		this.messenger.send(views, originMsgTarget);
+		this.messengers[kind].register(id, rsc);
 	}
 
-	update<T extends DataFlow>(view: View<T>)
+	async run(directive: MessagingDirective<DataFlow, DirectiveKind>): Promise<void>
 	{
-		this.messenger.update(view);
-	}
+		let views: View<DataFlow>[];
 
-	delete<T extends DataFlow>(view: View<T>)
-	{
-		this.messenger.delete(view);
+		if ( directive.target.kind in ["send", "reply", "dm"] )
+		
+		if (directive.msg.kind === "flow")
+			views = this.viewStore.fromFlow(directive);
+		else
+			views = [ this.viewStore.fromScript(directive) ];
 	}
 }

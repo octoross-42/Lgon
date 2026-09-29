@@ -5,7 +5,7 @@ import type { View } from "application/messaging/model/View.js";
 import type { ViewStore } from "application/messaging/model/ViewStore.js";
 import type { Logger } from "infra/Logger.js";
 import type { LgonId } from "types/LgonId.js";
-import { type InteractionCode, InteractionCodes } from "application/errors/InteractionError.js";
+import { type InteractionCode, INTERACTION_CODES } from "application/errors/InteractionError.js";
 
 export class CancelMsgHandler extends ButtonHandler
 {
@@ -19,11 +19,11 @@ export class CancelMsgHandler extends ButtonHandler
 		if ( !view )
 		{
 			this.logger.event( { code: "NOT_FOUND", data: { what: "view", whatId: viewId, ctx: `add_role handler triggered by ${authorId}` } } );
-			return (InteractionCodes.VIEW_NOT_FOUND);
+			return (INTERACTION_CODES.VIEW_NOT_FOUND);
 		}
 
 		this.flowRunner.delete(view);
 
-		return (InteractionCodes.OK);
+		return (INTERACTION_CODES.OK);
 	}
 }

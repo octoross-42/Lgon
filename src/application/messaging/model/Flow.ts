@@ -5,7 +5,6 @@ import type { GameStore } from "application/context/modules/GameStore.js";
 import type { Logger } from "infra/Logger.js";
 import type { UserStore } from "application/context/modules/UserStore.js";
 import type { LgonId } from "types/LgonId.js";
-import type { MessagingTarget } from "application/ports/MessagingPort.js";
 import type { StepMode } from "core/game/entities/LgonUser/UserPreferences.js";
 
 export type GameDataFlow =
@@ -30,7 +29,7 @@ export type FlowContext<DataFlow> =
 	authorId: LgonId<"user">,
 	stepMode: StepMode,
 	step: number,
-	originMsgTarget: MessagingTarget,
+	// originMsgTarget: MessagingTarget,
 	data: DataFlow
 }
 

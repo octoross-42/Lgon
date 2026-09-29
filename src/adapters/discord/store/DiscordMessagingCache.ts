@@ -1,37 +1,27 @@
 import type { LgonId } from "types/LgonId.js"
-
-export type MessageRef =
-{
-	channelId: string,
-	msgId: string
-};
+import type { DiscordResource } from "../messaging/DiscordMessenger.js";
 
 export class DiscordMessagingCache
 {
-	private msgRefs: Map<LgonId<"view">, MessageRef>;
+	private rscs: Map<LgonId<"adapter">, DiscordResource>;
 	
 	constructor()
 	{
-		this.msgRefs = new Map<LgonId<"view">, MessageRef>();
+		this.rscs = new Map<LgonId<"adapter">, DiscordResource>();
 	}
 
-	get(viewId: LgonId<"view">): MessageRef | undefined
+	get(id: LgonId<"adapter">): DiscordResource | undefined
 	{
-		return ( this.msgRefs.get(viewId) );
+		return ( this.rscs.get(id) );
 	}
 
-	getChannel(viewId: LgonId<"view">): string | undefined
+	add(id: LgonId<"adapter">, rscs: DiscordResource)
 	{
-		return ( this.msgRefs.get(viewId)?.channelId );
+		this.rscs.set(id, rscs);
 	}
 
-	add(viewId: LgonId<"view">, msgRefs: MessageRef)
+	rm(id: LgonId<"adapter">)
 	{
-		this.msgRefs.set(viewId, msgRefs);
-	}
-
-	rm(viewId: LgonId<"view">)
-	{
-		this.msgRefs.delete(viewId);
+		this.rscs.delete(id);
 	}
 }

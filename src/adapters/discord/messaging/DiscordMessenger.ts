@@ -1,143 +1,59 @@
-import { MessagingPort, type MessagingTarget } from "application/ports/MessagingPort.js";
-import { type Channel, type Client, EmbedBuilder, type SendableChannels, type Message, type User, MessageFlags, BaseMessageOptions } from "discord.js";
+import { MessagingPort } from "application/ports/MessagingPort.js";
+import { type Client, EmbedBuilder, Message, type User, BaseMessageOptions, type ChatInputCommandInteraction, type MessageContextMenuCommandInteraction, type UserContextMenuCommandInteraction, type PrimaryEntryPointCommandInteraction, type AnySelectMenuInteraction, type ButtonInteraction, type ModalSubmitInteraction, InteractionReplyOptions, Channel, SendableChannels, InteractionResponse } from "discord.js";
 import type { Script, View } from "application/messaging/model/View.js";
 import { ComponentMaker } from "./ComponentMaker.js";
-import { DiscordMessagingCache, MessageRef } from "../store/DiscordMessagingCache.js";
+import type { DiscordMessagingCache } from "../store/DiscordMessagingCache.js";
 import type { Logger } from "infra/Logger.js";
-import { DataFlow } from "application/messaging/model/Flow.js";
+import type { DataFlow } from "application/messaging/model/Flow.js";
+import type { MessageDirective, MessagingDirective, MessagingTarget } from "application/ports/MessagingDirective.js";
+import { makeLgonId, type LgonId } from "types/LgonId.js";
 
-export function	makeDiscordEmbed<T extends DataFlow>(script: Script): EmbedBuilder
-{
-	let embed: EmbedBuilder = new EmbedBuilder();
-	
-	embed.setColor("#10695b");
-	embed.setTitle(script.title);
-	if (script.description)
-		embed.setDescription(script.description);
-	// embed.setImage("rsc/werewolf.jpg"); // TODO
-	
-	
-	embed.addFields(script.fields);
+type DiscordRepliable = ChatInputCommandInteraction | MessageContextMenuCommandInteraction | UserContextMenuCommandInteraction | PrimaryEntryPointCommandInteraction | AnySelectMenuInteraction | ButtonInteraction | ModalSubmitInteraction | Message;
+type DiscordEditable = InteractionResponse | Message;
+type DiscordDeletable = InteractionResponse | Message;
+type DiscordEditRepliable = ChatInputCommandInteraction | MessageContextMenuCommandInteraction | UserContextMenuCommandInteraction | PrimaryEntryPointCommandInteraction | AnySelectMenuInteraction | ButtonInteraction | ModalSubmitInteraction;
 
-	return (embed);
-}
+export type DiscordResource = InteractionResponse| SendableChannels | User | DiscordRepliable;
+export type MessagingOptions = Pick<BaseMessageOptions & InteractionReplyOptions, "components" | "allowedMentions" | "embeds">;
 
 export class DiscordMessenger extends MessagingPort
 {
 	private readonly componentMaker: ComponentMaker;
 
 	constructor(private readonly bot: Client,
-				private readonly msgs: DiscordMessagingCache,
-				private readonly logger: Logger)
+		private readonly cache: DiscordMessagingCache,
+		private readonly logger: Logger)
 	{
-		super();
+		super("discord");
 		this.componentMaker = new ComponentMaker(this.logger);
 	}
-
-	private async edit(msg: BaseMessageOptions, msgRef: MessageRef): Promise<void>
-	{
-		const channel: Channel | undefined = this.bot.channels.cache.get(msgRef.channelId);
-		if ( !channel )
-		{
-			this.logger.event( { code: "NOT_FOUND", data: { what: "discord channel", whatId: msgRef.channelId, ctx: "discord messenger edit" } } );
-			return ;
-		}
-
-		if ( !channel?.isSendable() )
-		{
-			this.logger.event( { code: "NOT_SENDABLE", data: { channelId: msgRef.channelId } } );
-			return ;
-		}
-		
-		const msgDiscord: Message | undefined = channel.messages.cache.get(msgRef.msgId);
-
-		if ( !msgDiscord )
-		{
-			this.logger.event( { code: "NOT_FOUND", data: { what: "discord message", whatId: `msgId: ${msgRef.msgId}, channelId: ${msgRef.channelId}`, ctx: "discord messenger edit" } } );
-			return ;
-		}
-		await msgDiscord.edit(msg);
-	}
-
-	private async guildSend(msg: BaseMessageOptions, channelId: string): Promise<MessageRef | undefined>
-	{
-		const channel: Channel | undefined = this.bot.channels.cache.get(channelId);
-		if ( !channel )
-		{
-			this.logger.event( { code: "NOT_FOUND", data: { what: "discord channel", whatId: channelId, ctx: "send:reply" } } );
-			return ;
-		}
-		if (channel?.isSendable())
-		{
-			const sent = await (channel as SendableChannels).send(msg);
-			return ({
-				channelId: sent.channel.id,
-				msgId: sent.id
-			});
-		}
-		else
-			this.logger.event( { code: "NOT_SENDABLE", data: { channelId: channelId } } );
-	}
 	
-
-	private async reply(msg: BaseMessageOptions, msgTargetCtx: MessageRef): Promise<MessageRef | undefined>
+	public register(id: LgonId<"adapter">, rsc: DiscordResource)
 	{
-		const channel: Channel | undefined = this.bot.channels.cache.get(msgTargetCtx.channelId);
-		if ( !channel )
-		{
-			this.logger.event( { code: "NOT_FOUND", data: { what: "discord channel", whatId: msgTargetCtx.channelId, ctx: "send:reply" } } );
-			return ;
-		}
+		this.cache.add(id, rsc);
+		// TODO doublon etc
+	}
 
+	private makeDiscordEmbed(script: Script): EmbedBuilder
+	{
+		let embed: EmbedBuilder = new EmbedBuilder();
 		
-		if (channel?.isSendable())
-		{
-			const replyTo: Message | undefined = channel.messages.cache.get(msgTargetCtx.msgId);
-
-			if ( !replyTo )
-			{
-				this.logger.event( { code: "SEND_CHANNEL_INSTEAD", data: { channelId: msgTargetCtx.channelId, msgId: msgTargetCtx.msgId } } );
-
-				const sent = await (channel as SendableChannels).send(msg);
-				return ({
-					channelId: sent.channel.id,
-					msgId: sent.id
-				});
-			}
-			else
-			{
-				// if (msgTargetCtx.)
-				const sent = await replyTo.reply(msg);
-				return ({
-					channelId: sent.channel.id,
-					msgId: sent.id
-				});
-			}
-		}
-		else
-			this.logger.event( { code: "NOT_SENDABLE", data: { channelId: msgTargetCtx.channelId } } );
+		embed.setColor("#10695b");
+		embed.setTitle(script.title);
+		if (script.description)
+			embed.setDescription(script.description);
+		// embed.setImage("rsc/werewolf.jpg"); // TODO
+		
+		embed.addFields(script.fields);
+		
+		return (embed);
 	}
 
-	private async dmSend(msg: BaseMessageOptions, userId: string): Promise<MessageRef | undefined>
+
+	private makeMsgPayload<T extends DataFlow>(view: View<T>): MessagingOptions
 	{
-		const user: User | undefined = this.bot.users.cache.get(userId);
-		if ( !user )
-		{
-			this.logger.event( { code: "NOT_FOUND", data: { what: "discord user", whatId: userId, ctx: "send:dm" } } );
-			return ;
-		}
-
-		const sent = await user.send(msg);
-		return {
-			channelId: sent.channel.id,
-			msgId: sent.id
-		}
-	}
-
-	private makeMsgPayload<T extends DataFlow>(view: View<T>): BaseMessageOptions
-	{
-		let embed: EmbedBuilder = makeDiscordEmbed(view.script(view.flowData));
-
+		let embed: EmbedBuilder = this.makeDiscordEmbed(view.script(view.flowData));
+	
 		return ({
 			embeds: [embed],
 			allowedMentions: { repliedUser: false },
@@ -146,95 +62,130 @@ export class DiscordMessenger extends MessagingPort
 	}
 
 
+	// private async dmSend(msg: MessagingOptions, userId: string): Promise<void | undefined>
+	// {
+	// 	const user: User | undefined = this.bot.users.cache.get(userId);
+	// 	if ( !user )
+	// 	{
+	// 		this.logger.event( { code: "NOT_FOUND", data: { what: "discord user", whatId: userId, ctx: "send:dm" } } );
+	// 		return ;
+	// 	}
 
-	async send<T extends DataFlow>(views: View<T>[], msgTarget: MessagingTarget): Promise<void>
-	{	
-		for (const view of views)
+	// 	const sent = await user.send(msg);
+	// 	return {
+	// 		channelId: sent.channel.id,
+	// 		msgId: sent.id
+	// 	}
+	// }
+
+	private async send(channel: SendableChannels, msgOptions: MessagingOptions): Promise<void>
+	{
+		const msg: Message = await channel.send(msgOptions);
+		this.cache.add(makeLgonId("adapter", msg.id), msg);
+	}
+
+	private async reply(origin: DiscordRepliable, msgOptions: MessagingOptions): Promise<void>
+	{
+		if (origin instanceof Message)
 		{
-			const msg: BaseMessageOptions = this.makeMsgPayload(view);
-			
-			let sent: MessageRef | undefined;
-			switch (msgTarget.kind)
-			{
+			const msg: Message = await origin.reply(msgOptions);
+			this.cache.add(makeLgonId("adapter", msg.id), msg);
+		}
+		else
+		{
+			const msg: InteractionResponse = await origin.reply(msgOptions);
+			this.cache.add(makeLgonId("adapter", msg.id), msg);
+		}
 
-				case "send":
+	}
+
+	private async editReply(origin: DiscordEditRepliable, msgOptions: MessagingOptions): Promise<void>
+	{
+		await origin.editReply(msgOptions);
+	}
+
+	private async delete(what: DiscordDeletable, id: LgonId<"adapter">): Promise<void>
+	{
+		this.cache.rm(id);
+		await what.delete();
+	}
+
+
+	private	cannotTarget(target: MessagingTarget): boolean
+	{
+		if (target.originAdapter === "discord" )
+			return (true);
+
+		switch (target.kind)
+		{
+			case ("delete"):
+				return (false);
+			case ("dm"):
+				return (false);
+			case ("edit-reply"):
+				return (false);
+			case ("update"):
+				return (false);
+			case ("reply"):
+				return (true);
+			default:
+				return (false);
+		}
+	}
+
+	public async execute(views: View<DataFlow>[], target: MessagingTarget): Promise<void>
+	{
+		const rsc: DiscordResource | undefined = this.cache.get(target.targetId);
+		if ( !rsc )
+		{
+			this.logger.event( { code: "TARGET_NOT_FOUND", data: { id: target.targetId, adapter: "discord" } } );
+			return ;
+		}
+		if (this.cannotTarget(target))
+		{
+			this.logger.event( { code: "IMPOSSIBLE_TARGET", data: target } );
+			return ;
+		}
+
+		let i: number = 0;
+		let msgingOptions: MessagingOptions;
+
+		i = (target.kind in ["edit-reply", "update", "delete"] ? (views.length - 1): 0);
+		while (i < views.length)
+		{
+			
+			msgingOptions = this.makeMsgPayload(views[i ++]);
+			switch (target.kind)
+			{
+				case ("reply"):
 				{
-					sent = await this.guildSend( msg, msgTarget.channelId);
-					break;
-				}
-				case "reply":
-				{
-					sent = await this.reply( msg, { msgId: msgTarget.msgId, channelId: msgTarget.channelId } );
-					break;
-				}
-				case "dm":
-				{
-					sent = await this.dmSend( msg, msgTarget.userId );
-					break;	
-				}
-				case "view":
-				{
-					const realMsgTarget: MessageRef | undefined = this.msgs.get(msgTarget.viewId);
-					if ( !realMsgTarget )
+					if (target.originAdapter === "discord")
 					{
-						this.logger.event( { code: "NOT_FOUND", data: { what: "message ref", whatId: msgTarget.viewId, ctx: "discord messenger send view" } } );
+						if ("reply" in rsc)
+							await this.reply(rsc, msgingOptions);
+						else
+						{
+							this.logger.event({ code: "WRONG_TARGET", data: { ...target, missingMethod: "reply" } });
+							return ;
+						}
+					}
+					// else TODO jsp quoi faire, mettre en place un systeme de distribution multi adapter
+					// 	return (await this.send(target.targetId, msgingOptions))
+				}
+				case ("edit-reply"):
+				{
+					if ("editReply" in rsc)
+						await this.editReply(rsc, msgingOptions);
+					else
+					{
+						this.logger.event({ code: "WRONG_TARGET", data: { ...target, missingMethod: "editReply" } });
 						return ;
 					}
-					sent = await this.reply( msg, realMsgTarget );
-					break ;
 				}
+				
 			}
-
-			if ( !sent )
-				return ;
-
-			this.msgs.add( view.id, sent );
+			// i ++;
 		}
-
-		return ;
 	}
 
-	async update<T extends DataFlow>(view: View<T>): Promise<void>
-	{
-		const viewRef: MessageRef | undefined = this.msgs.get(view.id);
-		if ( !viewRef )
-		{
-			this.logger.event( { code: "NOT_FOUND", data: { what: "view message ref", whatId: `${view.id}`, ctx: "discord messenger update" } } );
-			return ;
-		}
-		this.edit(this.makeMsgPayload(view), viewRef);
-	}
-
-	async delete<T extends DataFlow>(view: View<T>): Promise<void>
-	{
-		const viewRef: MessageRef | undefined = this.msgs.get(view.id);
-		if ( !viewRef )
-		{
-			this.logger.event( { code: "NOT_FOUND", data: { what: "view message ref", whatId: `${view.id}`, ctx: "discord messenger update" } } );
-			return ;
-		}
-
-		const channel: Channel | undefined = this.bot.channels.cache.get(viewRef.channelId);
-		if ( !channel )
-		{
-			this.logger.event( { code: "NOT_FOUND", data: { what: "discord channel", whatId: viewRef.channelId, ctx: "send:reply" } } );
-			return ;
-		}
-
-		if ( !channel?.isSendable() )
-		{
-			this.logger.event( { code: "NOT_SENDABLE", data: { channelId: viewRef.channelId } } );		
-			return ;
-		}
-		
-		const discordMsg: Message | undefined = channel.messages.cache.get(viewRef.msgId);
-
-		if ( !discordMsg )
-		{
-			this.logger.event( { code: "NOT_FOUND", data: { what: "discord msg", msgId: `msgId: ${viewRef.msgId}, channelId: ${viewRef.channelId}` } } );
-			return ;
-		}
-		
-		await discordMsg.delete();
-	}
 };

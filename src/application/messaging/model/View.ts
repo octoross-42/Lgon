@@ -33,6 +33,5 @@ export type View<T extends DataFlow> =
 	currentMode: string,
 	step: number,
 	target: MessagingTarget,
-
 	flowData: FlowContext<T>
 }

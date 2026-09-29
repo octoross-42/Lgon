@@ -1,9 +1,8 @@
 import type { LgonContext } from "application/context/LgonContext.js";
 import { MessageFlags, type Client, type Interaction, type User } from "discord.js";
 import { ButtonId, SelectId } from "application/messaging/loadInteractions.js";
-import { type InteractionCode, InteractionCodes } from "application/errors/InteractionError.js";
+import { type InteractionCode, INTERACTION_CODES } from "application/errors/InteractionError.js";
 import { LgonId, makeLgonId } from "types/LgonId.js";
-import { makeDiscordEmbed } from "adapters/discord/messaging/DiscordMessenger.js";
 
 import { runWithTrace } from 'infra/trace.js';
 
@@ -34,9 +33,12 @@ export async function onInteraction(lgon: LgonContext, bot: Client, interaction:
 			return ;
 
 		await interaction.deferReply( { flags: MessageFlags.Ephemeral } );
+		console.log("interaction id : ", interaction.id);
+		lgon.flowRunner.register("discord", makeLgonId("adapter", interaction.id), interaction);
+
 
 		const userId: LgonId<"user"> = makeLgonId<"user">("user", interaction.user.id);
-		let errorCode: InteractionCode = InteractionCodes.OK;
+		let errorCode: InteractionCode = INTERACTION_CODES.OK;
 
 		if (interaction.isButton())
 			errorCode = await lgon.interactions.button(id as ButtonId, userId, viewId);
@@ -44,7 +46,7 @@ export async function onInteraction(lgon: LgonContext, bot: Client, interaction:
 		else if (interaction.isStringSelectMenu())
 			errorCode = await lgon.interactions.select(id as SelectId, name, userId, interaction.values, viewId as LgonId<"view">);
 		
-		if (errorCode === InteractionCodes.OK)
+		if (errorCode === INTERACTION_CODES.OK)
 			interaction.deleteReply();
 		else
 			await interaction.editReply({ embeds: [makeDiscordEmbed({ 

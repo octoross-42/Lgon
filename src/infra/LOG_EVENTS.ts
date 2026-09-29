@@ -16,7 +16,7 @@ export type LogEvent =
 }
 
 export type EventCode = "MESSAGE" | "COMMAND_RUN" | "COMMAND_FAIL" | "USECASE" | "BUTTON" | "SELECT" |
-				"SEND_CHANNEL_INSTEAD" | "NOT_SENDABLE" | "COMPONENTS_ERROR" |
+				"SEND_CHANNEL_INSTEAD" | "NOT_SENDABLE_CHANNEL" | "WRONG_TARGET" | "IMPOSSIBLE_TARGET" | "TARGET_NOT_FOUND" | "COMPONENTS_ERROR" |
 				"NOT_FOUND" | "DESIGN_ERROR" |
 				"CREATE" | "DELETE" | "CANNOT_CREATE" |
 				"ALREADY_JOINED" | "JOINED" | "CANNOT_JOIN" | "LEFT" | "CANNOT_LEAVE" | "SWITCHED";
@@ -40,7 +40,22 @@ export const EVENTS_DESCRIPTIONS: Record<EventCode, EventDescription> =
 		audience: "system",
 		log: d => `${d?.userId} sent '${d?.content}'`
 	},
-	NOT_SENDABLE: {
+	IMPOSSIBLE_TARGET: {
+		lvl: "error",
+		audience: "system",
+		log: d => `Could not handle this messaging target: '${d?.MessagingTargetKind}' to adapter '${d?.adapter}' from adapter '${d?.originAdapter}'`
+	},
+	WRONG_TARGET: {
+		lvl: "error",
+		audience: "system",
+		log: d => `Could not '${d?.MessagingTargetKind}' with adapter '${d?.adapter}' on resource target id: '${d?.targetId}': missing method '${d?.missingMethod}'`
+	},
+	TARGET_NOT_FOUND: {
+		lvl: "error",
+		audience: "system",
+		log: d => `Adapter '${d?.adapter}' did not found resource target id '${d?.id}'`
+	},
+	NOT_SENDABLE_CHANNEL: {
 		lvl: "error",
 		audience: "system",
 		log: d => `Could not send a message, '${d?.channelId}' is not a sendable channel`

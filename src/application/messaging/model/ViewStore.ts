@@ -1,12 +1,12 @@
-import type { LgonUser } from "core/game/entities/LgonUser/LgonUser.js";
-import type { Flow, MessageBlock, MessageDefinition, ModeDefinition, DataFlow, FlowContext, GameDataFlow } from "./Flow.js";
-import type { View, ButtonView, SelectView, Script} from "./View.js";
+import type { MessageBlock, MessageDefinition, ModeDefinition, DataFlow, FlowContext, GameDataFlow } from "./Flow.js";
+import type { View, ButtonView, SelectView} from "./View.js";
 import type { Logger } from "infra/Logger.js";
-import { makeLgonId, type LgonId } from "types/LgonId.js";
-import type { MessagingTarget } from "application/ports/MessagingPort.js";
+import { getLgonId, makeLgonId, type LgonId } from "types/LgonId.js";
 import type { GameStore } from "application/context/modules/GameStore.js";
 import type { UserStore } from "application/context/modules/UserStore.js";
-import type { StepMode } from "core/game/entities/LgonUser/UserPreferences.js";
+import { DEFAULT_STEPMODE, type StepMode } from "core/game/entities/LgonUser/UserPreferences.js";
+import { MessagingDirective, MessagingTarget } from "application/ports/MessagingDirective.js";
+import { LGONID } from "constants.js";
 
 type ViewSendChange =
 {
@@ -25,6 +25,13 @@ export type UserViewCtx =
 {
 	stepMode: StepMode,
 	userId: LgonId<"user">
+}
+
+type ViewOptions<T extends DataFlow> =
+{
+	msgBlock: MessageBlock<T>,
+	ctx: FlowContext<T>,
+	target: MessagingTarget
 }
 
 export type ViewChange = ViewSendChange | ViewDeleteChange;
@@ -61,9 +68,9 @@ export class ViewStore
 		return (otherModes);
 	}
 
-	compactView<T extends DataFlow>(msgBlock: MessageBlock<T>, ctx: FlowContext<T>): View<T>
+	private compactView<T extends DataFlow>(viewOption: ViewOptions<T>): View<T>
 	{
-		const step: MessageDefinition<T> = msgBlock.steps[0];
+		const step: MessageDefinition<T> = viewOption.msgBlock.steps[0];
 
 		const mode: ModeDefinition<T> | undefined = step.modes.find(mode => mode.mode === step.defaultMode);
 		if ( !mode )
@@ -82,32 +89,33 @@ export class ViewStore
 			otherModes: this.otherModes(step.modes, step.defaultMode),
 			currentMode: step.defaultMode,
 			step: 0,
-			target: ctx.originMsgTarget,
-
-			flowData: ctx
+			target: viewOption.target,
+			flowData: viewOption.ctx
 		};
 
 		this.views.set(view.id, view);
 		return (view);
 	}
 
-	longViews<T extends DataFlow>(msgBlock: MessageBlock<T>, ctx: FlowContext<T>): View<T>[]
+	private longViews<T extends DataFlow>(viewOption: ViewOptions<T>): View<T>[]
 	{
 		let views: View<T>[] = [];
 
 		let i: number = 0;
-		while (i < msgBlock.steps.length)
+		while (i < viewOption.msgBlock.steps.length)
 		{
-			const step: MessageDefinition<T> = msgBlock.steps[i];
+			const step: MessageDefinition<T> = viewOption.msgBlock.steps[i];
 			const mode: ModeDefinition<T> | undefined = step.modes.find(mode => mode.mode === step.defaultMode);
 			if ( !mode )
 				throw Error(""); // TODO
 
 			const target: MessagingTarget =
-				(i === 0) ? ctx.originMsgTarget:
+				(i === 0) ? viewOption.target:
 				{
-					kind: "view",
-					viewId: views[i - 1].id
+					kind: "reply",
+					targetId: makeLgonId("adapter", getLgonId(views[i - 1].id)),
+					adapter: "discord",
+					originAdapter: "discord"
 				}; 
 				const view: View<T> = {
 					id: ViewStore.makeViewId(),
@@ -122,8 +130,7 @@ export class ViewStore
 					currentMode: step.defaultMode,
 					step: 0,
 					target: target,
-					
-					flowData: ctx
+					flowData: viewOption.ctx
 				};
 
 				this.views.set(view.id, view);
@@ -134,29 +141,47 @@ export class ViewStore
 		return (views);
 	}
 
-	new<T extends DataFlow>(flow: Flow<T>, authorViewCtx: UserViewCtx, originMsgTarget: MessagingTarget, flowData: T): View<T>[]
+	public fromFlow(directive: MessagingDirective<DataFlow, "flow">): View<DataFlow>[]
 	{
-		let views: View<T>[] = [];
+		let views: View<DataFlow>[] = [];
 
-		for (const msgBlock of flow)
+		for (const msgBlock of directive.msg.flow)
 		{
-			const stepMode: StepMode = authorViewCtx.stepMode;
-			const flowCtx: FlowContext<T> =
+			const stepMode: StepMode = directive.msg.userCtx.stepMode;
+			const flowCtx: FlowContext<DataFlow> =
 			{
-				authorId: authorViewCtx.userId,
+				authorId: directive.msg.userCtx.userId,
 				stepMode: stepMode,
 				step: 0,
-				originMsgTarget: originMsgTarget,
-				data: flowData
+				data: directive.msg.data
 			}
 
 			if (stepMode === "compact")
-				views.push( this.compactView<T>( msgBlock, flowCtx ) );
+				views.push( this.compactView( { msgBlock: msgBlock, ctx: flowCtx, target: directive.target } ) );
 			else // "long"
-				views.concat( this.longViews<T>( msgBlock, flowCtx ) );
+				views.concat( this.longViews( { msgBlock: msgBlock, ctx: flowCtx, target: directive.target } ) );
 
 		}
 		return (views);
+	}
+
+	public fromScript(directive: MessagingDirective<DataFlow, "simple">): View<DataFlow>
+	{
+		return ({
+			id: ViewStore.makeViewId(),
+			script: () => directive.msg.script,
+			interactions: [],
+			otherModes: [],
+			currentMode: "default",
+			step: 0,
+			target: directive.target,
+			flowData: {
+				authorId: LGONID,
+				stepMode: DEFAULT_STEPMODE,
+				step: 0,
+				data: undefined
+			}
+		});
 	}
 
 	public get<T extends DataFlow>(viewId: LgonId<"view">): View<T> | undefined

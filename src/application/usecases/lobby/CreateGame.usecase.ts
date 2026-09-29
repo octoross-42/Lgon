@@ -12,10 +12,10 @@ import type { FlowRunner } from "application/messaging/model/FlowRunner.js";
 import type { MessagingTarget } from "application/ports/MessagingPort.js";
 import { NotifyFlow } from "application/messaging/flows/Notify/NotifyFlow.js";
 import { SwitchGameFlow } from "application/messaging/flows/Lobby/SwitchGameFlow.js";
-import { InternalErrorScript } from "application/messaging/flows/Notify/scripts/internal_error.js";
 import { CannotLeaveScript } from "application/messaging/flows/Notify/scripts/cannot_leave.js";
 import type { UserViewCtx } from "application/messaging/model/ViewStore.js";
-import { defaultStepMode } from "core/game/entities/LgonUser/UserPreferences.js";
+import type { MessagingDirective, AnyMessagingDirective } from "application/ports/MessagingDirective.js";
+import type { DataFlow } from "application/messaging/model/Flow.js";
 
 export class CreateGameUsecase implements Usecase
 {
@@ -26,7 +26,7 @@ export class CreateGameUsecase implements Usecase
 	) {}
 
 
-	async run(authorId: LgonId<"user">, originMsgTarget: MessagingTarget, authorName: string): Promise<void>
+	async run(authorId: LgonId<"user">, originMsgTarget: MessagingTarget, authorName: string): Promise<AnyMessagingDirective<DataFlow>[]>
 	{
 
 		let gameId: LgonId<"game"> | null = null;
@@ -36,26 +36,50 @@ export class CreateGameUsecase implements Usecase
 		const res = this.gameStore.new(user);
 		const userViewCtx: UserViewCtx = {
 			userId: user.id,
-			stepMode: defaultStepMode
+			stepMode: user.preferences.stepMode
 		}
 		
 		switch ( res.status )
 		{
 			case "SUCCESS":
 			{
-				await this.flowRunner.run(LobbyFlow, userViewCtx, originMsgTarget, { gameId: res.game.meta.id, gameStore: this.gameStore, logger: this.logger } );		
-				break ;
+				return ( [{
+					kind: "flow",
+					flow: LobbyFlow,
+					userCtx: userViewCtx,
+					target: originMsgTarget,
+					data: { gameId: res.game.meta.id, gameStore: this.gameStore, logger: this.logger }
+				}] );
+
+				// await this.flowRunner.run(LobbyFlow, userViewCtx, originMsgTarget, { gameId: res.game.meta.id, gameStore: this.gameStore, logger: this.logger } );		
+				// break ;
 			}
 			case "CANNOT_LEAVE":
 			{
-				await this.flowRunner.run(NotifyFlow(CannotLeaveScript), userViewCtx, originMsgTarget, undefined);
-				break ;
+				return ( [{
+					kind: "simple",
+					script: CannotLeaveScript,
+					target: { kind: "personal-reply" },
+				}] );
+
+				// await this.flowRunner.run(NotifyFlow(CannotLeaveScript), userViewCtx, originMsgTarget, undefined);
+				// break ;
 			}
 			case "SWITCH":
 			{
-				await this.flowRunner.run(SwitchGameFlow, userViewCtx, originMsgTarget, { userId: user.id, userStore: this.userStore, gameStore: this.gameStore, logger: this.logger });
-				break ;
+				return ( [{
+					kind: "flow",
+					flow: SwitchGameFlow,
+					userCtx: userViewCtx,
+					target: { kind: "personal-reply" },
+					data: { userId: user.id, userStore: this.userStore, gameStore: this.gameStore, logger: this.logger }
+				}] );
+
+				// await this.flowRunner.run(SwitchGameFlow, userViewCtx, originMsgTarget, { userId: user.id, userStore: this.userStore, gameStore: this.gameStore, logger: this.logger });
+				// break ;
 			}
 		}
+		
+		return ([]);
 	}
 }

@@ -3,10 +3,9 @@ export type LgonIdKind =
 	| "user"
 	| "role"
 	| "game"
-	| "where"
 	| "archive"
-	| "interaction"
-	| "view";
+	| "view"
+	| "adapter";
 
 
 export type CommandLgonIdKind = 

@@ -1,11 +1,12 @@
-import type { Client, Message } from "discord.js";
+import type { Message } from "discord.js";
 import type { CommandMeta } from "../entity/CommandMeta.js";
 import { Command } from "../entity/Command.js";
 import type { LgonContext } from "application/context/LgonContext.js";
 import { LgonId, makeLgonId } from "types/LgonId.js";
-import type { MessagingTarget } from "application/ports/MessagingPort.js";
 import type { DiscordMessagingCache } from "adapters/discord/store/DiscordMessagingCache.js";
 import { Logger } from "infra/Logger.js";
+import type { AnyMessagingDirective, MessagingTarget } from "application/ports/MessagingDirective.js";
+import type { DataFlow } from "application/messaging/model/Flow.js";
 
 const meta: CommandMeta =
 {
@@ -31,15 +32,17 @@ export class CreateGameCommand extends Command
 	}
 
 
-	run(lgon: LgonContext, message: Message, argv: string[]): Promise<void> | void
+	async run(lgon: LgonContext, message: Message, argv: string[]): Promise<void>
 	{
 		const msgTarget: MessagingTarget = {
 			kind: "reply",
-			msgId: message.id,
-			channelId: message.channel.id	
+			targetId: makeLgonId("adapter", message.id),
+			adapter: "discord",
+			originAdapter: "discord"
 		};
-		lgon.usecases.run("CreateGame", makeLgonId<"user">("user", message.author.id), msgTarget, message.author.avatar);
+		
+		const messagingDirectives: AnyMessagingDirective<DataFlow>[] = await lgon.usecases.run("CreateGame", makeLgonId<"user">("user", message.author.id), msgTarget, message.author.avatar);
+	
+		
 	}
-
-
 }

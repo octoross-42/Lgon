@@ -1,5 +1,5 @@
 export type StepMode = "compact" | "long";
-export const defaultStepMode: StepMode = "compact";
+export const DEFAULT_STEPMODE: StepMode = "compact";
 
 export class UserPreferences
 {
@@ -9,7 +9,7 @@ export class UserPreferences
 
 	constructor()
 	{
-		this.stepMode = defaultStepMode;
+		this.stepMode = DEFAULT_STEPMODE;
 		this.notifyError = true;
 		this.confirm = true;
 	}

@@ -6,6 +6,8 @@ import type { UserStore } from "application/context/modules/UserStore.js";
 import type { Logger } from "infra/Logger.js";
 import type { GameStore } from "application/context/modules/GameStore.js";
 import type { FlowRunner } from "application/messaging/model/FlowRunner.js";
+import type { AnyMessagingDirective } from "application/ports/MessagingDirective.js";
+import type { DataFlow } from "application/messaging/model/Flow.js";
 
 export class StartGameUsecase implements Usecase
 {
@@ -15,7 +17,8 @@ export class StartGameUsecase implements Usecase
 				private readonly logger: Logger
 	) {}
 
-	async run(authorId: LgonId<"user">): Promise<void>
+	async run(authorId: LgonId<"user">): Promise<AnyMessagingDirective<DataFlow>[]>
 	{
+		return ([]);
 	}
 }
