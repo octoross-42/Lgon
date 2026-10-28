@@ -4,8 +4,10 @@ import { ButtonHandler } from "application/messaging/model/InteractionHandler.js
 import type { View } from "application/messaging/model/View.js";
 import type { ViewStore } from "application/messaging/model/ViewStore.js";
 import type { Logger } from "infra/Logger.js";
-import type { LgonId } from "types/LgonId.js";
+import { type LgonId, makeLgonIdFrom } from "types/LgonId.js";
 import { type InteractionCode, INTERACTION_CODES } from "application/errors/InteractionError.js";
+import type { MessagingSource } from "application/ports/MessagingDirective.js";
+import type { AdapterKind } from "application/ports/MessagingPort.js";
 
 export class CancelMsgHandler extends ButtonHandler
 {
@@ -13,7 +15,7 @@ export class CancelMsgHandler extends ButtonHandler
 				flowRunner: FlowRunner,
 				logger: Logger) { super("update", viewStore, flowRunner, logger); }
 	
-	async run(authorId: LgonId<"user">, viewId: string): Promise<InteractionCode>
+	async run(authorId: LgonId<"user">, viewId: LgonId<"view">, source: MessagingSource<AdapterKind>): Promise<InteractionCode>
 	{
 		const view: View<GameDataFlow> | undefined = this.viewStore.get(viewId as LgonId<"view">);
 		if ( !view )
@@ -22,7 +24,14 @@ export class CancelMsgHandler extends ButtonHandler
 			return (INTERACTION_CODES.VIEW_NOT_FOUND);
 		}
 
-		this.flowRunner.delete(view);
+		this.flowRunner.run(
+					{
+						msg: { kind: "view", viewId: viewId },
+						source: source,
+						intention: "delete"
+					},
+		
+				);
 
 		return (INTERACTION_CODES.OK);
 	}

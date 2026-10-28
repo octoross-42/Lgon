@@ -7,6 +7,8 @@ import type { Logger } from "infra/Logger.js";
 import type { LgonId } from "types/LgonId.js";
 import type { SelectInteractionModel } from "application/messaging/model/Flow.js";
 import { type InteractionCode, INTERACTION_CODES } from "application/errors/InteractionError.js";
+import type { MessagingSource } from "application/ports/MessagingDirective.js";
+import type { AdapterKind } from "application/ports/MessagingPort.js";
 
 export class BasicSelectHandler extends SelectHandler
 {
@@ -14,7 +16,7 @@ export class BasicSelectHandler extends SelectHandler
 				flowRunner: FlowRunner,
 				logger: Logger) { super("update", viewStore, flowRunner, logger); }
 	
-	async run(authorId: LgonId<"user">, selected: string[], selectName: string, viewId: LgonId<"view">): Promise<InteractionCode>
+	async run(authorId: LgonId<"user">, selected: string[], selectName: string, viewId: LgonId<"view">, source: MessagingSource<AdapterKind>): Promise<InteractionCode>
 	{
 		const view: View<GameDataFlow> | undefined = this.viewStore.get<GameDataFlow>(viewId);
 		if ( !view )

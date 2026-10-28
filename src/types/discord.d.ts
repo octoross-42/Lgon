@@ -10,7 +10,7 @@ import type
 } from 'discord.js';
 
 import type { LgonContext } from "../core/LgonContext/LgonContext.js";
-import type { MessagingPort } from "application/ports/MessagingPort.ts";
+import type { AdapterKind, MessagingPort } from "application/ports/MessagingPort.ts";
 
 declare module 'discord.js'
 {
@@ -22,7 +22,7 @@ declare module 'discord.js'
 
 	export interface Client
 	{
-		messenger: MessagingPort;
+		messengers: Record<AdapterKind, MessagingPort>;
 		commands: Collection<string, Command>;					 // command name -> Command
 		// slashCommands: Map<string, any>;						// slash command name -> // TODO
 		cooldowns: Map<string, Map<string, number>>;	// command name -> Map<userId, timestamp in ms> // TODO changer les cooldowns par personnes qui utilisent pas utilisation globale

@@ -1,5 +1,5 @@
 import type { LgonId } from "types/LgonId.js";
-import type { MessagingTarget } from "application/ports/MessagingPort.js";
+import type { MessagingTarget } from "application/ports/MessagingDirective.js";
 
 export type ViewCommand =
 {
@@ -8,5 +8,5 @@ export type ViewCommand =
 } |
 {
 	kind: "send",
-	target: MessagingTarget
+	route: MessagingTarget
 }

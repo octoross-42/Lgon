@@ -9,13 +9,12 @@ import type { Logger } from "infra/Logger.js";
 import type { UserStore } from "application/context/modules/UserStore.js";
 import type { GameStore } from "application/context/modules/GameStore.js";
 import type { FlowRunner } from "application/messaging/model/FlowRunner.js";
-import type { MessagingTarget } from "application/ports/MessagingPort.js";
-import { NotifyFlow } from "application/messaging/flows/Notify/NotifyFlow.js";
+import type { AnyMessagingRequest, MessagingTarget, MessagingSource } from "application/ports/MessagingDirective.js";
 import { SwitchGameFlow } from "application/messaging/flows/Lobby/SwitchGameFlow.js";
 import { CannotLeaveScript } from "application/messaging/flows/Notify/scripts/cannot_leave.js";
 import type { UserViewCtx } from "application/messaging/model/ViewStore.js";
-import type { MessagingDirective, AnyMessagingDirective } from "application/ports/MessagingDirective.js";
 import type { DataFlow } from "application/messaging/model/Flow.js";
+import type { AdapterKind } from "application/ports/MessagingPort.js";
 
 export class CreateGameUsecase implements Usecase
 {
@@ -26,7 +25,7 @@ export class CreateGameUsecase implements Usecase
 	) {}
 
 
-	async run(authorId: LgonId<"user">, originMsgTarget: MessagingTarget, authorName: string): Promise<AnyMessagingDirective<DataFlow>[]>
+	async run(authorId: LgonId<"user">, originMsgTarget: MessagingTarget, authorName: string, source: MessagingSource<AdapterKind>): Promise<AnyMessagingRequest<DataFlow>[]>
 	{
 
 		let gameId: LgonId<"game"> | null = null;
@@ -44,11 +43,14 @@ export class CreateGameUsecase implements Usecase
 			case "SUCCESS":
 			{
 				return ( [{
-					kind: "flow",
-					flow: LobbyFlow,
-					userCtx: userViewCtx,
-					target: originMsgTarget,
-					data: { gameId: res.game.meta.id, gameStore: this.gameStore, logger: this.logger }
+					msg: {
+						kind: "flow",
+						flow: LobbyFlow,
+						userCtx: userViewCtx,
+						data: { gameId: res.game.meta.id, gameStore: this.gameStore, logger: this.logger }
+					},
+					intention: "reply",
+					source: source
 				}] );
 
 				// await this.flowRunner.run(LobbyFlow, userViewCtx, originMsgTarget, { gameId: res.game.meta.id, gameStore: this.gameStore, logger: this.logger } );		
@@ -57,9 +59,12 @@ export class CreateGameUsecase implements Usecase
 			case "CANNOT_LEAVE":
 			{
 				return ( [{
-					kind: "simple",
-					script: CannotLeaveScript,
-					target: { kind: "personal-reply" },
+					msg: {
+						kind: "simple",
+						script: CannotLeaveScript,
+					},
+					intention: "error",
+					source: source
 				}] );
 
 				// await this.flowRunner.run(NotifyFlow(CannotLeaveScript), userViewCtx, originMsgTarget, undefined);
@@ -68,11 +73,14 @@ export class CreateGameUsecase implements Usecase
 			case "SWITCH":
 			{
 				return ( [{
-					kind: "flow",
-					flow: SwitchGameFlow,
-					userCtx: userViewCtx,
-					target: { kind: "personal-reply" },
-					data: { userId: user.id, userStore: this.userStore, gameStore: this.gameStore, logger: this.logger }
+					msg: {
+						kind: "flow",
+						flow: SwitchGameFlow,
+						userCtx: userViewCtx,
+						data: { userId: user.id, userStore: this.userStore, gameStore: this.gameStore, logger: this.logger }
+					},
+					intention: "personal-reply",
+					source: source
 				}] );
 
 				// await this.flowRunner.run(SwitchGameFlow, userViewCtx, originMsgTarget, { userId: user.id, userStore: this.userStore, gameStore: this.gameStore, logger: this.logger });

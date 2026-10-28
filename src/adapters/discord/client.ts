@@ -18,7 +18,7 @@ export async function initDiscordClient(msgsCache: DiscordMessagingCache, logger
 	]});
 
 	bot.cooldowns = new Map<string, Map<string, number>>();
-	bot.messenger = new DiscordMessenger( bot, msgsCache, logger );
+	bot.messengers = { "discord": new DiscordMessenger( bot, msgsCache, logger ) };
 	bot.commands = await loadCommands(msgsCache, logger);
 	
 	return (bot);

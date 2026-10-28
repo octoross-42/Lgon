@@ -1,11 +1,11 @@
-import { MessagingPort } from "application/ports/MessagingPort.js";
+import { AdapterKind, MessagingPort } from "application/ports/MessagingPort.js";
 import { type Client, EmbedBuilder, Message, type User, BaseMessageOptions, type ChatInputCommandInteraction, type MessageContextMenuCommandInteraction, type UserContextMenuCommandInteraction, type PrimaryEntryPointCommandInteraction, type AnySelectMenuInteraction, type ButtonInteraction, type ModalSubmitInteraction, InteractionReplyOptions, Channel, SendableChannels, InteractionResponse } from "discord.js";
 import type { Script, View } from "application/messaging/model/View.js";
 import { ComponentMaker } from "./ComponentMaker.js";
 import type { DiscordMessagingCache } from "../store/DiscordMessagingCache.js";
 import type { Logger } from "infra/Logger.js";
 import type { DataFlow } from "application/messaging/model/Flow.js";
-import type { MessageDirective, MessagingDirective, MessagingTarget } from "application/ports/MessagingDirective.js";
+import type { MessageDirective, MessagingDirective, MessagingRoute, MessagingTarget, MessagingTargetKind } from "application/ports/MessagingDirective.js";
 import { makeLgonId, type LgonId } from "types/LgonId.js";
 
 type DiscordRepliable = ChatInputCommandInteraction | MessageContextMenuCommandInteraction | UserContextMenuCommandInteraction | PrimaryEntryPointCommandInteraction | AnySelectMenuInteraction | ButtonInteraction | ModalSubmitInteraction | Message;
@@ -15,6 +15,7 @@ type DiscordEditRepliable = ChatInputCommandInteraction | MessageContextMenuComm
 
 export type DiscordResource = InteractionResponse| SendableChannels | User | DiscordRepliable;
 export type MessagingOptions = Pick<BaseMessageOptions & InteractionReplyOptions, "components" | "allowedMentions" | "embeds">;
+type RespondingTargetMethods = "reply" | "edit-reply" | "update" | "delete" | "follow-up" | "delete-reply";
 
 export class DiscordMessenger extends MessagingPort
 {
@@ -108,84 +109,138 @@ export class DiscordMessenger extends MessagingPort
 	{
 		this.cache.rm(id);
 		await what.delete();
+		// do not delete view, save context and choices, messenger does not get to make the decision
 	}
 
 
-	private	cannotTarget(target: MessagingTarget): boolean
+	private makeTargetKind(route: MessagingRoute<AdapterKind>): MessagingTargetKind<"discord"> | undefined
 	{
-		if (target.originAdapter === "discord" )
-			return (true);
+		if (route.originAdapter != "discord")
+		// TODO for the moment, jsp ce que je veux faire donc on fait pas
+			return (undefined);
 
-		switch (target.kind)
+		switch (route.intention)
 		{
-			case ("delete"):
-				return (false);
-			case ("dm"):
-				return (false);
-			case ("edit-reply"):
-				return (false);
-			case ("update"):
-				return (false);
 			case ("reply"):
-				return (true);
+			{
+				if (route.sourceKind === "interaction")
+					return ("follow-up");
+				return ("reply");
+			}
+			
+			case ("error"):
+			case ("personal-reply"):
+			{
+				if (route.sourceKind === "interaction")
+					return ("edit-reply");
+				return ("reply");
+			}
+			case ("auto-update"):
+			case ("update"):
+			{
+				if (route.sourceKind === "interaction")
+					return ("edit-reply");
+				return ("update");
+			}
+			case ("delete"):
+			{
+				if (route.sourceKind === "interaction")
+					return ("delete-reply");
+				return ("delete");
+			}
+			case ("dm"):
+				return ("dm");
 			default:
-				return (false);
+				return (undefined);
 		}
 	}
 
-	public async execute(views: View<DataFlow>[], target: MessagingTarget): Promise<void>
+	public async execute(directive: MessagingDirective<DataFlow>): Promise<void>
 	{
-		const rsc: DiscordResource | undefined = this.cache.get(target.targetId);
+		const RESPONDING_TARGET_METHODS = new Map<MessagingTargetKind<"discord">, string>([
+			["reply", "reply"],
+			["edit-reply", "editReply"],
+			["update", "update"],
+			["delete", "delete"],
+			["follow-up", "followUp"],
+			["delete-reply", "deleteReply"],
+		]);
+
+		const rsc: DiscordResource | undefined = this.cache.get(directive.route.adapterId);
 		if ( !rsc )
 		{
-			this.logger.event( { code: "TARGET_NOT_FOUND", data: { id: target.targetId, adapter: "discord" } } );
+			this.logger.event( { code: "TARGET_NOT_FOUND", data: { id: directive.route.adapterId, adapter: "discord" } } );
 			return ;
 		}
-		if (this.cannotTarget(target))
+		
+		const targetKind: MessagingTargetKind<"discord"> | undefined = this.makeTargetKind(directive.route);
+		if ( !targetKind )
 		{
-			this.logger.event( { code: "IMPOSSIBLE_TARGET", data: target } );
+			this.logger.event( { code: "IMPOSSIBLE_TARGET_KIND", data: { messagingIntention: directive.route.intention, adapter: "discord", originAdapter: directive.route.originAdapter, sourceKind: directive.route.sourceKind } } );
 			return ;
 		}
 
+		const target: MessagingTarget =
+		{
+			kind: targetKind,
+			adapterId: directive.route.adapterId
+		}
 		let i: number = 0;
 		let msgingOptions: MessagingOptions;
+		let methodString: string | undefined;
 
-		i = (target.kind in ["edit-reply", "update", "delete"] ? (views.length - 1): 0);
-		while (i < views.length)
+		// "reply" | "edit-reply" | "update" | "delete" | "dm" | "follow-up" | "delete-reply"
+		i = (target.kind in ["edit-reply", "update", "delete", "delete-reply"] ? (directive.views.length - 1): 0);
+		while (i < directive.views.length)
 		{
+			methodString = RESPONDING_TARGET_METHODS.get(target.kind);
+			if ( methodString && !(methodString in rsc) )
+			{
+				this.logger.event({ code: "IMPOSSIBLE_TARGET", data: { ...target, missingMethod: "reply" } });
+				i ++;
+				continue ;
+			}
+
+			msgingOptions = this.makeMsgPayload(directive.views[i ++]);
 			
-			msgingOptions = this.makeMsgPayload(views[i ++]);
 			switch (target.kind)
 			{
 				case ("reply"):
 				{
-					if (target.originAdapter === "discord")
-					{
-						if ("reply" in rsc)
-							await this.reply(rsc, msgingOptions);
-						else
-						{
-							this.logger.event({ code: "WRONG_TARGET", data: { ...target, missingMethod: "reply" } });
-							return ;
-						}
-					}
-					// else TODO jsp quoi faire, mettre en place un systeme de distribution multi adapter
-					// 	return (await this.send(target.targetId, msgingOptions))
+					await this.reply(rsc as DiscordRepliable, msgingOptions);
+					break ;
 				}
 				case ("edit-reply"):
 				{
-					if ("editReply" in rsc)
-						await this.editReply(rsc, msgingOptions);
-					else
-					{
-						this.logger.event({ code: "WRONG_TARGET", data: { ...target, missingMethod: "editReply" } });
-						return ;
-					}
+					await this.editReply(rsc as DiscordEditRepliable, msgingOptions);
+					break ;
 				}
-				
-			}
-			// i ++;
+				// case ("update")
+				// {
+				// 	await this.update(rsc);
+				// 	break ;
+				// }
+				// case ("delete")
+				// {
+				// 	await this.
+				// 	break ;
+				// }
+				// case ("dm")
+				// {
+				// 	await this.
+				// 	break ;
+				// }
+				// case ("follow-up")
+				// {
+				// 	await this.
+				// 	break ;
+				// }
+				// case ("delete-reply")
+				// {
+				// 	await this.
+				// 	break ;
+				// }
+			}	
 		}
 	}
-
 };

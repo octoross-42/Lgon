@@ -6,10 +6,12 @@ import type { View, SelectView } from "application/messaging/model/View.js";
 import type { ViewStore } from "application/messaging/model/ViewStore.js";
 import type { Game } from "core/game/entities/Game/Game.js";
 import type { Logger } from "infra/Logger.js";
-import type { LgonId } from "types/LgonId.js";
+import { type LgonId, makeLgonId, makeLgonIdFrom } from "types/LgonId.js";
 import type { SelectInteractionModel } from "application/messaging/model/Flow.js";
+import type { MessagingSource } from "application/ports/MessagingDirective.js";
 
 import { InteractionCode, INTERACTION_CODES } from "application/errors/InteractionError.js";
+import type { AdapterKind } from "application/ports/MessagingPort.js";
 
 export class AddRoleHandler extends ButtonHandler
 {
@@ -18,9 +20,9 @@ export class AddRoleHandler extends ButtonHandler
 				flowRunner: FlowRunner,
 				logger: Logger) { super("update", viewStore, flowRunner, logger); }
 	
-	async run(authorId: LgonId<"user">, viewId: string): Promise<InteractionCode>
+	async run(authorId: LgonId<"user">, viewId: LgonId<"view">, source: MessagingSource<AdapterKind>): Promise<InteractionCode>
 	{
-		const view: View<GameDataFlow> | undefined = this.viewStore.get(viewId as LgonId<"view">);
+		const view: View<GameDataFlow> | undefined = this.viewStore.get(viewId);
 		let	code: InteractionCode = INTERACTION_CODES.OK;
 
 		if ( !view )
@@ -77,7 +79,15 @@ export class AddRoleHandler extends ButtonHandler
 		if ( !game.add_roles(select_roles.selected as LgonId<"role">[], count) )
 			return (INTERACTION_CODES.ROLE_NOT_FOUND);
 
-		this.flowRunner.update(view);
+		this.flowRunner.run(
+			{
+				msg: { kind: "view", viewId: viewId },
+				source: source,
+				intention: "auto-update",
+				propagateIds: new Set([ makeLgonId("property", game.meta.id) ])
+			},
+
+		);
 	
 		return (INTERACTION_CODES.OK);
 	}

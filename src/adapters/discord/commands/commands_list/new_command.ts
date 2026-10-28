@@ -5,8 +5,9 @@ import type { LgonContext } from "application/context/LgonContext.js";
 import { LgonId, makeLgonId } from "types/LgonId.js";
 import type { DiscordMessagingCache } from "adapters/discord/store/DiscordMessagingCache.js";
 import { Logger } from "infra/Logger.js";
-import type { AnyMessagingDirective, MessagingTarget } from "application/ports/MessagingDirective.js";
+import type { AnyMessagingRequest, MessagingSource } from "application/ports/MessagingDirective.js";
 import type { DataFlow } from "application/messaging/model/Flow.js";
+import { AdapterKind } from "application/ports/MessagingPort.js";
 
 const meta: CommandMeta =
 {
@@ -34,14 +35,13 @@ export class CreateGameCommand extends Command
 
 	async run(lgon: LgonContext, message: Message, argv: string[]): Promise<void>
 	{
-		const msgTarget: MessagingTarget = {
-			kind: "reply",
-			targetId: makeLgonId("adapter", message.id),
+		const msgSource: MessagingSource<AdapterKind> = {
+			adapterId: makeLgonId("adapter", message.id),
 			adapter: "discord",
-			originAdapter: "discord"
+			kind: "message"
 		};
 		
-		const messagingDirectives: AnyMessagingDirective<DataFlow>[] = await lgon.usecases.run("CreateGame", makeLgonId<"user">("user", message.author.id), msgTarget, message.author.avatar);
+		const messagingRequests: AnyMessagingRequest<DataFlow>[] = await lgon.usecases.run("CreateGame", makeLgonId<"user">("user", message.author.id), msgSource, message.author.avatar);
 	
 		
 	}

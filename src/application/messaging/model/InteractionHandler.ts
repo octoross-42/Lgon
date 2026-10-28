@@ -3,6 +3,8 @@ import type { ViewStore } from "./ViewStore.js";
 import type { Logger } from "infra/Logger.js";
 import { FlowRunner } from "./FlowRunner.js";
 import { InteractionCode } from "application/errors/InteractionError.js";
+import type { MessagingSource } from "application/ports/MessagingDirective.js";
+import type { AdapterKind } from "application/ports/MessagingPort.js";
 
 export type InteractionCtx =
 {
@@ -30,12 +32,12 @@ export abstract class ButtonHandler extends InteractionHandler
 {
 	constructor(deferKind: "update" | "reply", viewStore: ViewStore, flowRunner: FlowRunner, logger: Logger) { super(deferKind, "button", viewStore, flowRunner ,logger); }
 
-	abstract run(authorId: LgonId<"user">, contextId: string): Promise<InteractionCode> | InteractionCode;
+	abstract run(authorId: LgonId<"user">, viewId: LgonId<"view">, source: MessagingSource<AdapterKind>): Promise<InteractionCode> | InteractionCode;
 }
 
 export abstract class SelectHandler extends InteractionHandler
 {
 	constructor(deferKind: "update" | "reply", viewStore: ViewStore, flowRunner: FlowRunner, logger: Logger) { super(deferKind, "select", viewStore, flowRunner, logger); }
 
-	abstract run(authorId: LgonId<"user">, selected: string[], selectId: string, viewId: LgonId<"view">): Promise<InteractionCode> | InteractionCode;
+	abstract run(authorId: LgonId<"user">, selected: string[], selectId: string, viewId: LgonId<"view">, source: MessagingSource<AdapterKind>): Promise<InteractionCode> | InteractionCode;
 }

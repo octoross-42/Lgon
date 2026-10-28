@@ -1,6 +1,6 @@
-import type { MessagingTarget } from "application/ports/MessagingPort.js";
 import type { LgonId } from "types/LgonId.js";
 import type { ButtonInteractionModel, FlowContext, DataFlow, SelectInteractionModel } from "./Flow.js";
+import type { MessagingTarget } from "application/ports/MessagingDirective.js";
 
 export type ButtonView<T extends DataFlow> =
 {
@@ -32,6 +32,5 @@ export type View<T extends DataFlow> =
 	otherModes: string[],
 	currentMode: string,
 	step: number,
-	target: MessagingTarget,
 	flowData: FlowContext<T>
 }

@@ -5,7 +5,8 @@ export type LgonIdKind =
 	| "game"
 	| "archive"
 	| "view"
-	| "adapter";
+	| "adapter"
+	| "property";
 
 
 export type CommandLgonIdKind = 
@@ -20,6 +21,11 @@ export type LgonId<K extends LgonIdKind> = string & {
 export function makeLgonId<K extends LgonIdKind>(kind: K, id: string): LgonId<K>
 {
 	return (`${kind}:${id}` as LgonId<K>);
+}
+
+export function makeLgonIdFrom<K extends LgonIdKind>(kind: K, id: LgonId<LgonIdKind>): LgonId<K>
+{
+	return (`${kind}:${id.slice(id.indexOf(":") + 1)}` as LgonId<K>);	// si : pas trouvé indexOf == -1 -> indexOf + 1 = 0, slice renvoie la chaine entiere
 }
 
 export function getLgonIdKind(lgonId: LgonId<LgonIdKind>): LgonIdKind

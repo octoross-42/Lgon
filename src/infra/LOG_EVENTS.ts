@@ -16,7 +16,7 @@ export type LogEvent =
 }
 
 export type EventCode = "MESSAGE" | "COMMAND_RUN" | "COMMAND_FAIL" | "USECASE" | "BUTTON" | "SELECT" |
-				"SEND_CHANNEL_INSTEAD" | "NOT_SENDABLE_CHANNEL" | "WRONG_TARGET" | "IMPOSSIBLE_TARGET" | "TARGET_NOT_FOUND" | "COMPONENTS_ERROR" |
+				"SEND_CHANNEL_INSTEAD" | "NOT_SENDABLE_CHANNEL" | "IMPOSSIBLE_TARGET" | "IMPOSSIBLE_TARGET_KIND" | "TARGET_NOT_FOUND" | "COMPONENTS_ERROR" |
 				"NOT_FOUND" | "DESIGN_ERROR" |
 				"CREATE" | "DELETE" | "CANNOT_CREATE" |
 				"ALREADY_JOINED" | "JOINED" | "CANNOT_JOIN" | "LEFT" | "CANNOT_LEAVE" | "SWITCHED";
@@ -40,12 +40,12 @@ export const EVENTS_DESCRIPTIONS: Record<EventCode, EventDescription> =
 		audience: "system",
 		log: d => `${d?.userId} sent '${d?.content}'`
 	},
-	IMPOSSIBLE_TARGET: {
+	IMPOSSIBLE_TARGET_KIND: {
 		lvl: "error",
 		audience: "system",
-		log: d => `Could not handle this messaging target: '${d?.MessagingTargetKind}' to adapter '${d?.adapter}' from adapter '${d?.originAdapter}'`
+		log: d => `Could not handle this messaging target: '${d?.messagingIntention}' to adapter '${d?.adapter}' from adapter '${d?.originAdapter}' that comes from ${d?.sourceKind}`
 	},
-	WRONG_TARGET: {
+	IMPOSSIBLE_TARGET: {
 		lvl: "error",
 		audience: "system",
 		log: d => `Could not '${d?.MessagingTargetKind}' with adapter '${d?.adapter}' on resource target id: '${d?.targetId}': missing method '${d?.missingMethod}'`
